@@ -1,6 +1,5 @@
-package javaapplication1;
+package net.primitive.invokedynamic;
 
-import java.dyn.BootstrapMethod;
 import java.dyn.CallSite;
 import java.dyn.InvokeDynamic;
 import java.dyn.Linkage;
@@ -34,11 +33,10 @@ public class InvokeDynamicStatic {
 
     private static CallSite bootstrap(Class caller, String name, MethodType type) throws Exception {
         System.out.println("linking:" + name+"("+type+")");
-        final Lookup lookup = MethodHandles.lookup();
-        MethodHandles.
+        Lookup lookup = MethodHandles.lookup();
         Class<?> pType = type.parameterType(0);
-        final MethodType methodType = MethodType.methodType(void.class, pType);
-        final MethodHandle handle = lookup.findStatic(InvokeDynamicStatic.class, "foo", methodType);
+        MethodType methodType = MethodType.methodType(void.class, pType);
+        MethodHandle handle = lookup.findStatic(InvokeDynamicStatic.class, "foo", methodType);
         CallSite c = new CallSite(handle);
         return c;
     }
