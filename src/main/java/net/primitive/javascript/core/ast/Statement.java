@@ -1,5 +1,8 @@
 package net.primitive.javascript.core.ast;
 
-public class Statement extends SourceElement {
+import net.primitive.javascript.core.visitors.StatementVisitor;
 
+public abstract class Statement extends SourceElement {
+
+	public abstract void accept(StatementVisitor visitor);
 }

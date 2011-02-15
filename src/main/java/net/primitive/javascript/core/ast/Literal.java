@@ -1,5 +1,7 @@
 package net.primitive.javascript.core.ast;
 
+import net.primitive.javascript.core.visitors.ExpressionVisitor;
+
 public class Literal extends Expression {
 
 	private final Object value;
@@ -9,7 +11,14 @@ public class Literal extends Expression {
 	}
 
 	@Override
-	public Object evaluate() {
+	public void accept(ExpressionVisitor visitor) {
+		visitor.visitLiteral(this);
+	}
+
+	/**
+	 * @return the value
+	 */
+	public Object getValue() {
 		return value;
 	}
 

@@ -1,5 +1,7 @@
 package net.primitive.javascript.core.ast;
 
-public class SourceElement {
+import net.primitive.javascript.core.visitors.SourceElementVisitor;
+
+public abstract class SourceElement {
 
 }

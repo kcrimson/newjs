@@ -1,5 +1,7 @@
 package net.primitive.javascript.core.ast;
 
+import net.primitive.javascript.core.visitors.StatementVisitor;
+
 public class VariableDeclaration extends Statement {
 
 	private final String variableName;
@@ -22,6 +24,11 @@ public class VariableDeclaration extends Statement {
 	 */
 	public Expression getExpression() {
 		return expression;
+	}
+
+	@Override
+	public void accept(StatementVisitor visitor) {
+		visitor.visitVariableDeclaration(this);
 	}
 
 }

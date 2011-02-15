@@ -4,7 +4,9 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
-public class FunctionDeclaration extends SourceElement {
+import net.primitive.javascript.core.visitors.StatementVisitor;
+
+public class FunctionDeclaration extends Statement {
 
 	private final String functionName;
 	private final List<String> parameterList;
@@ -36,6 +38,11 @@ public class FunctionDeclaration extends SourceElement {
 	 */
 	public List<SourceElement> getSourceElements() {
 		return sourceElements;
+	}
+
+	@Override
+	public void accept(StatementVisitor visitor) {
+		visitor.visitFunctionDeclaration(this);
 	}
 
 }

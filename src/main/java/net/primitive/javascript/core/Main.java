@@ -1,11 +1,7 @@
 package net.primitive.javascript.core;
 
-import java.util.List;
-
-import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.Program;
-import net.primitive.javascript.core.ast.SourceElement;
-import net.primitive.javascript.core.ast.VariableStatement;
+import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -29,16 +25,24 @@ class Main {
 		//
 
 		lexer = new JavaScriptLexer(new ANTLRStringStream(
-				"var a=1 + 1 - 1;"));
+				"var a=((1 + 3) - 1)*24;"));
 
 		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 
 		JavaScriptParser javaScriptParser = new JavaScriptParser(
 				commonTokenStream);
 		Program result = javaScriptParser.program().result;
-		List<SourceElement> sourceElements = result.getSourceElements();
-		VariableStatement sourceElement = (VariableStatement) sourceElements.get(0);
-		Object evaluate = sourceElement.getVariableDeclarations().get(0).getExpression().evaluate();
-		System.out.println(evaluate);
+
+		ScriptableObject scriptableObject = new ScriptableObject();
+		ProgramVisitorImpl visitor = new ProgramVisitorImpl(scriptableObject);
+		result.accept(visitor);
+		System.out.println(scriptableObject.get("a", scriptableObject));
+
+		// List<SourceElement> sourceElements = result.getSourceElements();
+		// VariableStatement sourceElement = (VariableStatement)
+		// sourceElements.get(0);
+		// Object evaluate =
+		// sourceElement.getVariableDeclarations().get(0).getExpression().evaluate();
+		// System.out.println(evaluate);
 	}
 }

@@ -28,7 +28,7 @@ program returns [Program result]
   }
   LT!* sourceElements 
                      {
-                      $result.addSourceElement($sourceElements.result);
+                      $result.setSourceElements($sourceElements.result);
                      }
   LT!* EOF!
   ;
@@ -63,7 +63,7 @@ sourceElement returns [SourceElement result]
 
 // functions
 
-functionDeclaration returns [FunctionDeclaration result]
+functionDeclaration returns [Statement result]
   :
   'function' LT!* Identifier LT!* formalParameterList LT!* functionBody 
                                                                        {
@@ -106,40 +106,90 @@ functionBody returns [List result]
 
 statement returns [Statement result]
   :
-  statementBlock
+  statementBlock 
+                {
+                 $result = $statementBlock.result;
+                }
   | variableStatement 
                      {
-                      $result = new VariableStatement($variableStatement.result);
+                      $result = $variableStatement.result;
                      }
   | emptyStatement
-  | expressionStatement
-  | ifStatement
-  | iterationStatement
-  | continueStatement
-  | breakStatement
-  | returnStatement
-  | withStatement
-  | labelledStatement
-  | switchStatement
-  | throwStatement
-  | tryStatement
+  | expressionStatement 
+                       {
+                        $result = $expressionStatement.result;
+                       }
+  | ifStatement 
+               {
+                $result = $ifStatement.result;
+               }
+  | iterationStatement 
+                      {
+                       $result = $iterationStatement.result;
+                      }
+  | continueStatement 
+                     {
+                      $result = $continueStatement.result;
+                     }
+  | breakStatement 
+                  {
+                   $result = $breakStatement.result;
+                  }
+  | returnStatement 
+                   {
+                    $result = $returnStatement.result;
+                   }
+  | withStatement 
+                 {
+                  $result = $withStatement.result;
+                 }
+  | labelledStatement 
+                     {
+                      $result = $labelledStatement.result;
+                     }
+  | switchStatement 
+                   {
+                    $result = $switchStatement.result;
+                   }
+  | throwStatement 
+                  {
+                   $result = $throwStatement.result;
+                  }
+  | tryStatement 
+                {
+                 $result = $tryStatement.result;
+                }
   ;
 
-statementBlock
+statementBlock returns [Statement result]
   :
-  '{' LT!* statementList? LT!* '}'
+  '{' LT!* statementList? LT!* '}' 
+                                  {
+                                   $result = new StatementBlock($statementList.result);
+                                  }
   ;
 
-statementList
+statementList returns [List < Statement > result]
   :
-  statement (LT!* statement)*
+  
+  {
+   $result = new ArrayList<Statement>();
+  }
+  st1=statement 
+               {
+                $result.add($st1.result);
+               }
+  (LT!* st2=statement 
+                     {
+                      $result.add($st2.result);
+                     })*
   ;
 
-variableStatement returns [List result]
+variableStatement returns [Statement result]
   :
   'var' LT!* variableDeclarationList 
                                     {
-                                     $result = $variableDeclarationList.result;
+                                     $result = new VariableStatement($variableDeclarationList.result);
                                     }
   (
     LT
@@ -203,48 +253,75 @@ emptyStatement
   ';'
   ;
 
-expressionStatement
+expressionStatement returns [Statement result]
   :
-  expression
+  expression 
+            {
+             $result = new ExpressionStatement($expression.result);
+            }
   (
     LT
     | ';'
   )!
   ;
 
-ifStatement
+ifStatement returns [Statement result]
   :
-  'if' LT!* '(' LT!* expression LT!* ')' LT!* statement (LT!* 'else' LT!* statement)?
+  'if' LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
+                                                                                                               {
+                                                                                                                $result = new IfStatement($expression.result, $ifstatement.result,
+                                                                                                                		$elsestatement.result);
+                                                                                                               }
   ;
 
-iterationStatement
+iterationStatement returns [Statement result]
   :
-  doWhileStatement
-  | whileStatement
-  | forStatement
+  doWhileStatement 
+                  {
+                   $result = $doWhileStatement.result;
+                  }
+  | whileStatement 
+                  {
+                   $result = $whileStatement.result;
+                  }
+  | forStatement 
+                {
+                 $result = $forStatement.result;
+                }
   | forInStatement
   ;
 
-doWhileStatement
+doWhileStatement returns [Statement result]
   :
   'do' LT!* statement LT!* 'while' LT!* '(' expression ')'
   (
     LT
     | ';'
   )!
+  
+  {
+   $result = new DoWhileStatement($statement.result, $expression.result);
+  }
   ;
 
-whileStatement
+whileStatement returns [Statement result]
   :
-  'while' LT!* '(' LT!* expression LT!* ')' LT!* statement
+  'while' LT!* '(' LT!* expression LT!* ')' LT!* statement 
+                                                          {
+                                                           $result = new WhileStatement($expression.result, $statement.result);
+                                                          }
   ;
 
-forStatement
+forStatement returns [Statement result]
   :
-  'for' LT!* '(' (LT!* forStatementInitialiserPart)? LT!* ';' (LT!* expression)? LT!* ';' (LT!* expression)? LT!* ')' LT!* statement
+  'for' LT!* '(' (LT!* forStatementInitialiserPart)? LT!* ';' (LT!* exp1=expression)? LT!* ';' (LT!* exp2=expression)? LT!* ')' LT!* statement 
+                                                                                                                                              {
+                                                                                                                                               $result = new ForStatement($forStatementInitialiserPart.result, $exp1.result,
+                                                                                                                                               		$exp2.result, $statement.result);
+                                                                                                                                              }
   ;
 
-forStatementInitialiserPart
+forStatementInitialiserPart returns [Statement result]
   :
   expressionNoIn
   | 'var' LT!* variableDeclarationListNoIn
@@ -261,96 +338,165 @@ forInStatementInitialiserPart
   | 'var' LT!* variableDeclarationNoIn
   ;
 
-continueStatement
+continueStatement returns [Statement result]
   :
   'continue' Identifier?
   (
     LT
     | ';'
   )!
+  
+  {
+   $result = new ContinueStatement($Identifier.text);
+  }
   ;
 
-breakStatement
+breakStatement returns [Statement result]
   :
   'break' Identifier?
   (
     LT
     | ';'
   )!
+  
+  {
+   $result = new BreakStatement($Identifier.text);
+  }
   ;
 
-returnStatement
+returnStatement returns [Statement result]
   :
   'return' expression?
   (
     LT
     | ';'
   )!
+  
+  {
+   $result = new ReturnStatement($expression.result);
+  }
   ;
 
-withStatement
+withStatement returns [Statement result]
   :
-  'with' LT!* '(' LT!* expression LT!* ')' LT!* statement
+  'with' LT!* '(' LT!* expression LT!* ')' LT!* statement 
+                                                         {
+                                                          $result = new WithStatement($expression.result, $statement.result);
+                                                         }
   ;
 
-labelledStatement
+labelledStatement returns [Statement result]
   :
-  Identifier LT!* ':' LT!* statement
+  Identifier LT!* ':' LT!* statement 
+                                    {
+                                     $result = new LabelledStatement($Identifier.text, $statement.result);
+                                    }
   ;
 
-switchStatement
+switchStatement returns [Statement result]
   :
-  'switch' LT!* '(' LT!* expression LT!* ')' LT!* caseBlock
+  'switch' LT!* '(' LT!* expression LT!* ')' LT!* caseBlock 
+                                                           {
+                                                            $result = new SwitchStatement($expression.result, $caseBlock.clauses,
+                                                            		$caseBlock.defaultClause);
+                                                           }
   ;
 
-caseBlock
+caseBlock returns [List<CaseClauseStatement> clauses,List<Statement> defaultClause]
+@init {
+List<CaseClauseStatement> clauses = new ArrayList<CaseClauseStatement>();
+}
   :
-  '{' (LT!* caseClause)* (LT!* defaultClause (LT!* caseClause)*)? LT!* '}'
+  '{' (LT!* cc1=caseClause 
+                          {
+                           clauses.add($cc1.result);
+                          })* (LT!* defaultClause (LT!* cc2=caseClause 
+                                                                      {
+                                                                       clauses.add($cc2.result);
+                                                                      })*)? LT!* '}'
   ;
 
-caseClause
+caseClause returns [CaseClauseStatement result]
   :
-  'case' LT!* expression LT!* ':' LT!* statementList?
+  'case' LT!* expression LT!* ':' LT!* statementList? 
+                                                     {
+                                                      $result = new CaseClauseStatement($expression.result, $statementList.result);
+                                                     }
   ;
 
-defaultClause
+defaultClause returns [List < Statement > result]
   :
-  'default' LT!* ':' LT!* statementList?
+  'default' LT!* ':' LT!* statementList? 
+                                        {
+                                         $result = $statementList.result;
+                                        }
   ;
 
-throwStatement
+throwStatement returns [Statement result]
   :
   'throw' expression
   (
     LT
     | ';'
   )!
+  
+  {
+   $result = new ThrowStatement($expression.result);
+  }
   ;
 
-tryStatement
+tryStatement returns [Statement result]
   :
   'try' LT!* statementBlock LT!*
   (
-    finallyClause
-    | catchClause (LT!* finallyClause)?
+    fc1=finallyClause
+    | catchClause (LT!* fc2=finallyClause)?
   )
+  
+  {
+   $result = new TryStatement($statementBlock.result, $fc1.result,
+   		$catchClause.result, $fc2.result);
+  }
   ;
 
-catchClause
+catchClause returns [Statement result]
   :
-  'catch' LT!* '(' LT!* Identifier LT!* ')' LT!* statementBlock
+  'catch' LT!* '(' LT!* Identifier LT!* ')' LT!* statementBlock 
+                                                               {
+                                                                $result = new CatchClause($Identifier.text, $statementBlock.result);
+                                                               }
   ;
 
-finallyClause
+finallyClause returns [Statement result]
   :
-  'finally' LT!* statementBlock
+  'finally' LT!* statementBlock 
+                               {
+                                $result = $statementBlock.result;
+                               }
   ;
 
 // expressions
 
-expression
+expression returns [Expression result]
+@init {
+List expressions = new ArrayList();
+}
   :
-  assignmentExpression (LT!* ',' LT!* assignmentExpression)*
+  exp1=assignmentExpression (LT!* ',' LT!* exp2=assignmentExpression)? 
+                                                                      {
+                                                                       $result = new WrappedExpression($exp1.result, $exp2.result);
+                                                                      }
+  //  exp1=assignmentExpression
+  //                           {
+  //                            expressions.add($exp1.result);
+  //                           }
+  //  (LT!* ',' LT!* exp2=assignmentExpression
+  //                                          {
+  //                                           expressions.add($exp2.result);
+  //                                          })*
+  //                                             {
+  //                                              $result = new WrappedExpression(expressions);
+  //                                             }
   ;
 
 expressionNoIn
@@ -558,7 +704,7 @@ bitwiseANDExpressionNoIn
 
 equalityExpression returns [Expression result]
 @init {
-Operator operator = null;
+BinaryOperator operator = null;
 }
   :
   op1=relationalExpression 
@@ -609,7 +755,7 @@ equalityExpressionNoIn
 
 relationalExpression returns [Expression result]
 @init {
-Operator operator = null;
+BinaryOperator operator = null;
 }
   :
   op1=shiftExpression 
@@ -669,7 +815,7 @@ relationalExpressionNoIn
 
 shiftExpression returns [Expression result]
 @init {
-Operator operator = null;
+BinaryOperator operator = null;
 }
   :
   op1=additiveExpression 
@@ -701,7 +847,7 @@ Operator operator = null;
 
 additiveExpression returns [Expression result]
 @init {
-Operator operator = null;
+BinaryOperator operator = null;
 }
   :
   op1=multiplicativeExpression 
@@ -729,7 +875,7 @@ Operator operator = null;
 
 multiplicativeExpression returns [Expression result]
 @init {
-Operator operator = null;
+BinaryOperator operator = null;
 }
   :
   op1=unaryExpression 
@@ -760,6 +906,9 @@ Operator operator = null;
   ;
 
 unaryExpression returns [Expression result]
+@init {
+UnaryOperator operator = null;
+}
   :
   postfixExpression 
                    {
@@ -767,7 +916,10 @@ unaryExpression returns [Expression result]
                    }
   |
   (
-    'delete'
+    'delete' 
+            {
+             operator = Operators.Delete;
+            }
     | 'void'
     | 'typeof'
     | '++'
@@ -777,7 +929,10 @@ unaryExpression returns [Expression result]
     | '~'
     | '!'
   )
-  unaryExpression
+  exp=unaryExpression 
+                     {
+                      $result = new UnaryExpression(operator, $exp.result);
+                     }
   ;
 
 postfixExpression returns [Expression result]
@@ -802,7 +957,10 @@ primaryExpression returns [Expression result]
            }
   | arrayLiteral
   | objectLiteral
-  | '(' LT!* expression LT!* ')'
+  | '(' LT!* expression LT!* ')' 
+                                {
+                                 $result = $expression.result;
+                                }
   ;
 
 // arrayLiteral definition.
