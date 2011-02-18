@@ -1,10 +1,11 @@
 package net.primitive.javascript.core;
 
+import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 
 public class ScriptableObject implements Scriptable {
 
-	private HashMap<Object, Object> associatedValues = new HashMap<Object, Object>();
+	private HashMap<Object, Property> associatedValues = new HashMap<Object, Property>();
 
 	@Override
 	public String getClassName() {
@@ -14,7 +15,7 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Object get(String name, Scriptable start) {
-		return associatedValues.get(name);
+		return associatedValues.get(name).getValue();
 	}
 
 	@Override
@@ -34,12 +35,12 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public void put(String name, Scriptable start, Object value) {
-		associatedValues.put(name, value);
+		associatedValues.put(name, new Property(name,value));
 	}
 
 	@Override
 	public void put(int index, Scriptable start, Object value) {
-		associatedValues.put(index, value);
+		//associatedValues.put(index, value);
 	}
 
 	@Override
@@ -92,6 +93,11 @@ public class ScriptableObject implements Scriptable {
 	public boolean hasInstance(Scriptable instance) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Property getProperty(String identfierName) {
+		return associatedValues.get(identfierName);
 	}
 
 }

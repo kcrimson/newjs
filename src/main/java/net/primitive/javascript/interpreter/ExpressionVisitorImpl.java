@@ -1,7 +1,10 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.Property;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
+import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.WrappedExpression;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
@@ -48,6 +51,28 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
 		wrappedExpression.getExpression1().accept(visitor);
 		result = visitor.getResult();
+	}
+
+	@Override
+	public void visitIdentifier(Identifier identifier) {
+		Property property = getScope().getProperty(
+				identifier.getIdentfierName());
+		result = property;
+	}
+
+	@Override
+	public void visitAssignmentExpression(
+			AssignmentExpression assignmentExpression) {
+		ExpressionVisitorImpl rightVisitor = new ExpressionVisitorImpl(
+				getScope());
+		assignmentExpression.getRightHandSideExpression().accept(rightVisitor);
+		Object rightValue = rightVisitor.getResult();
+
+		ExpressionVisitorImpl leftVisitor = new ExpressionVisitorImpl(
+				getScope());
+		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
+		Property property = (Property) leftVisitor.getResult();
+		property.setValue(rightValue);
 	}
 
 }

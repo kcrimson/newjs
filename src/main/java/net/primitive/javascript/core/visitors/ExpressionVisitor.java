@@ -1,6 +1,8 @@
 package net.primitive.javascript.core.visitors;
 
+import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
+import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.WrappedExpression;
 
@@ -12,5 +14,9 @@ public interface ExpressionVisitor extends SourceElementVisitor {
 	void visitLiteral(Literal literal);
 
 	void visitWrappedExpression(WrappedExpression wrappedExpression);
+
+	void visitIdentifier(Identifier identifier);
+
+	void visitAssignmentExpression(AssignmentExpression assignmentExpression);
 
 }

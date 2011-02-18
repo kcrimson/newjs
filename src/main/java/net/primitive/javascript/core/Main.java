@@ -3,6 +3,7 @@ package net.primitive.javascript.core;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 
@@ -24,8 +25,8 @@ class Main {
 		// Create the lexer, which we can keep reusing if we like
 		//
 
-		lexer = new JavaScriptLexer(new ANTLRStringStream(
-				"var a=((1 + 3) - 1)*24;"));
+		lexer = new JavaScriptLexer(new ANTLRFileStream(
+				"src/test/resources/while.js"));
 
 		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 
@@ -38,11 +39,5 @@ class Main {
 		result.accept(visitor);
 		System.out.println(scriptableObject.get("a", scriptableObject));
 
-		// List<SourceElement> sourceElements = result.getSourceElements();
-		// VariableStatement sourceElement = (VariableStatement)
-		// sourceElements.get(0);
-		// Object evaluate =
-		// sourceElement.getVariableDeclarations().get(0).getExpression().evaluate();
-		// System.out.println(evaluate);
 	}
 }

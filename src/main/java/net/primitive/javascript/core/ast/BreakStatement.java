@@ -10,6 +10,13 @@ public class BreakStatement extends Statement {
 		this.identifier = identifier;
 	}
 
+	/**
+	 * @return the identifier
+	 */
+	public String getIdentifier() {
+		return identifier;
+	}
+
 	@Override
 	public void accept(StatementVisitor visitor) {
 

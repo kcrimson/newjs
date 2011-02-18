@@ -503,6 +503,10 @@ expressionNoIn
   :
   assignmentExpressionNoIn (LT!* ',' LT!* assignmentExpressionNoIn)*
   ;
+/*
+ Chapter 11.3 of ECMA-262
+*/
+
 
 assignmentExpression returns [Expression result]
   :
@@ -510,7 +514,11 @@ assignmentExpression returns [Expression result]
                        {
                         $result = $conditionalExpression.result;
                        }
-  | leftHandSideExpression LT!* assignmentOperator LT!* assignmentExpression
+  | leftHandSideExpression LT!* assignmentOperator LT!* rightHandSideExpression=assignmentExpression 
+                                                                                                    {
+                                                                                                     $result = new AssignmentExpression($leftHandSideExpression.result,
+                                                                                                     		$assignmentOperator.result, $rightHandSideExpression.result);
+                                                                                                    }
   ;
 
 assignmentExpressionNoIn
@@ -583,9 +591,9 @@ propertyReferenceSuffix
   '.' LT!* Identifier
   ;
 
-assignmentOperator
+assignmentOperator returns [AssignmentOperator result]
   :
-  '='
+  '=' {$result = Operators.Assign;}
   | '*='
   | '/='
   | '%='
@@ -950,7 +958,7 @@ postfixExpression returns [Expression result]
 primaryExpression returns [Expression result]
   :
   'this'
-  | Identifier
+  | Identifier {$result = new Identifier($Identifier.text);}
   | literal 
            {
             $result = $literal.result;
@@ -994,12 +1002,18 @@ propertyName
 literal returns [Expression result]
   :
   'null'
-  | 'true'
-  | 'false'
-  | StringLiteral
+  | 'true' 
+          {
+           $result = new Literal(Boolean.TRUE);
+          }
+  | 'false' 
+           {
+            $result = new Literal(Boolean.FALSE);
+           }
+  | StringLiteral {$result = new Literal($StringLiteral.text);}
   | NumericLiteral 
                   {
-                   $result = new Literal($NumericLiteral.text);
+                   $result = new Literal(Double.parseDouble($NumericLiteral.text));
                   }
   ;
 
