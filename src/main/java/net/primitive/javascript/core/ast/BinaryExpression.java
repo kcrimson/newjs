@@ -1,8 +1,9 @@
 package net.primitive.javascript.core.ast;
 
+import net.primitive.javascript.core.BinaryOperator;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
-public class BinaryExpression extends Expression {
+public final class BinaryExpression extends Expression {
 
 	private final BinaryOperator operator;
 	private final Expression op1;

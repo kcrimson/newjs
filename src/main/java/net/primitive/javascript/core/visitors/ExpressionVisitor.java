@@ -3,9 +3,10 @@ package net.primitive.javascript.core.visitors;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.Identifier;
+import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
+import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
-
 
 public interface ExpressionVisitor extends SourceElementVisitor {
 
@@ -18,5 +19,10 @@ public interface ExpressionVisitor extends SourceElementVisitor {
 	void visitIdentifier(Identifier identifier);
 
 	void visitAssignmentExpression(AssignmentExpression assignmentExpression);
+
+	void visitLeftHandSideExpression(
+			LeftHandSideExpression leftHandSideExpression);
+
+	void visitUnaryExpression(UnaryExpression unaryExpression);
 
 }

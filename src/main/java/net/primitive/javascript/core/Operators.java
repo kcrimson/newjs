@@ -1,11 +1,33 @@
-package net.primitive.javascript.core.ast;
+package net.primitive.javascript.core;
 
 import static net.primitive.javascript.core.Convertions.toNumber;
 import static net.primitive.javascript.core.Convertions.toPrimitive;
-import net.primitive.javascript.core.Convertions;
+
+import net.primitive.javascript.core.ast.AssignmentOperator;
 
 public class Operators {
-	public static final BinaryOperator Equals = null;
+	public static final BinaryOperator Equals = new BinaryOperator() {
+
+		@Override
+		public Object operator(Object op1, Object op2) {
+			String type1 = (String) TypeOf.operator(op1);
+			String type2 = (String) TypeOf.operator(op2);
+
+			if (type1.equals(type2)) {
+				if (Types.Undefined.equals(type1)) {
+					return true;
+				}
+				if (Types.Number.equals(type1)) {
+					return ((Number) op1).doubleValue() == ((Number) op2)
+							.doubleValue();
+				}
+				if (Types.String.equals(type1)) {
+					return ((String) op1).equals(op2);
+				}
+			}
+			return null;
+		}
+	};
 	public static final BinaryOperator DoesNotEquals = null;
 	public static final BinaryOperator StrictEquals = null;
 	public static final BinaryOperator StrictDoesNotEquals = null;
@@ -72,6 +94,35 @@ public class Operators {
 	public static final BinaryOperator Divide = null;
 	public static final UnaryOperator Delete = null;
 	public static final AssignmentOperator Assign = null;
+
+	public static final UnaryOperator TypeOf = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			if (Undefined.Value == object) {
+				return Types.Undefined;
+			}
+			if (object == null) {
+				return Types.Object;
+			}
+			if (object instanceof Boolean) {
+				return Types.Boolean;
+			}
+			if (object instanceof Number) {
+				return Types.Number;
+			}
+			if (object instanceof String) {
+				return Types.String;
+			}
+			if ((object instanceof Scriptable) && !(object instanceof Function)) {
+				return Types.Object;
+			}
+			if (object instanceof Function) {
+				return Types.Function;
+			}
+			return "object";
+		}
+	};
 
 	private Operators() {
 	}

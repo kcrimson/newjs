@@ -4,8 +4,11 @@ import net.primitive.javascript.core.Property;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
+import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.Identifier;
+import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
+import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
@@ -57,7 +60,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitIdentifier(Identifier identifier) {
 		Property property = getScope().getProperty(
 				identifier.getIdentfierName());
-		result = property;
+		result = property.getValue();
 	}
 
 	@Override
@@ -73,6 +76,31 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
 		Property property = (Property) leftVisitor.getResult();
 		property.setValue(rightValue);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.primitive.javascript.core.visitors.ExpressionVisitor#
+	 * visitLeftHandSideExpression
+	 * (net.primitive.javascript.core.ast.LeftHandSideExpression)
+	 */
+	@Override
+	public void visitLeftHandSideExpression(
+			LeftHandSideExpression leftHandSideExpression) {
+		Expression expression = leftHandSideExpression.getExpression();
+
+		String identfierName = ((Identifier) expression).getIdentfierName();
+		result = getScope().getProperty(identfierName);
+	}
+
+	@Override
+	public void visitUnaryExpression(UnaryExpression unaryExpression) {
+
+		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
+		unaryExpression.getOperand().accept(visitor);
+
+		result = unaryExpression.getOperator().operator(visitor.result);
 	}
 
 }

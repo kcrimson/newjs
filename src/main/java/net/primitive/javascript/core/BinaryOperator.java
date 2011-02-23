@@ -1,4 +1,4 @@
-package net.primitive.javascript.core.ast;
+package net.primitive.javascript.core;
 
 public interface BinaryOperator {
 

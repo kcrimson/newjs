@@ -2,9 +2,12 @@ package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
 import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.annotations.JSFunction;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
+import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
 import net.primitive.javascript.core.ast.Statement;
@@ -32,7 +35,12 @@ public class StatementVisitorImpl extends AbstractSourceElementVisitor
 
 	@Override
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
-		// getScope().put(functionDeclaration.getFunctionName(), start, value)
+		JSNativeFunction jsFunction = new JSNativeFunction(
+				functionDeclaration.getFunctionName(),
+				functionDeclaration.getParameterList(),
+				functionDeclaration.getSourceElements());
+		getScope().put(functionDeclaration.getFunctionName(), getScope(),
+				jsFunction);
 	}
 
 	@Override
@@ -70,7 +78,12 @@ public class StatementVisitorImpl extends AbstractSourceElementVisitor
 		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
 		for (expression.accept(visitor); toBoolean(visitor.getResult()); expression
 				.accept(visitor)) {
-			whileStatement.accept(this);
+			whileStatement.getStatement().accept(this);
 		}
+	}
+
+	@Override
+	public void visitForStatement(ForStatement forStatement) {
+		throw new UnsupportedOperationException("visitForStatement");
 	}
 }

@@ -1,5 +1,7 @@
 package net.primitive.javascript.core.ast;
 
+import net.primitive.javascript.core.visitors.StatementVisitor;
+
 
 public class ContinueStatement extends Statement {
 
@@ -7,6 +9,12 @@ public class ContinueStatement extends Statement {
 
 	public ContinueStatement(String identifier) {
 		this.identifier = identifier;
+	}
+
+	@Override
+	public void accept(StatementVisitor visitor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

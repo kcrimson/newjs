@@ -1,6 +1,7 @@
 package net.primitive.javascript.core.visitors;
 
 import net.primitive.javascript.core.ast.ExpressionStatement;
+import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
 import net.primitive.javascript.core.ast.StatementBlock;
@@ -20,5 +21,7 @@ public interface StatementVisitor extends SourceElementVisitor {
 	void visitStatementBlock(StatementBlock statementBlock);
 
 	void visitWhileStatement(WhileStatement whileStatement);
+
+	void visitForStatement(ForStatement forStatement);
 
 }

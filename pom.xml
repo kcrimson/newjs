@@ -62,6 +62,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+        	<groupId>junit</groupId>
+        	<artifactId>junit</artifactId>
+        	<version>4.8.1</version>
+        	<type>jar</type>
+        	<scope>test</scope>
+        </dependency>
     </dependencies>
 
   <!--
@@ -107,8 +114,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.6</source>
-                    <target>jsr14</target>
-                    <sourceDirectory>src</sourceDirectory>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
 

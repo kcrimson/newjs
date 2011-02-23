@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
-public class FunctionDeclaration extends Statement {
+public final class FunctionDeclaration extends Statement {
 
 	private final String functionName;
 	private final List<String> parameterList;

@@ -516,8 +516,9 @@ assignmentExpression returns [Expression result]
                        }
   | leftHandSideExpression LT!* assignmentOperator LT!* rightHandSideExpression=assignmentExpression 
                                                                                                     {
-                                                                                                     $result = new AssignmentExpression($leftHandSideExpression.result,
-                                                                                                     		$assignmentOperator.result, $rightHandSideExpression.result);
+                                                                                                     $result = new AssignmentExpression(new LeftHandSideExpression(
+                                                                                                     		$leftHandSideExpression.result), $assignmentOperator.result,
+                                                                                                     		$rightHandSideExpression.result);
                                                                                                     }
   ;
 
@@ -529,7 +530,10 @@ assignmentExpressionNoIn
 
 leftHandSideExpression returns [Expression result]
   :
-  callExpression
+  callExpression 
+                {
+                 $result = $callExpression.result;
+                }
   | newExpression 
                  {
                   $result = $newExpression.result;
@@ -564,7 +568,7 @@ memberExpressionSuffix
   | propertyReferenceSuffix
   ;
 
-callExpression
+callExpression returns [Expression result]
   :
   memberExpression LT!* arguments (LT!* callExpressionSuffix)*
   ;
@@ -593,7 +597,10 @@ propertyReferenceSuffix
 
 assignmentOperator returns [AssignmentOperator result]
   :
-  '=' {$result = Operators.Assign;}
+  '=' 
+     {
+      $result = Operators.Assign;
+     }
   | '*='
   | '/='
   | '%='
@@ -929,7 +936,7 @@ UnaryOperator operator = null;
              operator = Operators.Delete;
             }
     | 'void'
-    | 'typeof'
+    | 'typeof' {operator = Operators.TypeOf;}
     | '++'
     | '--'
     | '+'
@@ -958,7 +965,10 @@ postfixExpression returns [Expression result]
 primaryExpression returns [Expression result]
   :
   'this'
-  | Identifier {$result = new Identifier($Identifier.text);}
+  | Identifier 
+              {
+               $result = new Identifier($Identifier.text);
+              }
   | literal 
            {
             $result = $literal.result;
@@ -1010,7 +1020,10 @@ literal returns [Expression result]
            {
             $result = new Literal(Boolean.FALSE);
            }
-  | StringLiteral {$result = new Literal($StringLiteral.text);}
+  | StringLiteral 
+                 {
+                  $result = new Literal(Literal.unwrapString($StringLiteral.text));
+                 }
   | NumericLiteral 
                   {
                    $result = new Literal(Double.parseDouble($NumericLiteral.text));

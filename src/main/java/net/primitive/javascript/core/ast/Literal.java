@@ -22,4 +22,8 @@ public class Literal extends Expression {
 		return value;
 	}
 
+	public static String unwrapString(String string) {
+		return string.substring(1, string.length() - 1);
+	}
+
 }

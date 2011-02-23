@@ -1,6 +1,5 @@
 package net.primitive.javascript.core;
 
-import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 
 public class ScriptableObject implements Scriptable {

@@ -1,5 +1,6 @@
 package net.primitive.javascript.core.ast;
 
+import net.primitive.javascript.core.visitors.ExpressionVisitor;
 import net.primitive.javascript.interpreter.ExpressionVisitorImpl;
 
 public class ConditionalExpression extends Expression {
@@ -15,8 +16,9 @@ public class ConditionalExpression extends Expression {
 	}
 
 	@Override
-	public void accept(ExpressionVisitorImpl visitor) {
-
+	public void accept(ExpressionVisitor visitor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
