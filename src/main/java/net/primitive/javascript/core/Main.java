@@ -1,10 +1,14 @@
 package net.primitive.javascript.core;
 
+import java.io.FileReader;
+
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
+
+import sun.org.mozilla.javascript.internal.Script;
 
 /**
  * Test driver program for the ANTLR3 Maven Architype demo
@@ -51,14 +55,14 @@ class Main {
 //		}
 //		System.out.println(System.currentTimeMillis() - time);
 //
-//		time = System.currentTimeMillis();
-//		Context context = sun.org.mozilla.javascript.internal.Context.enter();
-//		ScriptableObject standardObjects = context.initStandardObjects();
-//		Script script = context.compileReader(new FileReader("src/test/resources/while.js"), "", 0, null);
-//		for (int i = 0; i < 1000000; i++) {
-//			script.exec(context, standardObjects);
-//		}
-//		System.out.println(System.currentTimeMillis() - time);
+		sun.org.mozilla.javascript.internal.Context context = sun.org.mozilla.javascript.internal.Context.enter();
+		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context.initStandardObjects();
+		Script script = context.compileReader(new FileReader("src/test/resources/function-decl.js"), "", 0, null);
+		time = System.currentTimeMillis();
+		for (int i = 0; i < 1000000; i++) {
+			script.exec(context, standardObjects);
+		}
+		System.out.println(System.currentTimeMillis() - time);
 	}
 
 }
