@@ -405,5 +405,5 @@ public interface Scriptable {
 	 */
 	public boolean hasInstance(Scriptable instance);
 
-	public Property getProperty(String identfierName);
+	public ScriptableObjectProperty getProperty(String identfierName);
 }

@@ -45,8 +45,7 @@ public class InterpreterTest {
 		Interpreter interpreter = new Interpreter(scope);
 
 		interpreter.interpret(new File(javaScriptFile));
-//		System.out.println(scope.get("a", scope));
-		assertTrue(Convertions.toBoolean(scope.get("assertResult", scope)));
+		assertTrue(Convertions.toBoolean(scope.get("assertResult",null)));
 
 	}
 }

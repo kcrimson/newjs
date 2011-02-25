@@ -19,6 +19,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	public Object call(Context cx, Scriptable scope, Scriptable thisObj,
 			Object[] args) {
 		// TODO Auto-generated method stub
+		System.out.println("elou");
 		return null;
 	}
 

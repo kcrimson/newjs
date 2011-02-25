@@ -2,9 +2,11 @@ package net.primitive.javascript.core.visitors;
 
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
+import net.primitive.javascript.core.ast.CallExpression;
 import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
+import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 
@@ -24,5 +26,9 @@ public interface ExpressionVisitor extends SourceElementVisitor {
 			LeftHandSideExpression leftHandSideExpression);
 
 	void visitUnaryExpression(UnaryExpression unaryExpression);
+
+	void visitMemberExpression(MemberExpression memberExpression);
+
+	void visitCallExpression(CallExpression callExpression);
 
 }

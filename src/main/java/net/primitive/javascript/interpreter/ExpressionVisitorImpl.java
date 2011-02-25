@@ -1,13 +1,15 @@
 package net.primitive.javascript.interpreter;
 
-import net.primitive.javascript.core.Property;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObjectProperty;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
+import net.primitive.javascript.core.ast.CallExpression;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
+import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
@@ -58,7 +60,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitIdentifier(Identifier identifier) {
-		Property property = getScope().getProperty(
+		ScriptableObjectProperty property = getScope().getProperty(
 				identifier.getIdentfierName());
 		result = property.getValue();
 	}
@@ -71,10 +73,12 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		assignmentExpression.getRightHandSideExpression().accept(rightVisitor);
 		Object rightValue = rightVisitor.getResult();
 
-		ExpressionVisitorImpl leftVisitor = new ExpressionVisitorImpl(
+		LeftHandExpressionVisitorImpl leftVisitor = new LeftHandExpressionVisitorImpl(
 				getScope());
-		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
-		Property property = (Property) leftVisitor.getResult();
+		((LeftHandSideExpression) assignmentExpression
+				.getLeftHandSideExpression()).accept(leftVisitor);
+		ScriptableObjectProperty property = (ScriptableObjectProperty) leftVisitor
+				.getResult();
 		property.setValue(rightValue);
 	}
 
@@ -88,10 +92,12 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitLeftHandSideExpression(
 			LeftHandSideExpression leftHandSideExpression) {
-		Expression expression = leftHandSideExpression.getExpression();
+		LeftHandExpressionVisitorImpl visitor = new LeftHandExpressionVisitorImpl(
+				getScope());
+		leftHandSideExpression.accept(visitor);
 
-		String identfierName = ((Identifier) expression).getIdentfierName();
-		result = getScope().getProperty(identfierName);
+		result = visitor.getResult();
+
 	}
 
 	@Override
@@ -101,6 +107,21 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		unaryExpression.getOperand().accept(visitor);
 
 		result = unaryExpression.getOperator().operator(visitor.result);
+	}
+
+	@Override
+	public void visitMemberExpression(MemberExpression memberExpression) {
+		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
+		memberExpression.getExpression().accept(visitor);
+		result = visitor.getResult();
+	}
+
+	@Override
+	public void visitCallExpression(CallExpression callExpression) {
+		Expression memberExpression = callExpression.getMemberExpression();
+		memberExpression.accept(this);
+		JSNativeFunction fun = (JSNativeFunction) result;
+		fun.call(null, getScope(), getScope(), null);
 	}
 
 }

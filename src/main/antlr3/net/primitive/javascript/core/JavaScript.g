@@ -516,9 +516,8 @@ assignmentExpression returns [Expression result]
                        }
   | leftHandSideExpression LT!* assignmentOperator LT!* rightHandSideExpression=assignmentExpression 
                                                                                                     {
-                                                                                                     $result = new AssignmentExpression(new LeftHandSideExpression(
-                                                                                                     		$leftHandSideExpression.result), $assignmentOperator.result,
-                                                                                                     		$rightHandSideExpression.result);
+                                                                                                     $result = new AssignmentExpression($leftHandSideExpression.result,
+                                                                                                     		$assignmentOperator.result, $rightHandSideExpression.result);
                                                                                                     }
   ;
 
@@ -550,6 +549,9 @@ newExpression returns [Expression result]
   ;
 
 memberExpression returns [Expression result]
+@init {
+List<Expression> expresionSuffixes = new ArrayList<Expression>();
+}
   :
   (
     primaryExpression 
@@ -559,7 +561,10 @@ memberExpression returns [Expression result]
     | functionExpression
     | 'new' LT!* memberExpression LT!* arguments
   )
-  (LT!* memberExpressionSuffix)*
+  (LT!* memberExpressionSuffix)* 
+                                {
+                                 $result = new MemberExpression($result, expresionSuffixes);
+                                }
   ;
 
 memberExpressionSuffix
@@ -570,7 +575,10 @@ memberExpressionSuffix
 
 callExpression returns [Expression result]
   :
-  memberExpression LT!* arguments (LT!* callExpressionSuffix)*
+  memberExpression LT!* arguments (LT!* callExpressionSuffix)* 
+                                                              {
+                                                               $result = new CallExpression($memberExpression.result, $arguments.result);
+                                                              }
   ;
 
 callExpressionSuffix
@@ -580,7 +588,7 @@ callExpressionSuffix
   | propertyReferenceSuffix
   ;
 
-arguments
+arguments returns [Expression result]
   :
   '(' (LT!* assignmentExpression (LT!* ',' LT!* assignmentExpression)*)? LT!* ')'
   ;
@@ -936,7 +944,10 @@ UnaryOperator operator = null;
              operator = Operators.Delete;
             }
     | 'void'
-    | 'typeof' {operator = Operators.TypeOf;}
+    | 'typeof' 
+              {
+               operator = Operators.TypeOf;
+              }
     | '++'
     | '--'
     | '+'

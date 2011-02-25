@@ -55,14 +55,14 @@ class Main {
 //		}
 //		System.out.println(System.currentTimeMillis() - time);
 //
-		sun.org.mozilla.javascript.internal.Context context = sun.org.mozilla.javascript.internal.Context.enter();
-		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context.initStandardObjects();
-		Script script = context.compileReader(new FileReader("src/test/resources/function-decl.js"), "", 0, null);
-		time = System.currentTimeMillis();
-		for (int i = 0; i < 1000000; i++) {
-			script.exec(context, standardObjects);
-		}
-		System.out.println(System.currentTimeMillis() - time);
+//		sun.org.mozilla.javascript.internal.Context context = sun.org.mozilla.javascript.internal.Context.enter();
+//		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context.initStandardObjects();
+//		Script script = context.compileReader(new FileReader("src/test/resources/function-decl.js"), "", 0, null);
+//		time = System.currentTimeMillis();
+//		for (int i = 0; i < 1000000; i++) {
+//			script.exec(context, standardObjects);
+//		}
+//		System.out.println(System.currentTimeMillis() - time);
 	}
 
 }

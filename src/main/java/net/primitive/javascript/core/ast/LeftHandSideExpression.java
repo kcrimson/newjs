@@ -1,26 +1,10 @@
 package net.primitive.javascript.core.ast;
 
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
+import net.primitive.javascript.core.visitors.LeftHandSideExpressionVisitor;
 
-public class LeftHandSideExpression extends Expression {
 
-	private final Expression expression;
+public abstract class LeftHandSideExpression extends Expression {
 
-	public LeftHandSideExpression(Expression expression) {
-		super();
-		this.expression = expression;
-	}
-
-	/**
-	 * @return the exporession
-	 */
-	public Expression getExpression() {
-		return expression;
-	}
-
-	@Override
-	public void accept(ExpressionVisitor visitor) {
-		visitor.visitLeftHandSideExpression(this);
-	}
+	public abstract void accept(LeftHandSideExpressionVisitor visitor);
 
 }

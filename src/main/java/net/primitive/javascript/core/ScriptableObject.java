@@ -4,7 +4,13 @@ import java.util.HashMap;
 
 public class ScriptableObject implements Scriptable {
 
-	private HashMap<Object, Property> associatedValues = new HashMap<Object, Property>();
+	private static final Object NotFound = new Object();
+
+	private HashMap<Object, ScriptableObjectProperty> associatedValues = new HashMap<Object, ScriptableObjectProperty>();
+
+	private Scriptable prototype;
+
+	private Scriptable parentScope;
 
 	@Override
 	public String getClassName() {
@@ -14,7 +20,28 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Object get(String name, Scriptable start) {
-		return associatedValues.get(name).getValue();
+
+		Object value = NotFound;
+
+		if (start != null) {
+			value = start.get(name, null);
+		}
+
+		if (value == NotFound) {
+
+			value = associatedValues.get(name).getValue();
+
+			if (value == NotFound && prototype != null) {
+				value = get(name, prototype);
+			}
+		}
+
+		if (value == NotFound && parentScope != null) {
+			// looking up parent scope
+			value = get(name, parentScope);
+		}
+
+		return value;
 	}
 
 	@Override
@@ -34,12 +61,12 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public void put(String name, Scriptable start, Object value) {
-		associatedValues.put(name, new Property(name,value));
+		associatedValues.put(name, new ScriptableObjectProperty(name, value));
 	}
 
 	@Override
 	public void put(int index, Scriptable start, Object value) {
-		//associatedValues.put(index, value);
+		// associatedValues.put(index, value);
 	}
 
 	@Override
@@ -54,26 +81,22 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Scriptable getPrototype() {
-		// TODO Auto-generated method stub
-		return null;
+		return prototype;
 	}
 
 	@Override
 	public void setPrototype(Scriptable prototype) {
-		// TODO Auto-generated method stub
-
+		this.prototype = prototype;
 	}
 
 	@Override
 	public Scriptable getParentScope() {
-		// TODO Auto-generated method stub
-		return null;
+		return parentScope;
 	}
 
 	@Override
 	public void setParentScope(Scriptable parent) {
-		// TODO Auto-generated method stub
-
+		parentScope = parent;
 	}
 
 	@Override
@@ -95,7 +118,7 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public Property getProperty(String identfierName) {
+	public ScriptableObjectProperty getProperty(String identfierName) {
 		return associatedValues.get(identfierName);
 	}
 
