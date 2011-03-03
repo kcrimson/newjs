@@ -39,13 +39,9 @@ sourceElements returns [List result]
   {
    $result = new ArrayList();
   }
-  e1=sourceElement 
-                  {
-                   $result.add($e1.result);
-                  }
-  (LT!* e2=sourceElement 
+  (LT!* sourceElement 
                         {
-                         $result.add($e2.result);
+                         $result.add($sourceElement.result);
                         })*
   ;
 
@@ -70,11 +66,6 @@ functionDeclaration returns [Statement result]
                                                                         $result = new FunctionDeclaration($Identifier.text,
                                                                         		$formalParameterList.result, $functionBody.result);
                                                                        }
-  ;
-
-functionExpression
-  :
-  'function' LT!* Identifier? LT!* formalParameterList LT!* functionBody
   ;
 
 formalParameterList returns [List result]
@@ -558,19 +549,25 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
                      {
                       $result = $primaryExpression.result;
                      }
-    | functionExpression
+    | functionExpression {$result = $functionExpression.result;}
     | 'new' LT!* memberExpression LT!* arguments
   )
-  (LT!* memberExpressionSuffix)* 
+  (LT!* memberExpressionSuffix {expresionSuffixes.add($memberExpressionSuffix.result);})* 
                                 {
                                  $result = new MemberExpression($result, expresionSuffixes);
                                 }
   ;
-
-memberExpressionSuffix
+  
+functionExpression returns [Expression result]
   :
-  indexSuffix
-  | propertyReferenceSuffix
+  'function' LT!* Identifier? LT!* formalParameterList LT!* functionBody {$result = new FunctionExpression($Identifier.text,$formalParameterList.result,$functionBody.result);}
+  ;
+
+
+memberExpressionSuffix returns [Expression result]
+  :
+  indexSuffix {$result = $indexSuffix.result;}
+  | propertyReferenceSuffix {$result = $propertyReferenceSuffix.result;}
   ;
 
 callExpression returns [Expression result]
@@ -593,14 +590,14 @@ arguments returns [Expression result]
   '(' (LT!* assignmentExpression (LT!* ',' LT!* assignmentExpression)*)? LT!* ')'
   ;
 
-indexSuffix
+indexSuffix returns [Expression result]
   :
-  '[' LT!* expression LT!* ']'
+  '[' LT!* expression LT!* ']' {$result = $expression.result;}
   ;
 
-propertyReferenceSuffix
+propertyReferenceSuffix returns [Expression result]
   :
-  '.' LT!* Identifier
+  '.' LT!* Identifier {$result = new Identifier($Identifier.text);}
   ;
 
 assignmentOperator returns [AssignmentOperator result]
@@ -985,7 +982,10 @@ primaryExpression returns [Expression result]
             $result = $literal.result;
            }
   | arrayLiteral
-  | objectLiteral
+  | objectLiteral 
+                 {
+                  $result = $objectLiteral.result;
+                 }
   | '(' LT!* expression LT!* ')' 
                                 {
                                  $result = $expression.result;
@@ -1001,14 +1001,30 @@ arrayLiteral
 
 // objectLiteral definition.
 
-objectLiteral
+objectLiteral returns [Expression result]
+@init {
+List nameValuePairs = new ArrayList();
+}
   :
-  '{' LT!* (propertyNameAndValue (LT!* ',' LT!* propertyNameAndValue)*)? LT!* '}'
+  '{' LT!* (firstPair=propertyNameAndValue 
+                                          {
+                                           nameValuePairs.add($firstPair.result);
+                                          }
+    (LT!* ',' LT!* nextPair=propertyNameAndValue 
+                                                {
+                                                 nameValuePairs.add($nextPair.result);
+                                                })*)? LT!* '}' 
+                                                              {
+                                                               $result = new ObjectLiteral(nameValuePairs);
+                                                              }
   ;
 
-propertyNameAndValue
+propertyNameAndValue returns [NameValuePair result]
   :
-  propertyName LT!* ':' LT!* assignmentExpression
+  propertyName LT!* ':' LT!* assignmentExpression 
+                                                 {
+                                                  $result = new NameValuePair($propertyName.text, $assignmentExpression.result);
+                                                 }
   ;
 
 propertyName

@@ -6,4 +6,4 @@ function hello(){
 
 hello();
 
-assertResult = a;
+var assertResult = a;

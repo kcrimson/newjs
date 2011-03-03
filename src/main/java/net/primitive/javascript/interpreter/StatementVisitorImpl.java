@@ -10,6 +10,7 @@ import net.primitive.javascript.core.ast.ExpressionStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
+import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.StatementBlock;
 import net.primitive.javascript.core.ast.VariableDeclaration;
@@ -85,5 +86,13 @@ public class StatementVisitorImpl extends AbstractSourceElementVisitor
 	@Override
 	public void visitForStatement(ForStatement forStatement) {
 		throw new UnsupportedOperationException("visitForStatement");
+	}
+
+	@Override
+	public void visitReturnStatement(ReturnStatement returnStatement) {
+		Expression expression = returnStatement.getExpression();
+		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
+		expression.accept(visitor);
+
 	}
 }

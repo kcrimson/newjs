@@ -10,10 +10,16 @@ public class ReturnStatement extends Statement {
 		this.expression = expression;
 	}
 
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visitReturnStatement(this);
 	}
 
 }
