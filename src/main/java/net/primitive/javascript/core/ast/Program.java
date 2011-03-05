@@ -3,6 +3,7 @@ package net.primitive.javascript.core.ast;
 import java.util.List;
 
 import net.primitive.javascript.core.visitors.ProgramVisitor;
+import net.primitive.javascript.interpreter.Context;
 
 public class Program {
 
@@ -22,7 +23,7 @@ public class Program {
 	public void accept(ProgramVisitor visitor) {
 		for (Statement statement : sourceElements) {
 			visitor.visit(statement);
-		}
+		}		
 	}
 
 }

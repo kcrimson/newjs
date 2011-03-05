@@ -2,7 +2,7 @@ package net.primitive.javascript.interpreter;
 
 import java.util.List;
 
-import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ScriptableObjectProperty;
@@ -23,17 +23,17 @@ import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
 public class ExpressionVisitorImpl implements ExpressionVisitor {
 
-	private final Scriptable scope;
 	private Object result;
+	private final Context context;
 
-	protected ExpressionVisitorImpl(Scriptable scope) {
+	protected ExpressionVisitorImpl(Context context) {
 		super();
-		this.scope = scope;
+		this.context = context;
 	}
 
 	@Override
 	public Scriptable getScope() {
-		return scope;
+		return context.currentScope();
 	}
 
 	public Object getResult() {
@@ -42,13 +42,11 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
-		ExpressionVisitorImpl op1visitor = new ExpressionVisitorImpl(scope);
-		binaryExpression.getOp1().accept(op1visitor);
-		Object result1 = op1visitor.getResult();
+		binaryExpression.getOp1().accept(this);
+		Object result1 = result;
 
-		ExpressionVisitorImpl op2visitor = new ExpressionVisitorImpl(scope);
-		binaryExpression.getOp2().accept(op2visitor);
-		Object result2 = op2visitor.getResult();
+		binaryExpression.getOp2().accept(this);
+		Object result2 = result;
 
 		result = binaryExpression.getOperator().operator(result1, result2);
 	}
@@ -60,9 +58,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitWrappedExpression(WrappedExpression wrappedExpression) {
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		wrappedExpression.getExpression1().accept(visitor);
-		result = visitor.getResult();
+		wrappedExpression.getExpression1().accept(this);
 	}
 
 	@Override
@@ -75,10 +71,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitAssignmentExpression(
 			AssignmentExpression assignmentExpression) {
-		ExpressionVisitorImpl rightVisitor = new ExpressionVisitorImpl(
-				getScope());
-		assignmentExpression.getRightHandSideExpression().accept(rightVisitor);
-		Object rightValue = rightVisitor.getResult();
+		assignmentExpression.getRightHandSideExpression().accept(this);
 
 		LeftHandExpressionVisitorImpl leftVisitor = new LeftHandExpressionVisitorImpl(
 				getScope());
@@ -86,7 +79,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 				.getLeftHandSideExpression()).accept(leftVisitor);
 		ScriptableObjectProperty property = (ScriptableObjectProperty) leftVisitor
 				.getResult();
-		property.setValue(rightValue);
+		property.setValue(result);
 	}
 
 	/*
@@ -110,23 +103,23 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitUnaryExpression(UnaryExpression unaryExpression) {
 
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		unaryExpression.getOperand().accept(visitor);
+		unaryExpression.getOperand().accept(this);
 
-		result = unaryExpression.getOperator().operator(visitor.result);
+		result = unaryExpression.getOperator().operator(result);
 	}
 
 	@Override
 	public void visitMemberExpression(MemberExpression memberExpression) {
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		memberExpression.getExpression().accept(visitor);
-		result = visitor.getResult();
+		memberExpression.getExpression().accept(this);
 		List<Expression> suffixes = memberExpression.getExpresionSuffixes();
+		ExpressionVisitorImpl visitor = context.getExpressionVisitor();
 		if (suffixes != null) {
 			for (Expression suffix : suffixes) {
-				if (result instanceof Scriptable)
-					visitor = new ExpressionVisitorImpl((Scriptable) result);
-				suffix.accept(visitor);
+				if (result instanceof Scriptable) {
+					context.enter((Scriptable) result);
+					suffix.accept(visitor);
+					context.exitScope();
+				}
 				result = visitor.getResult();
 			}
 		}
@@ -136,8 +129,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitCallExpression(CallExpression callExpression) {
 		Expression memberExpression = callExpression.getMemberExpression();
 		memberExpression.accept(this);
-		JSNativeFunction fun = (JSNativeFunction) result;
-		fun.call(null, getScope(), getScope(), null);
+		Function function = (Function) result;
+		result = function.call(getScope(), getScope(), null);
 	}
 
 	@Override

@@ -42,10 +42,13 @@ public class InterpreterTest {
 
 		ScriptableObject scope = new ScriptableObject();
 
-		Interpreter interpreter = new Interpreter(scope);
+		Interpreter interpreter = new Interpreter();
 
 		interpreter.interpret(new File(javaScriptFile));
-		assertTrue(Convertions.toBoolean(scope.get("assertResult",null)));
+		interpreter.execute(scope);
+		Object object = scope.get("assertResult", null);
+		System.out.println(object);
+		assertTrue(Convertions.toBoolean(object));
 
 	}
 }

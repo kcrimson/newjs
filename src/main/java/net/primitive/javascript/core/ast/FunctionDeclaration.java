@@ -10,13 +10,13 @@ public final class FunctionDeclaration extends Statement {
 
 	private final String functionName;
 	private final List<String> parameterList;
-	private final List<SourceElement> sourceElements;
+	private final SourceElement[] sourceElements;
 
 	public FunctionDeclaration(String functionName, List<String> parameterList,
 			List<SourceElement> sourceElements) {
 		this.functionName = functionName;
 		this.parameterList = unmodifiableList(parameterList);
-		this.sourceElements = unmodifiableList(sourceElements);
+		this.sourceElements = sourceElements.toArray(new SourceElement[] {});
 	}
 
 	/**
@@ -36,7 +36,7 @@ public final class FunctionDeclaration extends Statement {
 	/**
 	 * @return the sourceElements
 	 */
-	public List<SourceElement> getSourceElements() {
+	public SourceElement[] getSourceElements() {
 		return sourceElements;
 	}
 

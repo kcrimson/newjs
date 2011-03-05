@@ -6,10 +6,10 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementBlock extends Statement {
 
-	private final List<Statement> statements;
+	private final Statement[] statements;
 
 	public StatementBlock(List<Statement> statements) {
-		this.statements = statements;
+		this.statements = statements.toArray(new Statement[] {});
 	}
 
 	@Override
@@ -17,7 +17,7 @@ public class StatementBlock extends Statement {
 		visitor.visitStatementBlock(this);
 	}
 
-	public List<Statement> getStatements() {
+	public Statement[] getStatements() {
 		return statements;
 	}
 

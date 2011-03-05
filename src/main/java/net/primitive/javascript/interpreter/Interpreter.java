@@ -14,10 +14,9 @@ import org.antlr.runtime.RecognitionException;
 
 public class Interpreter {
 
-	private final Scriptable scope;
+	private Program program;
 
-	public Interpreter(Scriptable scope) {
-		this.scope = scope;
+	public Interpreter() {
 	}
 
 	public void interpret(File file) throws IOException, RecognitionException {
@@ -28,12 +27,19 @@ public class Interpreter {
 
 		JavaScriptParser javaScriptParser = new JavaScriptParser(
 				commonTokenStream);
-		Program result = javaScriptParser.program().result;
+		program = javaScriptParser.program().result;
 
+	}
+
+	public void execute(Scriptable scope) {
 		ProgramVisitorImpl visitor = new ProgramVisitorImpl(scope);
+		Context currentContext = Context.enterContext();
 
-		result.accept(visitor);
+		currentContext.enter(scope);
 
+		program.accept(visitor);
+
+		Context.exitContext();
 	}
 
 }

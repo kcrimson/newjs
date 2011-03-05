@@ -1,8 +1,9 @@
 package net.primitive.javascript.interpreter;
 
+import static net.primitive.javascript.interpreter.Context.currentContext;
+
 import java.util.List;
 
-import net.primitive.javascript.core.Context;
 import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
@@ -13,31 +14,29 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 
 	private final String functionName;
 	private final List<String> parameterList;
-	private final List<SourceElement> sourceElements;
+	private final SourceElement[] sourceElements;
 
 	public JSNativeFunction(String functionName, List<String> parameterList,
-			List<SourceElement> sourceElements) {
+			SourceElement[] sourceElements) {
 		this.functionName = functionName;
 		this.parameterList = parameterList;
 		this.sourceElements = sourceElements;
 	}
 
 	@Override
-	public Object call(Context cx, Scriptable scope, Scriptable thisObj,
-			Object[] args) {
+	public Object call(Scriptable scope, Scriptable thisObj, Object[] args) {
 
-		StatementVisitorImpl visitor = new StatementVisitorImpl(scope);
-
-		for (SourceElement sourceElement : sourceElements) {
-			((Statement) sourceElement).accept(visitor);
+		Context currentContext = currentContext();
+		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
+		for (int i = 0; i < sourceElements.length; i++) {
+			((Statement) sourceElements[i]).accept(visitor);
 		}
-
-		System.out.println("elou");
-		return null;
+		Object returnValue = currentContext.currentReturnValue();
+		return returnValue;
 	}
 
 	@Override
-	public Scriptable construct(Context cx, Scriptable scope, Object[] args) {
+	public Scriptable construct(Scriptable scope, Object[] args) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -59,7 +58,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	/**
 	 * @return the sourceElements
 	 */
-	public List<SourceElement> getSourceElements() {
+	public SourceElement[] getSourceElements() {
 		return sourceElements;
 	}
 

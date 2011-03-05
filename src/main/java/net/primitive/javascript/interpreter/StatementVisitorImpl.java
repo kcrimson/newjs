@@ -1,10 +1,8 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
-import net.primitive.javascript.core.Convertions;
-import net.primitive.javascript.core.Function;
+import static net.primitive.javascript.interpreter.Context.currentContext;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.annotations.JSFunction;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
 import net.primitive.javascript.core.ast.ForStatement;
@@ -17,70 +15,82 @@ import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
-public class StatementVisitorImpl extends AbstractSourceElementVisitor
-		implements StatementVisitor {
+public class StatementVisitorImpl implements StatementVisitor {
 
-	protected StatementVisitorImpl(Scriptable scope) {
-		super(scope);
+	private final Context context;
+
+	protected StatementVisitorImpl(Context context) {
+		this.context = context;
 	}
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
+		currentContext().enter(variableDeclaration);
 		Expression expression = variableDeclaration.getExpression();
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		expression.accept(visitor);
-		Object result = visitor.getResult();
+		expression.accept(context.getExpressionVisitor());
+		Object result = context.getExpressionVisitor().getResult();
 		getScope().put(variableDeclaration.getVariableName(), getScope(),
 				result);
+		currentContext().exit();
 	}
 
 	@Override
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+		currentContext().enter(functionDeclaration);
 		JSNativeFunction jsFunction = new JSNativeFunction(
 				functionDeclaration.getFunctionName(),
 				functionDeclaration.getParameterList(),
 				functionDeclaration.getSourceElements());
 		getScope().put(functionDeclaration.getFunctionName(), getScope(),
 				jsFunction);
+		currentContext().exit();
 	}
 
 	@Override
 	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		expressionStatement.getExpression().accept(visitor);
-		// result = visitor.getResult();
+		currentContext().enter(expressionStatement);
+		expressionStatement.getExpression().accept(
+				context.getExpressionVisitor());
+		currentContext().exit();
 	}
 
 	@Override
 	public void visitIfStatement(IfStatement ifStatement) {
+		currentContext().enter(ifStatement);
 		Expression expression = ifStatement.getExpression();
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		expression.accept(visitor);
-		boolean expressionResult = Convertions.toBoolean(visitor.getResult());
+		expression.accept(context.getExpressionVisitor());
+		boolean expressionResult = toBoolean(context.getExpressionVisitor()
+				.getResult());
 
 		if (expressionResult) {
 			ifStatement.getIfStatement().accept(this);
 		} else if (ifStatement.getElseStatement() != null) {
 			ifStatement.getElseStatement().accept(this);
 		}
+		currentContext().exit();
 	}
 
 	@Override
 	public void visitStatementBlock(StatementBlock statementBlock) {
-		for (Statement statement : statementBlock.getStatements()) {
-			statement.accept(this);
+		currentContext().enter(statementBlock);
+		Statement[] statements = statementBlock.getStatements();
+		for (int i = 0; i < statements.length; i++) {
+			statements[i].accept(this);
 		}
+		currentContext().exit();
 	}
 
 	@Override
 	public void visitWhileStatement(WhileStatement whileStatement) {
+		currentContext().enter(whileStatement);
 		Expression expression = whileStatement.getExpression();
 
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		for (expression.accept(visitor); toBoolean(visitor.getResult()); expression
-				.accept(visitor)) {
+		for (expression.accept(context.getExpressionVisitor()); toBoolean(context
+				.getExpressionVisitor().getResult()); expression.accept(context
+				.getExpressionVisitor())) {
 			whileStatement.getStatement().accept(this);
 		}
+		currentContext().exit();
 	}
 
 	@Override
@@ -90,9 +100,14 @@ public class StatementVisitorImpl extends AbstractSourceElementVisitor
 
 	@Override
 	public void visitReturnStatement(ReturnStatement returnStatement) {
+		currentContext().enter(returnStatement);
 		Expression expression = returnStatement.getExpression();
-		ExpressionVisitorImpl visitor = new ExpressionVisitorImpl(getScope());
-		expression.accept(visitor);
+		expression.accept(context.getExpressionVisitor());
+		currentContext().exitReturn(context.getExpressionVisitor().getResult());
+	}
 
+	@Override
+	public Scriptable getScope() {
+		return context.currentScope();
 	}
 }

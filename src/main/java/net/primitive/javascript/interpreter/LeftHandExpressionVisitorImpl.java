@@ -2,7 +2,6 @@ package net.primitive.javascript.interpreter;
 
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObjectProperty;
-import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.MemberExpression;

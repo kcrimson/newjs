@@ -10,13 +10,13 @@ public class FunctionExpression extends Expression {
 
 	private final String functionName;
 	private final List parameterList;
-	private final List sourceElements;
+	private final SourceElement[] sourceElements;
 
 	public FunctionExpression(String functionName, List parameterList,
-			List sourceElements) {
+			List<SourceElement> sourceElements) {
 		this.functionName = functionName;
 		this.parameterList = unmodifiableList(parameterList);
-		this.sourceElements = unmodifiableList(sourceElements);
+		this.sourceElements = sourceElements.toArray(new SourceElement[] {});
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class FunctionExpression extends Expression {
 	/**
 	 * @return the sourceElements
 	 */
-	public List getSourceElements() {
+	public SourceElement[] getSourceElements() {
 		return sourceElements;
 	}
 
