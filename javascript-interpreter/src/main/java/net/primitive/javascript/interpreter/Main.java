@@ -1,9 +1,10 @@
-package net.primitive.javascript.core;
+package net.primitive.javascript.interpreter;
 
 import java.io.File;
 import java.io.FileReader;
 
-import net.primitive.javascript.interpreter.Interpreter;
+import net.primitive.javascript.core.JavaScriptLexer;
+import net.primitive.javascript.core.ScriptableObject;
 import sun.org.mozilla.javascript.internal.Script;
 
 /**
