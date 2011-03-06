@@ -1,6 +1,6 @@
 package net.primitive.javascript.interpreter;
 
-import static net.primitive.javascript.interpreter.Context.currentContext;
+import static net.primitive.javascript.interpreter.ExecutionContext.currentContext;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	@Override
 	public Object call(Scriptable scope, Scriptable thisObj, Object[] args) {
 
-		Context currentContext = currentContext();
+		ExecutionContext  currentContext = currentContext();
 		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
 		for (int i = 0; i < sourceElements.length; i++) {
 			((Statement) sourceElements[i]).accept(visitor);

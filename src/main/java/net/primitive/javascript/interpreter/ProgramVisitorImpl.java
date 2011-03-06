@@ -1,6 +1,6 @@
 package net.primitive.javascript.interpreter;
 
-import static net.primitive.javascript.interpreter.Context.currentContext;
+import static net.primitive.javascript.interpreter.ExecutionContext.currentContext;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.visitors.ProgramVisitor;

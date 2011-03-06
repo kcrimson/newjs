@@ -9,6 +9,7 @@ import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.ObjectLiteral;
+import net.primitive.javascript.core.ast.This;
 import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 
@@ -36,5 +37,7 @@ public interface ExpressionVisitor extends SourceElementVisitor {
 	void visitObjectLiteral(ObjectLiteral objectLiteral);
 
 	void visitFunctionExpression(FunctionExpression functionExpression);
+
+	void visitThis(This this1);
 
 }

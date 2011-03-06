@@ -33,13 +33,13 @@ public class Interpreter {
 
 	public void execute(Scriptable scope) {
 		ProgramVisitorImpl visitor = new ProgramVisitorImpl(scope);
-		Context currentContext = Context.enterContext();
+		ExecutionContext  currentContext = ExecutionContext .enterContext();
 
 		currentContext.enter(scope);
 
 		program.accept(visitor);
 
-		Context.exitContext();
+		ExecutionContext.exitContext();
 	}
 
 }

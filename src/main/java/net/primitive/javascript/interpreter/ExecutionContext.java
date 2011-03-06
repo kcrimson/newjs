@@ -4,11 +4,15 @@ import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.ast.Statement;
 
-public class Context {
+public class ExecutionContext {
+
+	private static final ThreadLocal<ExecutionContext> CONTEXT_LOCAL = new ThreadLocal<ExecutionContext>();
 
 	private final FastStack<StatementFrame> callStack = new FastStack<StatementFrame>();
 
 	private final FastStack<Scriptable> scopeStack = new FastStack<Scriptable>();
+
+	private final FastStack<Scriptable> thisStack = new FastStack<Scriptable>();
 
 	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(
 			this);
@@ -16,21 +20,24 @@ public class Context {
 	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(
 			this);
 
-	private static final ThreadLocal<Context> CONTEXT_LOCAL = new ThreadLocal<Context>();
-
-	public static Context currentContext() {
-		Context context = CONTEXT_LOCAL.get();
-		return context;
-	}
-
+	/**
+	 * Enter statement execution
+	 * 
+	 * @param statement
+	 */
 	public void enter(Statement statement) {
 		StatementFrame frame = new StatementFrame();
 		frame.setStatement(statement);
 		callStack.push(frame);
 	}
 
+	/**
+	 * Exit with return value
+	 * 
+	 * @param result
+	 */
 	public void exitReturn(Object result) {
-		exit();
+		exitStatement();
 		StatementFrame frame = new StatementFrame();
 		frame.setReturnValue(result);
 		callStack.push(frame);
@@ -40,7 +47,7 @@ public class Context {
 		return ((StatementFrame) callStack.peek()).getReturnValue();
 	}
 
-	public void exit() {
+	public void exitStatement() {
 		callStack.pop();
 	}
 
@@ -56,7 +63,7 @@ public class Context {
 		scopeStack.pop();
 	}
 
-	public void enter(Program result) {
+	public void enter(Program program) {
 		callStack.push(new StatementFrame());
 	}
 
@@ -74,13 +81,33 @@ public class Context {
 		return statementVisitor;
 	}
 
+	public static ExecutionContext enterContext() {
+		ExecutionContext context = new ExecutionContext();
+		CONTEXT_LOCAL.set(context);
+		return context;
+	}
+
+	public static ExecutionContext currentContext() {
+		ExecutionContext context = CONTEXT_LOCAL.get();
+		return context;
+	}
+
 	public static void exitContext() {
 		CONTEXT_LOCAL.set(null);
 	}
 
-	public static Context enterContext() {
-		Context context = new Context();
-		CONTEXT_LOCAL.set(context);
-		return context;
+	public void enter(Scriptable scope, Scriptable thisObj) {
+		enter(scope);
+		thisStack.push(thisObj);
 	}
+
+	public void exitCall() {
+		exitScope();
+		thisStack.pop();
+	}
+
+	public Scriptable currentThis() {
+		return thisStack.peek();
+	}
+
 }

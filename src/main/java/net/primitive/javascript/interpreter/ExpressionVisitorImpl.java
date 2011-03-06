@@ -17,6 +17,7 @@ import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.NameValuePair;
 import net.primitive.javascript.core.ast.ObjectLiteral;
+import net.primitive.javascript.core.ast.This;
 import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
@@ -24,9 +25,9 @@ import net.primitive.javascript.core.visitors.ExpressionVisitor;
 public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	private Object result;
-	private final Context context;
+	private final ExecutionContext context;
 
-	protected ExpressionVisitorImpl(Context context) {
+	protected ExpressionVisitorImpl(ExecutionContext context) {
 		super();
 		this.context = context;
 	}
@@ -149,6 +150,12 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		result = new JSNativeFunction(functionExpression.getFunctionName(),
 				functionExpression.getParameterList(),
 				functionExpression.getSourceElements());
+	}
+
+	@Override
+	public void visitThis(This this1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

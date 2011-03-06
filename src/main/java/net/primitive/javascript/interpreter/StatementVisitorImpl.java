@@ -1,7 +1,7 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
-import static net.primitive.javascript.interpreter.Context.currentContext;
+import static net.primitive.javascript.interpreter.ExecutionContext.currentContext;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
@@ -17,9 +17,9 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
-	private final Context context;
+	private final ExecutionContext context;
 
-	protected StatementVisitorImpl(Context context) {
+	protected StatementVisitorImpl(ExecutionContext context) {
 		this.context = context;
 	}
 
@@ -31,7 +31,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Object result = context.getExpressionVisitor().getResult();
 		getScope().put(variableDeclaration.getVariableName(), getScope(),
 				result);
-		currentContext().exit();
+		currentContext().exitStatement();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 				functionDeclaration.getSourceElements());
 		getScope().put(functionDeclaration.getFunctionName(), getScope(),
 				jsFunction);
-		currentContext().exit();
+		currentContext().exitStatement();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		currentContext().enter(expressionStatement);
 		expressionStatement.getExpression().accept(
 				context.getExpressionVisitor());
-		currentContext().exit();
+		currentContext().exitStatement();
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		} else if (ifStatement.getElseStatement() != null) {
 			ifStatement.getElseStatement().accept(this);
 		}
-		currentContext().exit();
+		currentContext().exitStatement();
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		for (int i = 0; i < statements.length; i++) {
 			statements[i].accept(this);
 		}
-		currentContext().exit();
+		currentContext().exitStatement();
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 				.getExpressionVisitor())) {
 			whileStatement.getStatement().accept(this);
 		}
-		currentContext().exit();
+		currentContext().exitStatement();
 	}
 
 	@Override
