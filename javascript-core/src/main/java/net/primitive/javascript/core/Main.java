@@ -1,6 +1,5 @@
 package net.primitive.javascript.core;
 
-import java.io.FileReader;
 
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
@@ -8,7 +7,6 @@ import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 
-import sun.org.mozilla.javascript.internal.Script;
 
 /**
  * Test driver program for the ANTLR3 Maven Architype demo
