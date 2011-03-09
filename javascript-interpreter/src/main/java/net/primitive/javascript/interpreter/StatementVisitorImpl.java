@@ -1,8 +1,8 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
-import static net.primitive.javascript.interpreter.ExecutionContext.currentContext;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObjectProperty;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
 import net.primitive.javascript.core.ast.ForStatement;
@@ -25,38 +25,38 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
-		currentContext().enter(variableDeclaration);
+		context.enter(variableDeclaration);
 		Expression expression = variableDeclaration.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object result = context.getExpressionVisitor().getResult();
 		getScope().put(variableDeclaration.getVariableName(), getScope(),
 				result);
-		currentContext().exitStatement();
+		context.exitStatement();
 	}
 
 	@Override
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
-		currentContext().enter(functionDeclaration);
+		context.enter(functionDeclaration);
 		JSNativeFunction jsFunction = new JSNativeFunction(
 				functionDeclaration.getFunctionName(),
 				functionDeclaration.getParameterList(),
 				functionDeclaration.getSourceElements());
 		getScope().put(functionDeclaration.getFunctionName(), getScope(),
 				jsFunction);
-		currentContext().exitStatement();
+		context.exitStatement();
 	}
 
 	@Override
 	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
-		currentContext().enter(expressionStatement);
+		context.enter(expressionStatement);
 		expressionStatement.getExpression().accept(
 				context.getExpressionVisitor());
-		currentContext().exitStatement();
+		context.exitStatement();
 	}
 
 	@Override
 	public void visitIfStatement(IfStatement ifStatement) {
-		currentContext().enter(ifStatement);
+		context.enter(ifStatement);
 		Expression expression = ifStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		boolean expressionResult = toBoolean(context.getExpressionVisitor()
@@ -67,22 +67,22 @@ public class StatementVisitorImpl implements StatementVisitor {
 		} else if (ifStatement.getElseStatement() != null) {
 			ifStatement.getElseStatement().accept(this);
 		}
-		currentContext().exitStatement();
+		context.exitStatement();
 	}
 
 	@Override
 	public void visitStatementBlock(StatementBlock statementBlock) {
-		currentContext().enter(statementBlock);
+		context.enter(statementBlock);
 		Statement[] statements = statementBlock.getStatements();
 		for (int i = 0; i < statements.length; i++) {
 			statements[i].accept(this);
 		}
-		currentContext().exitStatement();
+		context.exitStatement();
 	}
 
 	@Override
 	public void visitWhileStatement(WhileStatement whileStatement) {
-		currentContext().enter(whileStatement);
+		context.enter(whileStatement);
 		Expression expression = whileStatement.getExpression();
 
 		for (expression.accept(context.getExpressionVisitor()); toBoolean(context
@@ -90,7 +90,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 				.getExpressionVisitor())) {
 			whileStatement.getStatement().accept(this);
 		}
-		currentContext().exitStatement();
+		context.exitStatement();
 	}
 
 	@Override
@@ -100,14 +100,22 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitReturnStatement(ReturnStatement returnStatement) {
-		currentContext().enter(returnStatement);
+		context.enter(returnStatement);
 		Expression expression = returnStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
-		currentContext().exitReturn(context.getExpressionVisitor().getResult());
+		context.exitReturn(getValue(context.getExpressionVisitor().getResult()));
 	}
 
 	@Override
 	public Scriptable getScope() {
 		return context.currentScope();
 	}
+	
+	private static Object getValue(Object object) {
+		if (object instanceof ScriptableObjectProperty) {
+			return ((ScriptableObjectProperty) object).getValue();
+		}
+		return object;
+	}
+
 }

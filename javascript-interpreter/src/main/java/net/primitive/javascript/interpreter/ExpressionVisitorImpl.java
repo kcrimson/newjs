@@ -9,6 +9,7 @@ import net.primitive.javascript.core.ScriptableObjectProperty;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
+import net.primitive.javascript.core.ast.ConditionalExpression;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.FunctionExpression;
 import net.primitive.javascript.core.ast.Identifier;
@@ -44,10 +45,10 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		binaryExpression.getOp1().accept(this);
-		Object result1 = result;
+		Object result1 = getValue(result);
 
 		binaryExpression.getOp2().accept(this);
-		Object result2 = result;
+		Object result2 = getValue(result);
 
 		result = binaryExpression.getOperator().operator(result1, result2);
 	}
@@ -64,9 +65,13 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitIdentifier(Identifier identifier) {
+
+		// System.out.println("visitIndentifier " +
+		// identifier.getIdentfierName());
+
 		ScriptableObjectProperty property = getScope().getProperty(
 				identifier.getIdentfierName());
-		result = property.getValue();
+		result = property;
 	}
 
 	@Override
@@ -80,7 +85,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 				.getLeftHandSideExpression()).accept(leftVisitor);
 		ScriptableObjectProperty property = (ScriptableObjectProperty) leftVisitor
 				.getResult();
-		property.setValue(result);
+		property.setValue(getValue(result));
 	}
 
 	/*
@@ -106,7 +111,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		unaryExpression.getOperand().accept(this);
 
-		result = unaryExpression.getOperator().operator(result);
+		result = unaryExpression.getOperator().operator(getValue(result));
 	}
 
 	@Override
@@ -114,15 +119,18 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		memberExpression.getExpression().accept(this);
 		List<Expression> suffixes = memberExpression.getExpresionSuffixes();
 		ExpressionVisitorImpl visitor = context.getExpressionVisitor();
-		if (suffixes != null) {
+		if (suffixes != null && suffixes.size()>0) {
+			Object value = null;
 			for (Expression suffix : suffixes) {
-				if (result instanceof Scriptable) {
-					context.enter((Scriptable) result);
+				value = getValue(result);
+				if (value instanceof Scriptable) {
+					context.enter((Scriptable) value);
 					suffix.accept(visitor);
 					context.exitScope();
 				}
-				result = visitor.getResult();
+				value = result;
 			}
+			result = value;
 		}
 	}
 
@@ -130,8 +138,14 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitCallExpression(CallExpression callExpression) {
 		Expression memberExpression = callExpression.getMemberExpression();
 		memberExpression.accept(this);
-		Function function = (Function) result;
-		result = function.call(getScope(), getScope(), null);
+		ScriptableObjectProperty result2 = (ScriptableObjectProperty) result;
+		Scriptable thisObj = result2.getScope();
+		ScriptableObject scope = new ScriptableObject();
+		scope.setParentScope(thisObj);
+		Function function = (Function) getValue(result2);
+		context.enter(scope);
+		result = function.call(scope, thisObj, null);
+		context.exitScope();
 	}
 
 	@Override
@@ -140,7 +154,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), null, result);
+			scriptableObject.put((String) pair.getName(), null, getValue(result));
 		}
 		result = scriptableObject;
 	}
@@ -154,8 +168,20 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitThis(This this1) {
-		// TODO Auto-generated method stub
-		
+		result = context.currentScope().getParentScope();
+	}
+
+	@Override
+	public void visitConditionalExpression(
+			ConditionalExpression conditionalExpression) {
+		System.out.println("leva cipa");
+	}
+
+	private static Object getValue(Object object) {
+		if (object instanceof ScriptableObjectProperty) {
+			return ((ScriptableObjectProperty) object).getValue();
+		}
+		return object;
 	}
 
 }

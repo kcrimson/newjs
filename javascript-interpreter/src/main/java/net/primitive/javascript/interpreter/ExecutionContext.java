@@ -26,6 +26,7 @@ public class ExecutionContext {
 	 * @param statement
 	 */
 	public void enter(Statement statement) {
+		//System.out.println(statement);
 		StatementFrame frame = new StatementFrame();
 		frame.setStatement(statement);
 		callStack.push(frame);

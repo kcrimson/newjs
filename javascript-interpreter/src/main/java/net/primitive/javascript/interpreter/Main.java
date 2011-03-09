@@ -28,11 +28,11 @@ class Main {
 		Interpreter interpreter = new Interpreter();
 
 		interpreter
-				.interpret(new File("src/test/resources/return-statement.js"));
+				.interpret(new File("src/test/resources/function-call.js"));
 
 		long time = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 3000000; i++) {
 			net.primitive.javascript.core.ScriptableObject scriptableObject = new net.primitive.javascript.core.ScriptableObject();
 
 			interpreter.execute(scriptableObject);
@@ -53,9 +53,9 @@ class Main {
 		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context
 				.initStandardObjects();
 		Script script = context.compileReader(new FileReader(
-				"src/test/resources/return-statement.js"), "", 0, null);
+				"src/test/resources/function-call.js"), "", 0, null);
 		time = System.currentTimeMillis();
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 3000000; i++) {
 			script.exec(context, standardObjects);
 		}
 		System.out.println(System.currentTimeMillis() - time);
