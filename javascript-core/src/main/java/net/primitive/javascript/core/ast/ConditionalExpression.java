@@ -16,7 +16,7 @@ public class ConditionalExpression extends Expression {
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
-		//visitor.vi
+		visitor.visitConditionalExpression(this);
 	}
 
 }

@@ -61,7 +61,8 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public void put(String name, Scriptable start, Object value) {
-		associatedValues.put(name, new ScriptableObjectProperty(name, value));
+		associatedValues.put(name, new ScriptableObjectProperty(this, name,
+				value));
 	}
 
 	@Override

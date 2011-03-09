@@ -3,6 +3,7 @@ package net.primitive.javascript.core.visitors;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
+import net.primitive.javascript.core.ast.ConditionalExpression;
 import net.primitive.javascript.core.ast.FunctionExpression;
 import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.LeftHandSideExpression;
@@ -39,5 +40,7 @@ public interface ExpressionVisitor extends SourceElementVisitor {
 	void visitFunctionExpression(FunctionExpression functionExpression);
 
 	void visitThis(This this1);
+
+	void visitConditionalExpression(ConditionalExpression conditionalExpression);
 
 }

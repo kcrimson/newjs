@@ -40,9 +40,9 @@ sourceElements returns [List result]
    $result = new ArrayList();
   }
   (LT!* sourceElement 
-                        {
-                         $result.add($sourceElement.result);
-                        })*
+                     {
+                      $result.add($sourceElement.result);
+                     })*
   ;
 
 sourceElement returns [SourceElement result]
@@ -475,7 +475,10 @@ List expressions = new ArrayList();
   :
   exp1=assignmentExpression (LT!* ',' LT!* exp2=assignmentExpression)? 
                                                                       {
-                                                                       $result = new WrappedExpression($exp1.result, $exp2.result);
+                                                                       if ($exp2.result == null) {
+                                                                       	$result = $exp1.result;
+                                                                       } else
+                                                                       	$result = new WrappedExpression($exp1.result, $exp2.result);
                                                                       }
   //  exp1=assignmentExpression
   //                           {
@@ -549,25 +552,40 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
                      {
                       $result = $primaryExpression.result;
                      }
-    | functionExpression {$result = $functionExpression.result;}
+    | functionExpression 
+                        {
+                         $result = $functionExpression.result;
+                        }
     | 'new' LT!* memberExpression LT!* arguments
   )
-  (LT!* memberExpressionSuffix {expresionSuffixes.add($memberExpressionSuffix.result);})* 
-                                {
-                                 $result = new MemberExpression($result, expresionSuffixes);
-                                }
-  ;
-  
-functionExpression returns [Expression result]
-  :
-  'function' LT!* Identifier? LT!* formalParameterList LT!* functionBody {$result = new FunctionExpression($Identifier.text,$formalParameterList.result,$functionBody.result);}
+  (LT!* memberExpressionSuffix 
+                              {
+                               expresionSuffixes.add($memberExpressionSuffix.result);
+                              })* 
+                                 {
+                                  $result = new MemberExpression($result, expresionSuffixes);
+                                 }
   ;
 
+functionExpression returns [Expression result]
+  :
+  'function' LT!* Identifier? LT!* formalParameterList LT!* functionBody 
+                                                                        {
+                                                                         $result = new FunctionExpression($Identifier.text, $formalParameterList.result,
+                                                                         		$functionBody.result);
+                                                                        }
+  ;
 
 memberExpressionSuffix returns [Expression result]
   :
-  indexSuffix {$result = $indexSuffix.result;}
-  | propertyReferenceSuffix {$result = $propertyReferenceSuffix.result;}
+  indexSuffix 
+             {
+              $result = $indexSuffix.result;
+             }
+  | propertyReferenceSuffix 
+                           {
+                            $result = $propertyReferenceSuffix.result;
+                           }
   ;
 
 callExpression returns [Expression result]
@@ -592,12 +610,18 @@ arguments returns [Expression result]
 
 indexSuffix returns [Expression result]
   :
-  '[' LT!* expression LT!* ']' {$result = $expression.result;}
+  '[' LT!* expression LT!* ']' 
+                              {
+                               $result = $expression.result;
+                              }
   ;
 
 propertyReferenceSuffix returns [Expression result]
   :
-  '.' LT!* Identifier {$result = new Identifier($Identifier.text);}
+  '.' LT!* Identifier 
+                     {
+                      $result = new Identifier($Identifier.text);
+                     }
   ;
 
 assignmentOperator returns [AssignmentOperator result]
@@ -972,7 +996,10 @@ postfixExpression returns [Expression result]
 
 primaryExpression returns [Expression result]
   :
-  'this'
+  'this' 
+        {
+         $result = new This();
+        }
   | Identifier 
               {
                $result = new Identifier($Identifier.text);

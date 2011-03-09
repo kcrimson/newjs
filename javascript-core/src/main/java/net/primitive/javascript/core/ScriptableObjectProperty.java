@@ -12,18 +12,22 @@ public class ScriptableObjectProperty {
 
 	private final boolean configurable;
 
-	public ScriptableObjectProperty(String name) {
+	private final Scriptable scope;
+
+	public ScriptableObjectProperty(Scriptable scope, String name) {
 		super();
+		this.scope = scope;
 		this.name = name;
 		this.value = Undefined.Value;
 		this.configurable = true;
 	}
 
-	public ScriptableObjectProperty(String name, Object value) {
+	public ScriptableObjectProperty(Scriptable scope, String name, Object value) {
 		super();
 		this.name = name;
 		this.value = value;
 		this.configurable = true;
+		this.scope = scope;
 	}
 
 	/**
@@ -83,6 +87,13 @@ public class ScriptableObjectProperty {
 	 */
 	public boolean isConfigurable() {
 		return configurable;
+	}
+
+	/**
+	 * @return the scope
+	 */
+	public Scriptable getScope() {
+		return scope;
 	}
 
 }
