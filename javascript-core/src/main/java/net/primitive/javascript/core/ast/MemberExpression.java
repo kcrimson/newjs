@@ -3,9 +3,8 @@ package net.primitive.javascript.core.ast;
 import java.util.List;
 
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
-import net.primitive.javascript.core.visitors.LeftHandSideExpressionVisitor;
 
-public class MemberExpression extends LeftHandSideExpression {
+public class MemberExpression extends Expression {
 
 	private final Expression expression;
 	private final List<Expression> expresionSuffixes;
@@ -18,11 +17,6 @@ public class MemberExpression extends LeftHandSideExpression {
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
-		visitor.visitMemberExpression(this);
-	}
-
-	@Override
-	public void accept(LeftHandSideExpressionVisitor visitor) {
 		visitor.visitMemberExpression(this);
 	}
 

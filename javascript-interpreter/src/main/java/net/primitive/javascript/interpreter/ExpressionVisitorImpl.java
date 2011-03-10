@@ -13,7 +13,6 @@ import net.primitive.javascript.core.ast.ConditionalExpression;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.FunctionExpression;
 import net.primitive.javascript.core.ast.Identifier;
-import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.NameValuePair;
@@ -69,7 +68,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		// System.out.println("visitIndentifier " +
 		// identifier.getIdentfierName());
 
-		ScriptableObjectProperty property = getScope().getProperty(
+		ScriptableObjectProperty property = getScope().get(
 				identifier.getIdentfierName());
 		result = property;
 	}
@@ -78,14 +77,11 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitAssignmentExpression(
 			AssignmentExpression assignmentExpression) {
 		assignmentExpression.getRightHandSideExpression().accept(this);
-
-		LeftHandExpressionVisitorImpl leftVisitor = new LeftHandExpressionVisitorImpl(
-				getScope());
-		((LeftHandSideExpression) assignmentExpression
-				.getLeftHandSideExpression()).accept(leftVisitor);
-		ScriptableObjectProperty property = (ScriptableObjectProperty) leftVisitor
-				.getResult();
-		property.setValue(getValue(result));
+		Object value = result;
+		ExpressionVisitor leftVisitor = context.getExpressionVisitor();
+		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
+		ScriptableObjectProperty property = (ScriptableObjectProperty) result;
+		property.setValue(value);
 	}
 
 	/*
@@ -96,13 +92,11 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	 * (net.primitive.javascript.core.ast.LeftHandSideExpression)
 	 */
 	@Override
-	public void visitLeftHandSideExpression(
-			LeftHandSideExpression leftHandSideExpression) {
-		LeftHandExpressionVisitorImpl visitor = new LeftHandExpressionVisitorImpl(
-				getScope());
+	public void visitLeftHandSideExpression(Expression leftHandSideExpression) {
+		ExpressionVisitor visitor = context.getExpressionVisitor();
 		leftHandSideExpression.accept(visitor);
 
-		result = visitor.getResult();
+		// result = visitor.getResult();
 
 	}
 
@@ -119,7 +113,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		memberExpression.getExpression().accept(this);
 		List<Expression> suffixes = memberExpression.getExpresionSuffixes();
 		ExpressionVisitorImpl visitor = context.getExpressionVisitor();
-		if (suffixes != null && suffixes.size()>0) {
+		if (suffixes != null && suffixes.size() > 0) {
 			Object value = null;
 			for (Expression suffix : suffixes) {
 				value = getValue(result);
@@ -154,7 +148,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), null, getValue(result));
+			scriptableObject.put((String) pair.getName(), getValue(result));
 		}
 		result = scriptableObject;
 	}

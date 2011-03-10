@@ -1,8 +1,10 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
+import net.primitive.javascript.core.JavaScriptParser.statement_return;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObjectProperty;
+import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
 import net.primitive.javascript.core.ast.ForStatement;
@@ -11,6 +13,8 @@ import net.primitive.javascript.core.ast.IfStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.StatementBlock;
+import net.primitive.javascript.core.ast.ThrowStatement;
+import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.visitors.StatementVisitor;
@@ -29,8 +33,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Expression expression = variableDeclaration.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object result = context.getExpressionVisitor().getResult();
-		getScope().put(variableDeclaration.getVariableName(), getScope(),
-				result);
+		getScope().put(variableDeclaration.getVariableName(), result);
 		context.exitStatement();
 	}
 
@@ -41,8 +44,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 				functionDeclaration.getFunctionName(),
 				functionDeclaration.getParameterList(),
 				functionDeclaration.getSourceElements());
-		getScope().put(functionDeclaration.getFunctionName(), getScope(),
-				jsFunction);
+		getScope().put(functionDeclaration.getFunctionName(), jsFunction);
 		context.exitStatement();
 	}
 
@@ -110,12 +112,35 @@ public class StatementVisitorImpl implements StatementVisitor {
 	public Scriptable getScope() {
 		return context.currentScope();
 	}
-	
+
 	private static Object getValue(Object object) {
 		if (object instanceof ScriptableObjectProperty) {
 			return ((ScriptableObjectProperty) object).getValue();
 		}
 		return object;
+	}
+
+	@Override
+	public void visitThrowStatement(ThrowStatement throwStatement) {
+		Expression expression = throwStatement.getExpression();
+		expression.accept(context.getExpressionVisitor());
+		Object exceptionObject = context.getExpressionVisitor().getResult();
+		context.handleException(exceptionObject);
+	}
+
+	@Override
+	public void visitCatchClause(CatchClause catchClause) {
+		context.enter(catchClause);
+		catchClause.getStatement().accept(context.getStatementVisitor());
+		context.exitStatement();
+	}
+
+	@Override
+	public void visitTryStatement(TryStatement tryStatement) {
+		context.enter(tryStatement);
+		Statement blockStatement = tryStatement.getBlockStatement();
+		blockStatement.accept(context.getStatementVisitor());
+		context.exitStatement();
 	}
 
 }

@@ -14,8 +14,23 @@ public class CatchClause extends Statement {
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visitCatchClause(this);
 	}
+
+	/**
+	 * @return the identifier
+	 */
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	/**
+	 * @return the statement
+	 */
+	public Statement getStatement() {
+		return statement;
+	}
+	
+	
 
 }

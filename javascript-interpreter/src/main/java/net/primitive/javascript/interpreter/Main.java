@@ -28,7 +28,7 @@ class Main {
 		Interpreter interpreter = new Interpreter();
 
 		interpreter
-				.interpret(new File("src/test/resources/function-call.js"));
+				.interpret(new File("src/test/resources/this.js"));
 
 		long time = System.currentTimeMillis();
 
@@ -53,7 +53,7 @@ class Main {
 		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context
 				.initStandardObjects();
 		Script script = context.compileReader(new FileReader(
-				"src/test/resources/function-call.js"), "", 0, null);
+				"src/test/resources/this.js"), "", 0, null);
 		time = System.currentTimeMillis();
 		for (int i = 0; i < 3000000; i++) {
 			script.exec(context, standardObjects);

@@ -12,8 +12,16 @@ public class ThrowStatement extends Statement {
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visitThrowStatement(this);
 	}
+
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+	
+	
 
 }

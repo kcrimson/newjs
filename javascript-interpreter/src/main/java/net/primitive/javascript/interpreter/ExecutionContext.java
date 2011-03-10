@@ -1,8 +1,11 @@
 package net.primitive.javascript.interpreter;
 
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.ast.Statement;
+import net.primitive.javascript.core.ast.TryStatement;
 
 public class ExecutionContext {
 
@@ -26,9 +29,10 @@ public class ExecutionContext {
 	 * @param statement
 	 */
 	public void enter(Statement statement) {
-		//System.out.println(statement);
+		// System.out.println(statement);
 		StatementFrame frame = new StatementFrame();
 		frame.setStatement(statement);
+		frame.setScope(currentScope());
 		callStack.push(frame);
 	}
 
@@ -109,6 +113,26 @@ public class ExecutionContext {
 
 	public Scriptable currentThis() {
 		return thisStack.peek();
+	}
+
+	public void handleException(Object exceptionObject) {
+		StatementFrame frame;
+		// traverse up the statement stack
+		while ((frame = callStack.pop()) != null) {
+			Statement statement = frame.getStatement();
+			if (statement instanceof TryStatement) {
+				// push new scope on stack wi
+				CatchClause catchStatement = (CatchClause) ((TryStatement) statement)
+						.getCatchStatement();
+				ScriptableObject scope = new ScriptableObject();
+				scope.setParentScope(frame.getScope());
+				scope.put(catchStatement.getIdentifier(), exceptionObject);
+				enter(scope);
+				catchStatement.accept(getStatementVisitor());
+				exitScope();
+				break;
+			}
+		}
 	}
 
 }

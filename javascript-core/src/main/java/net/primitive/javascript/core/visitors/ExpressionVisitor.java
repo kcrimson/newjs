@@ -4,9 +4,9 @@ import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
 import net.primitive.javascript.core.ast.ConditionalExpression;
+import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.FunctionExpression;
 import net.primitive.javascript.core.ast.Identifier;
-import net.primitive.javascript.core.ast.LeftHandSideExpression;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.ObjectLiteral;
@@ -26,8 +26,7 @@ public interface ExpressionVisitor extends SourceElementVisitor {
 
 	void visitAssignmentExpression(AssignmentExpression assignmentExpression);
 
-	void visitLeftHandSideExpression(
-			LeftHandSideExpression leftHandSideExpression);
+	void visitLeftHandSideExpression(Expression leftHandSideExpression);
 
 	void visitUnaryExpression(UnaryExpression unaryExpression);
 

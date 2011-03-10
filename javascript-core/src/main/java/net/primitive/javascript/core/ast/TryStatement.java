@@ -4,15 +4,41 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class TryStatement extends Statement {
 
-	public TryStatement(Statement statement, Statement statement2,
-			Statement statement3, Statement statement4) {
-		// TODO Auto-generated constructor stub
+	private final Statement blockStatement;
+	private final Statement catchStatement;
+	private final Statement finallyStatement;
+
+	public TryStatement(Statement blockStatement, Statement catchStatement,
+			Statement finallyStatement) {
+		this.blockStatement = blockStatement;
+		this.catchStatement = catchStatement;
+		this.finallyStatement = finallyStatement;
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visitTryStatement(this);
+	}
+
+	/**
+	 * @return the blockStatement
+	 */
+	public Statement getBlockStatement() {
+		return blockStatement;
+	}
+
+	/**
+	 * @return the catchStatement
+	 */
+	public Statement getCatchStatement() {
+		return catchStatement;
+	}
+
+	/**
+	 * @return the finallyStatement
+	 */
+	public Statement getFinallyStatement() {
+		return finallyStatement;
 	}
 
 }

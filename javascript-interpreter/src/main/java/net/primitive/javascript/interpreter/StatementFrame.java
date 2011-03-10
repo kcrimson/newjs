@@ -1,5 +1,6 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.Statement;
 
@@ -10,6 +11,8 @@ public class StatementFrame {
 	private Object returnValue = Undefined.Value;
 
 	private Object exceptionValue = Undefined.Value;
+
+	private  Scriptable scope;
 
 	public StatementFrame() {
 		super();
@@ -59,5 +62,21 @@ public class StatementFrame {
 	public Statement getStatement() {
 		return statement;
 	}
+
+	/**
+	 * @return the scope
+	 */
+	public Scriptable getScope() {
+		return scope;
+	}
+
+	/**
+	 * @param scope the scope to set
+	 */
+	public void setScope(Scriptable scope) {
+		this.scope = scope;
+	}
+	
+	
 
 }

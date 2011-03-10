@@ -1,9 +1,8 @@
 package net.primitive.javascript.core.ast;
 
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
-import net.primitive.javascript.core.visitors.LeftHandSideExpressionVisitor;
 
-public class Identifier extends LeftHandSideExpression {
+public class Identifier extends Expression {
 
 	private final String identfierName;
 
@@ -20,11 +19,6 @@ public class Identifier extends LeftHandSideExpression {
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
-		visitor.visitIdentifier(this);
-	}
-
-	@Override
-	public void accept(LeftHandSideExpressionVisitor visitor) {
 		visitor.visitIdentifier(this);
 	}
 

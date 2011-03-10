@@ -19,21 +19,30 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public Object get(String name, Scriptable start) {
+	public ScriptableObjectProperty get(String name) {
+		return get(name, null);
+	}
+
+	public ScriptableObjectProperty get(String name, Scriptable start) {
 
 		Object value = NotFound;
 
 		if (start != null) {
-			value = start.get(name, null);
+			value = start.get(name);
 		}
 
 		if (value == NotFound) {
 
-			value = associatedValues.get(name).getValue();
+			value = associatedValues.get(name);
 
-			if (value == NotFound && prototype != null) {
-				value = get(name, prototype);
+			if (value == null) {
+				value = NotFound;
 			}
+		}
+
+		if (value == NotFound && prototype != null) {
+			// lookup property scope
+			value = get(name, prototype);
 		}
 
 		if (value == NotFound && parentScope != null) {
@@ -41,33 +50,36 @@ public class ScriptableObject implements Scriptable {
 			value = get(name, parentScope);
 		}
 
-		return value;
+		return (ScriptableObjectProperty) value;
 	}
 
 	@Override
-	public Object get(int index, Scriptable start) {
+	public ScriptableObjectProperty get(int index) {
 		return associatedValues.get(index);
 	}
 
 	@Override
-	public boolean has(String name, Scriptable start) {
+	public boolean has(String name) {
 		return associatedValues.containsKey(name);
 	}
 
 	@Override
-	public boolean has(int index, Scriptable start) {
+	public boolean has(int index) {
 		return associatedValues.containsKey(index);
 	}
 
 	@Override
-	public void put(String name, Scriptable start, Object value) {
-		associatedValues.put(name, new ScriptableObjectProperty(this, name,
-				value));
+	public ScriptableObjectProperty put(String name, Object value) {
+		ScriptableObjectProperty objectProperty = new ScriptableObjectProperty(
+				this, name, value);
+		associatedValues.put(name, objectProperty);
+		return objectProperty;
 	}
 
 	@Override
-	public void put(int index, Scriptable start, Object value) {
+	public ScriptableObjectProperty put(int index, Object value) {
 		// associatedValues.put(index, value);
+		return null;
 	}
 
 	@Override
@@ -116,11 +128,6 @@ public class ScriptableObject implements Scriptable {
 	public boolean hasInstance(Scriptable instance) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public ScriptableObjectProperty getProperty(String identfierName) {
-		return associatedValues.get(identfierName);
 	}
 
 }

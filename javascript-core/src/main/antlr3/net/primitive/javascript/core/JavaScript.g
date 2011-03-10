@@ -445,8 +445,8 @@ tryStatement returns [Statement result]
   )
   
   {
-   $result = new TryStatement($statementBlock.result, $fc1.result,
-   		$catchClause.result, $fc2.result);
+   $result = new TryStatement($statementBlock.result, $catchClause.result,
+   		$fc2.result);
   }
   ;
 
