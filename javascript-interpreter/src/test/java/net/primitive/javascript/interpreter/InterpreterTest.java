@@ -4,11 +4,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.ScriptableObject;
 
+import net.primitive.javascript.utils.ResourceList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -25,13 +28,13 @@ public class InterpreterTest {
 
 	@Parameters
 	public static List<Object[]> getParameters() {
-		File resources = new File("src/test/resources");
-		File[] files = resources.listFiles();
-
+        Collection<String> scripts = ResourceList.getResources(Pattern.compile(".*\\.js"));
 		List<Object[]> parameters = new ArrayList<Object[]>();
-		for (File file : files) {
-			parameters.add(new Object[] { file.getAbsolutePath() });
+
+		for (String script : scripts) {
+			parameters.add(new Object[] { script });
 		}
+
 		return parameters;
 	}
 
