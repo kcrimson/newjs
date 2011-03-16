@@ -10,6 +10,7 @@ public class CatchClause extends Statement {
 	public CatchClause(String identifier, Statement statement) {
 		this.identifier = identifier;
 		this.statement = statement;
+		statement.setParentAstNode(this);
 	}
 
 	@Override
@@ -30,7 +31,5 @@ public class CatchClause extends Statement {
 	public Statement getStatement() {
 		return statement;
 	}
-	
-	
 
 }

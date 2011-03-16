@@ -12,7 +12,11 @@ public class IfStatement extends Statement {
 			Statement elseStatement) {
 		this.expression = expression;
 		this.ifStatement = ifStatement;
+		ifStatement.setParentAstNode(this);
 		this.elseStatement = elseStatement;
+		if (elseStatement != null) {
+			elseStatement.setParentAstNode(this);
+		}
 	}
 
 	@Override

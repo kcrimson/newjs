@@ -20,9 +20,7 @@ public class Program {
 	}
 
 	public void accept(ProgramVisitor visitor) {
-		for (Statement statement : sourceElements) {
-			visitor.visit(statement);
-		}		
+		visitor.visit(this);
 	}
 
 }

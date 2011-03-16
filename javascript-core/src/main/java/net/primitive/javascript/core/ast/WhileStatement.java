@@ -10,6 +10,7 @@ public class WhileStatement extends Statement {
 	public WhileStatement(Expression expression, Statement statement) {
 		this.expression = expression;
 		this.statement = statement;
+		statement.setParentAstNode(this);
 	}
 
 	@Override

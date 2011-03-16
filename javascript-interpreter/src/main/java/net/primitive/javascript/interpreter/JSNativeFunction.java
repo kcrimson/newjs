@@ -31,7 +31,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		for (int i = 0; i < sourceElements.length; i++) {
 			((Statement) sourceElements[i]).accept(visitor);
 		}
-		Object returnValue = currentContext.currentReturnValue();
+		Object returnValue = currentContext.returnValue();
 		return returnValue;
 	}
 

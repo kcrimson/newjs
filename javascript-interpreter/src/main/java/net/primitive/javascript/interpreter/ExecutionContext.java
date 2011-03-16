@@ -48,7 +48,7 @@ public class ExecutionContext {
 		callStack.push(frame);
 	}
 
-	public Object currentReturnValue() {
+	public Object returnValue() {
 		return ((StatementFrame) callStack.peek()).getReturnValue();
 	}
 
@@ -135,4 +135,8 @@ public class ExecutionContext {
 		}
 	}
 
+	public Statement currentStatement() {
+		StatementFrame frame = callStack.peek();
+		return frame!=null?frame.getStatement():null;
+	}
 }

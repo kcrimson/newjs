@@ -32,8 +32,9 @@ public class Interpreter {
 	}
 
 	public void execute(Scriptable scope) {
-		ProgramVisitorImpl visitor = new ProgramVisitorImpl(scope);
-		ExecutionContext  currentContext = ExecutionContext .enterContext();
+		ExecutionContext currentContext = ExecutionContext.enterContext();
+		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext,
+				scope);
 
 		currentContext.enter(scope);
 

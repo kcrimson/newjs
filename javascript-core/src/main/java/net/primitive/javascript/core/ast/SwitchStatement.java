@@ -14,13 +14,39 @@ public class SwitchStatement extends Statement {
 			List<CaseClauseStatement> clauses, List<Statement> defaultClause) {
 		this.expression = expression;
 		this.clauses = clauses;
+		for (Statement statement : clauses) {
+			statement.setParentAstNode(this);
+		}
 		this.defaultClause = defaultClause;
+		for (Statement statement : defaultClause) {
+			statement.setParentAstNode(this);
+		}
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("acceptSwitchStatement");
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+
+	/**
+	 * @return the clauses
+	 */
+	public List<CaseClauseStatement> getClauses() {
+		return clauses;
+	}
+
+	/**
+	 * @return the defaultClause
+	 */
+	public List<Statement> getDefaultClause() {
+		return defaultClause;
 	}
 
 }

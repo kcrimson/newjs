@@ -12,12 +12,28 @@ public class CaseClauseStatement extends Statement {
 	public CaseClauseStatement(Expression expression, List<Statement> statements) {
 		this.expression = expression;
 		this.statements = statements;
+		for (Statement statement : statements) {
+			statement.setParentAstNode(this);
+		}
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("acceptCaseClauseStatement");
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+
+	/**
+	 * @return the statements
+	 */
+	public List<Statement> getStatements() {
+		return statements;
 	}
 
 }

@@ -10,12 +10,26 @@ public class LabelledStatement extends Statement {
 	public LabelledStatement(String identifier, Statement statement) {
 		this.identifier = identifier;
 		this.statement = statement;
+		statement.setParentAstNode(this);
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("acceptLabelledStatement");
+	}
+
+	/**
+	 * @return the identifier
+	 */
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	/**
+	 * @return the statement
+	 */
+	public Statement getStatement() {
+		return statement;
 	}
 
 }

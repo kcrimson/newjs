@@ -39,13 +39,11 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
-		context.enter(functionDeclaration);
 		JSNativeFunction jsFunction = new JSNativeFunction(
 				functionDeclaration.getFunctionName(),
 				functionDeclaration.getParameterList(),
 				functionDeclaration.getSourceElements());
 		getScope().put(functionDeclaration.getFunctionName(), jsFunction);
-		context.exitStatement();
 	}
 
 	@Override

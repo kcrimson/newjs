@@ -23,7 +23,7 @@ public class FastStack<T> {
 	}
 
 	public T peek() {
-		return topSlot.item;
+		return topSlot != null ? topSlot.item : null;
 	}
 
 }

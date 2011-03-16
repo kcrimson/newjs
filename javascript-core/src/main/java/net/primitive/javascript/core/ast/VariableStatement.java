@@ -12,6 +12,9 @@ public class VariableStatement extends Statement {
 
 	public VariableStatement(List<VariableDeclaration> variableDeclarations) {
 		this.variableDeclarations = unmodifiableList(variableDeclarations);
+		for (Statement statement : variableDeclarations) {
+			statement.setParentAstNode(this);
+		}
 	}
 
 	/**

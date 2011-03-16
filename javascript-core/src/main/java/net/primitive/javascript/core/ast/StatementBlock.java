@@ -10,6 +10,9 @@ public class StatementBlock extends Statement {
 
 	public StatementBlock(List<Statement> statements) {
 		this.statements = statements.toArray(new Statement[] {});
+		for (Statement statement : statements) {
+			statement.setParentAstNode(this);
+		}
 	}
 
 	@Override

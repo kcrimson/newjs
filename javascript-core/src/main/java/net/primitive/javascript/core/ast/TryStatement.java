@@ -11,8 +11,13 @@ public class TryStatement extends Statement {
 	public TryStatement(Statement blockStatement, Statement catchStatement,
 			Statement finallyStatement) {
 		this.blockStatement = blockStatement;
+		blockStatement.setParentAstNode(this);
 		this.catchStatement = catchStatement;
+		catchStatement.setParentAstNode(this);
 		this.finallyStatement = finallyStatement;
+		if (finallyStatement != null) {
+			finallyStatement.setParentAstNode(this);
+		}
 	}
 
 	@Override

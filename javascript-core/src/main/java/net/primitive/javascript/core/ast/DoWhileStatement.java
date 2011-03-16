@@ -10,11 +10,26 @@ public class DoWhileStatement extends Statement {
 	public DoWhileStatement(Statement statement, Expression expression) {
 		this.statement = statement;
 		this.expression = expression;
+		statement.setParentAstNode(this);
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("acceptDoWhileStatement");
 	}
+
+	/**
+	 * @return the statement
+	 */
+	public Statement getStatement() {
+		return statement;
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+
 }
