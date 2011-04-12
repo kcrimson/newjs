@@ -30,11 +30,12 @@ public class ProgramVisitorImpl implements ProgramVisitor {
 	public void visit(Program program) {
 		List<Statement> sourceElements = program.getSourceElements();
 		Iterator<Statement> iterator = sourceElements.iterator();
-		StatementVisitorImpl visitor = currentContext().getStatementVisitor();
+		StatementVisitorImpl visitor = context.getStatementVisitor();
+
 		while (true) {
 			Statement statement = context.currentStatement();
 			if (statement == null && iterator.hasNext()) {
-				context.enter(iterator.next());
+				context.enter(iterator.next(), context.currentScope());
 				continue;
 			} else if (statement == null && !iterator.hasNext()) {
 				break;

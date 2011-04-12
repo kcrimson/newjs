@@ -10,6 +10,7 @@ import net.primitive.javascript.core.ast.StatementBlock;
 import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
+import net.primitive.javascript.core.ast.VariableStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 
 public interface StatementVisitor extends SourceElementVisitor {
@@ -35,5 +36,7 @@ public interface StatementVisitor extends SourceElementVisitor {
 	void visitCatchClause(CatchClause catchClause);
 
 	void visitTryStatement(TryStatement tryStatement);
+
+	void visitVariableStatement(VariableStatement variableStatement);
 
 }

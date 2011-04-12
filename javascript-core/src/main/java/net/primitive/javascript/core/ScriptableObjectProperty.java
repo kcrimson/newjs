@@ -1,5 +1,8 @@
 package net.primitive.javascript.core;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class ScriptableObjectProperty {
 
 	private final String name;
@@ -96,4 +99,10 @@ public class ScriptableObjectProperty {
 		return scope;
 	}
 
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this,
+				ToStringStyle.SHORT_PREFIX_STYLE).append("value", value);
+		return builder.toString();
+	}
 }

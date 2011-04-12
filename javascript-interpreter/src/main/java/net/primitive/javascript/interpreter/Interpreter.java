@@ -1,5 +1,7 @@
 package net.primitive.javascript.interpreter;
 
+import static net.primitive.javascript.interpreter.ExecutionContext.exitContext;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -36,11 +38,12 @@ public class Interpreter {
 		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext,
 				scope);
 
+		// pushing this object as scope
 		currentContext.enter(scope);
 
 		program.accept(visitor);
 
-		ExecutionContext.exitContext();
+		exitContext();
 	}
 
 }

@@ -2,6 +2,9 @@ package net.primitive.javascript.core;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class ScriptableObject implements Scriptable {
 
 	private static final Object NotFound = new Object();
@@ -128,6 +131,14 @@ public class ScriptableObject implements Scriptable {
 	public boolean hasInstance(Scriptable instance) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this,
+				ToStringStyle.SHORT_PREFIX_STYLE).append("values",
+				associatedValues);
+		return builder.toString();
 	}
 
 }

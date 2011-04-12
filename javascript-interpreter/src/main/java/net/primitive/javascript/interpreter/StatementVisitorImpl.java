@@ -1,7 +1,9 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
-import net.primitive.javascript.core.JavaScriptParser.statement_return;
+
+import java.util.List;
+
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObjectProperty;
 import net.primitive.javascript.core.ast.CatchClause;
@@ -16,6 +18,7 @@ import net.primitive.javascript.core.ast.StatementBlock;
 import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
+import net.primitive.javascript.core.ast.VariableStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
@@ -29,12 +32,10 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
-		context.enter(variableDeclaration);
 		Expression expression = variableDeclaration.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object result = context.getExpressionVisitor().getResult();
 		getScope().put(variableDeclaration.getVariableName(), result);
-		context.exitStatement();
 	}
 
 	@Override
@@ -48,15 +49,15 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
-		context.enter(expressionStatement);
+		// context.enter(expressionStatement);
 		expressionStatement.getExpression().accept(
 				context.getExpressionVisitor());
-		context.exitStatement();
+		// context.exitStatement();
 	}
 
 	@Override
 	public void visitIfStatement(IfStatement ifStatement) {
-		context.enter(ifStatement);
+		// context.enter(ifStatement);
 		Expression expression = ifStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		boolean expressionResult = toBoolean(context.getExpressionVisitor()
@@ -67,22 +68,22 @@ public class StatementVisitorImpl implements StatementVisitor {
 		} else if (ifStatement.getElseStatement() != null) {
 			ifStatement.getElseStatement().accept(this);
 		}
-		context.exitStatement();
+		// context.exitStatement();
 	}
 
 	@Override
 	public void visitStatementBlock(StatementBlock statementBlock) {
-		context.enter(statementBlock);
+		// context.enter(statementBlock);
 		Statement[] statements = statementBlock.getStatements();
 		for (int i = 0; i < statements.length; i++) {
 			statements[i].accept(this);
 		}
-		context.exitStatement();
+		// context.exitStatement();
 	}
 
 	@Override
 	public void visitWhileStatement(WhileStatement whileStatement) {
-		context.enter(whileStatement);
+		// context.enter(whileStatement);
 		Expression expression = whileStatement.getExpression();
 
 		for (expression.accept(context.getExpressionVisitor()); toBoolean(context
@@ -90,7 +91,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 				.getExpressionVisitor())) {
 			whileStatement.getStatement().accept(this);
 		}
-		context.exitStatement();
+		// context.exitStatement();
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitReturnStatement(ReturnStatement returnStatement) {
-		context.enter(returnStatement);
+		// context.enter(returnStatement);
 		Expression expression = returnStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		context.exitReturn(getValue(context.getExpressionVisitor().getResult()));
@@ -108,7 +109,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public Scriptable getScope() {
-		return context.currentScope();
+		return context.currentStatementScope();
 	}
 
 	private static Object getValue(Object object) {
@@ -128,17 +129,28 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitCatchClause(CatchClause catchClause) {
-		context.enter(catchClause);
+		// context.enter(catchClause);
 		catchClause.getStatement().accept(context.getStatementVisitor());
-		context.exitStatement();
+		// context.exitStatement();
 	}
 
 	@Override
 	public void visitTryStatement(TryStatement tryStatement) {
-		context.enter(tryStatement);
+		// context.enter(tryStatement);
 		Statement blockStatement = tryStatement.getBlockStatement();
 		blockStatement.accept(context.getStatementVisitor());
-		context.exitStatement();
+		// context.exitStatement();
+	}
+
+	@Override
+	public void visitVariableStatement(VariableStatement variableStatement) {
+		List<VariableDeclaration> variableDeclarations = variableStatement
+				.getVariableDeclarations();
+		for (VariableDeclaration declaration : variableDeclarations) {
+			context.enter(declaration, context.currentStatementScope());
+			declaration.accept(this);
+			context.exitStatement();
+		}
 	}
 
 }

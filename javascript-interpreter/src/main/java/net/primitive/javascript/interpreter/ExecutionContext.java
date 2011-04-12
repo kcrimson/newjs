@@ -13,8 +13,6 @@ public class ExecutionContext {
 
 	private final FastStack<StatementFrame> callStack = new FastStack<StatementFrame>();
 
-	private final FastStack<Scriptable> scopeStack = new FastStack<Scriptable>();
-
 	private final FastStack<Scriptable> thisStack = new FastStack<Scriptable>();
 
 	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(
@@ -23,16 +21,24 @@ public class ExecutionContext {
 	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(
 			this);
 
-	/**
-	 * Enter statement execution
-	 * 
-	 * @param statement
-	 */
-	public void enter(Statement statement) {
-		// System.out.println(statement);
+//	/**
+//	 * Enter statement execution
+//	 * 
+//	 * @param statement
+//	 */
+//	public void enter(Statement statement) {
+//		System.out.println("enter statement: " + this + "@" + statement);
+//		StatementFrame frame = new StatementFrame();
+//		frame.setStatement(statement);
+//		frame.setScope(currentStatementScope());
+//		callStack.push(frame);
+//	}
+
+	public void enter(Statement statement, Scriptable scope) {
+		System.out.println("enter statement: " + this + "@" + statement);
 		StatementFrame frame = new StatementFrame();
 		frame.setStatement(statement);
-		frame.setScope(currentScope());
+		frame.setScope(scope);
 		callStack.push(frame);
 	}
 
@@ -53,19 +59,18 @@ public class ExecutionContext {
 	}
 
 	public void exitStatement() {
-		callStack.pop();
+		StatementFrame statementFrame = callStack.pop();
+		System.out.println("exit statement: " + this + "@"
+				+ statementFrame.getStatement());
 	}
 
-	public void enter(Scriptable scope) {
-		scopeStack.push(scope);
+	public Scriptable currentStatementScope() {
+		StatementFrame currentFrame = callStack.peek();
+		return currentFrame.getScope();
 	}
 
 	public Scriptable currentScope() {
-		return scopeStack.peek();
-	}
-
-	public void exitScope() {
-		scopeStack.pop();
+		return thisStack.peek();
 	}
 
 	public void enter(Program program) {
@@ -101,16 +106,6 @@ public class ExecutionContext {
 		CONTEXT_LOCAL.set(null);
 	}
 
-	public void enter(Scriptable scope, Scriptable thisObj) {
-		enter(scope);
-		thisStack.push(thisObj);
-	}
-
-	public void exitCall() {
-		exitScope();
-		thisStack.pop();
-	}
-
 	public Scriptable currentThis() {
 		return thisStack.peek();
 	}
@@ -127,9 +122,9 @@ public class ExecutionContext {
 				ScriptableObject scope = new ScriptableObject();
 				scope.setParentScope(frame.getScope());
 				scope.put(catchStatement.getIdentifier(), exceptionObject);
-				enter(scope);
+				// enter(scope);
 				catchStatement.accept(getStatementVisitor());
-				exitScope();
+				// exitScope();
 				break;
 			}
 		}
@@ -137,6 +132,15 @@ public class ExecutionContext {
 
 	public Statement currentStatement() {
 		StatementFrame frame = callStack.peek();
-		return frame!=null?frame.getStatement():null;
+		return frame != null ? frame.getStatement() : null;
 	}
+
+	public void enter(Scriptable value) {
+		thisStack.push(value);
+	}
+
+	public void exitScope() {
+		thisStack.pop();
+	}
+
 }

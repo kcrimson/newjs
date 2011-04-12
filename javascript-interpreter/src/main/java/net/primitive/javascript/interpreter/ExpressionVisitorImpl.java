@@ -34,7 +34,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public Scriptable getScope() {
-		return context.currentScope();
+		return context.currentStatementScope();
 	}
 
 	public Object getResult() {
@@ -162,7 +162,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitThis(This this1) {
-		result = context.currentScope().getParentScope();
+		result = context.currentScope();
 	}
 
 	@Override

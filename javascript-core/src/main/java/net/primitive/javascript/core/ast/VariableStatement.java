@@ -26,9 +26,11 @@ public class VariableStatement extends Statement {
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		for (VariableDeclaration variableDeclaration : variableDeclarations) {
-			visitor.visitVariableDeclaration(variableDeclaration);
-		}
+		visitor.visitVariableStatement(this);
+//		for (VariableDeclaration variableDeclaration : variableDeclarations) {
+//			variableDeclaration.accept(visitor);
+////			visitor.visitVariableDeclaration(variableDeclaration);
+//		}
 	}
 
 }

@@ -1,8 +1,28 @@
 package net.primitive.javascript.core;
 
+import net.primitive.javascript.core.natives.JSBoolean;
+import net.primitive.javascript.core.natives.JSNumber;
+import net.primitive.javascript.core.natives.JSString;
+
 public class Convertions {
 
 	private Convertions() {
+	}
+
+	public static Object toObject(Object object) {
+		if (object == null || object == Undefined.Value) {
+			throw new TypeErrorException();
+		}
+		if (object instanceof Boolean) {
+			return new JSBoolean((Boolean) object);
+		}
+		if (object instanceof Number) {
+			return new JSNumber((Number) object);
+		}
+		if (object instanceof String) {
+			return new JSString((String) object);
+		}
+		return object;
 	}
 
 	// TODO ale gowno, co zrobic kiedy mamy javowy typ
