@@ -1,99 +1,15 @@
 package net.primitive.javascript.core;
 
 import java.util.HashMap;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import java.util.Map;
 
 public class ScriptableObject implements Scriptable {
 
-	private static final Object NotFound = new Object();
+	private final Map<String, PropertyDescriptor> associatedProperties = new HashMap<String, PropertyDescriptor>();
 
-	private HashMap<Object, ScriptableObjectProperty> associatedValues = new HashMap<Object, ScriptableObjectProperty>();
+	private boolean extensible = true;
 
 	private Scriptable prototype;
-
-	private Scriptable parentScope;
-
-	@Override
-	public String getClassName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ScriptableObjectProperty get(String name) {
-		return get(name, null);
-	}
-
-	public ScriptableObjectProperty get(String name, Scriptable start) {
-
-		Object value = NotFound;
-
-		if (start != null) {
-			value = start.get(name);
-		}
-
-		if (value == NotFound) {
-
-			value = associatedValues.get(name);
-
-			if (value == null) {
-				value = NotFound;
-			}
-		}
-
-		if (value == NotFound && prototype != null) {
-			// lookup property scope
-			value = get(name, prototype);
-		}
-
-		if (value == NotFound && parentScope != null) {
-			// looking up parent scope
-			value = get(name, parentScope);
-		}
-
-		return (ScriptableObjectProperty) value;
-	}
-
-	@Override
-	public ScriptableObjectProperty get(int index) {
-		return associatedValues.get(index);
-	}
-
-	@Override
-	public boolean has(String name) {
-		return associatedValues.containsKey(name);
-	}
-
-	@Override
-	public boolean has(int index) {
-		return associatedValues.containsKey(index);
-	}
-
-	@Override
-	public ScriptableObjectProperty put(String name, Object value) {
-		ScriptableObjectProperty objectProperty = new ScriptableObjectProperty(
-				this, name, value);
-		associatedValues.put(name, objectProperty);
-		return objectProperty;
-	}
-
-	@Override
-	public ScriptableObjectProperty put(int index, Object value) {
-		// associatedValues.put(index, value);
-		return null;
-	}
-
-	@Override
-	public void delete(String name) {
-		associatedValues.remove(name);
-	}
-
-	@Override
-	public void delete(int index) {
-		associatedValues.remove(index);
-	}
 
 	@Override
 	public Scriptable getPrototype() {
@@ -106,19 +22,88 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public Scriptable getParentScope() {
-		return parentScope;
-	}
-
-	@Override
-	public void setParentScope(Scriptable parent) {
-		parentScope = parent;
-	}
-
-	@Override
-	public Object[] getIds() {
-		// TODO Auto-generated method stub
+	public String getClassname() {
 		return null;
+	}
+
+	@Override
+	public boolean isExtensible() {
+		return extensible;
+	}
+
+	@Override
+	public Object get(String propertyName) {
+		PropertyDescriptor descriptor = getProperty(propertyName);
+		return descriptor.getValue();
+	}
+
+	@Override
+	public PropertyDescriptor getOwnProperty(String propertyName) {
+
+		PropertyDescriptor descriptor = associatedProperties.get(propertyName);
+
+		return descriptor;
+	}
+
+	@Override
+	public PropertyDescriptor getProperty(String propertyName) {
+
+		PropertyDescriptor prop = getOwnProperty(propertyName);
+
+		if (prop != null) {
+			return prop;
+		}
+
+		if (prototype != null) {
+			return prototype.getProperty(propertyName);
+		}
+
+		return null;
+	}
+
+	@Override
+	public void put(String propertyName, Object value, boolean failureHandling) {
+
+		if (canPut(propertyName)) {
+
+			PropertyDescriptor ownDesc = getOwnProperty(propertyName);
+
+			if (PropertyDescriptor.isDataDescriptor(ownDesc)) {
+				ownDesc.setValue(value);
+				return;
+			}
+
+			PropertyDescriptor desc = getProperty(propertyName);
+
+			if (PropertyDescriptor.isAccessorDescriptor(desc)) {
+				desc.setValue(value);
+				return;
+			}
+
+			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this)
+					.isWriteable(true).isEnumerable(true).isConfigurable(true);
+			propertyDescriptor.setValue(value);
+			associatedProperties.put(propertyName, propertyDescriptor);
+		} else if (failureHandling) {
+			throw new TypeErrorException();
+		}
+
+	}
+
+	@Override
+	public boolean canPut(String propertyName) {
+		return isExtensible();
+	}
+
+	@Override
+	public boolean hasProperty(String propertyName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean delete(String propertyName, boolean failureHandling) {
+		return false;
 	}
 
 	@Override
@@ -128,17 +113,33 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public boolean hasInstance(Scriptable instance) {
-		// TODO Auto-generated method stub
+	public boolean defineOwnProperty(String propertyName,
+			PropertyDescriptor desc, boolean failureHandling) {
+		PropertyDescriptor current = getOwnProperty(propertyName);
+
+		if (current == null && !extensible) {
+			if (failureHandling) {
+				throw new TypeErrorException();
+			}
+			return false;
+		}
+
+		if (current == null && extensible) {
+			PropertyDescriptor newDesc = desc.cloneDescriptor(this);
+			associatedProperties.put(propertyName, newDesc);
+			return true;
+		}
+
+		if (!desc.isConfigurable() && !desc.isEnumerable()
+				&& !desc.isWriteable()) {
+			return true;
+		}
+
 		return false;
 	}
 
-	@Override
-	public String toString() {
-		ToStringBuilder builder = new ToStringBuilder(this,
-				ToStringStyle.SHORT_PREFIX_STYLE).append("values",
-				associatedValues);
-		return builder.toString();
+	public void setExtensible(boolean b) {
+		extensible = b;
 	}
 
 }
