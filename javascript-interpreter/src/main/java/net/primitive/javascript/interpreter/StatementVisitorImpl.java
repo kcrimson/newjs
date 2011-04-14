@@ -5,7 +5,7 @@ import static net.primitive.javascript.core.Convertions.toBoolean;
 import java.util.List;
 
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.ScriptableObjectProperty;
+import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
@@ -35,7 +35,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Expression expression = variableDeclaration.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object result = context.getExpressionVisitor().getResult();
-		getScope().put(variableDeclaration.getVariableName(), result);
+		//getScope().put(variableDeclaration.getVariableName(), result);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 				functionDeclaration.getFunctionName(),
 				functionDeclaration.getParameterList(),
 				functionDeclaration.getSourceElements());
-		getScope().put(functionDeclaration.getFunctionName(), jsFunction);
+	//	getScope().put(functionDeclaration.getFunctionName(), jsFunction);
 	}
 
 	@Override
@@ -113,8 +113,8 @@ public class StatementVisitorImpl implements StatementVisitor {
 	}
 
 	private static Object getValue(Object object) {
-		if (object instanceof ScriptableObjectProperty) {
-			return ((ScriptableObjectProperty) object).getValue();
+		if (object instanceof PropertyDescriptor) {
+			return ((PropertyDescriptor) object).getValue();
 		}
 		return object;
 	}

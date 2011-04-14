@@ -49,7 +49,7 @@ public class InterpreterTest {
 
 		interpreter.interpret(new File(javaScriptFile));
 		interpreter.execute(scope);
-		Object object = scope.get("assertResult", null);
+		Object object = scope.get("assertResult");
 		System.out.println(object);
 		assertTrue(Convertions.toBoolean(object));
 

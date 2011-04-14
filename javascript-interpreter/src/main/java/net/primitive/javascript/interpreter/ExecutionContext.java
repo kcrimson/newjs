@@ -21,18 +21,18 @@ public class ExecutionContext {
 	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(
 			this);
 
-//	/**
-//	 * Enter statement execution
-//	 * 
-//	 * @param statement
-//	 */
-//	public void enter(Statement statement) {
-//		System.out.println("enter statement: " + this + "@" + statement);
-//		StatementFrame frame = new StatementFrame();
-//		frame.setStatement(statement);
-//		frame.setScope(currentStatementScope());
-//		callStack.push(frame);
-//	}
+	// /**
+	// * Enter statement execution
+	// *
+	// * @param statement
+	// */
+	// public void enter(Statement statement) {
+	// System.out.println("enter statement: " + this + "@" + statement);
+	// StatementFrame frame = new StatementFrame();
+	// frame.setStatement(statement);
+	// frame.setScope(currentStatementScope());
+	// callStack.push(frame);
+	// }
 
 	public void enter(Statement statement, Scriptable scope) {
 		System.out.println("enter statement: " + this + "@" + statement);
@@ -120,8 +120,8 @@ public class ExecutionContext {
 				CatchClause catchStatement = (CatchClause) ((TryStatement) statement)
 						.getCatchStatement();
 				ScriptableObject scope = new ScriptableObject();
-				scope.setParentScope(frame.getScope());
-				scope.put(catchStatement.getIdentifier(), exceptionObject);
+				scope.put(catchStatement.getIdentifier(), exceptionObject,
+						false);
 				// enter(scope);
 				catchStatement.accept(getStatementVisitor());
 				// exitScope();

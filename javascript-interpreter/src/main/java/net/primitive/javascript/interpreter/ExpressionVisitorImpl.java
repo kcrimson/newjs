@@ -5,7 +5,7 @@ import java.util.List;
 import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
-import net.primitive.javascript.core.ScriptableObjectProperty;
+import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
@@ -68,7 +68,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		// System.out.println("visitIndentifier " +
 		// identifier.getIdentfierName());
 
-		ScriptableObjectProperty property = getScope().get(
+		PropertyDescriptor property = getScope().getProperty(
 				identifier.getIdentfierName());
 		result = property;
 	}
@@ -80,7 +80,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Object value = result;
 		ExpressionVisitor leftVisitor = context.getExpressionVisitor();
 		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
-		ScriptableObjectProperty property = (ScriptableObjectProperty) result;
+		PropertyDescriptor property = (PropertyDescriptor) result;
 		property.setValue(value);
 	}
 
@@ -132,13 +132,13 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitCallExpression(CallExpression callExpression) {
 		Expression memberExpression = callExpression.getMemberExpression();
 		memberExpression.accept(this);
-		ScriptableObjectProperty result2 = (ScriptableObjectProperty) result;
-		Scriptable thisObj = result2.getScope();
+		PropertyDescriptor result2 = (PropertyDescriptor) result;
+		// Scriptable thisObj = result2.getScope();
 		ScriptableObject scope = new ScriptableObject();
-		scope.setParentScope(thisObj);
+		// scope.setParentScope(thisObj);
 		Function function = (Function) getValue(result2);
 		context.enter(scope);
-		result = function.call(scope, thisObj, null);
+		// result = function.call(scope, thisObj, null);
 		context.exitScope();
 	}
 
@@ -148,7 +148,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), getValue(result));
+			scriptableObject.put((String) pair.getName(), getValue(result),
+					false);
 		}
 		result = scriptableObject;
 	}
@@ -172,8 +173,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	}
 
 	private static Object getValue(Object object) {
-		if (object instanceof ScriptableObjectProperty) {
-			return ((ScriptableObjectProperty) object).getValue();
+		if (object instanceof PropertyDescriptor) {
+			return ((PropertyDescriptor) object).getValue();
 		}
 		return object;
 	}
