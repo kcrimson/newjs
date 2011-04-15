@@ -82,4 +82,8 @@ public class Reference {
 		Object obj = Convertions.toObject(base);
 		return null;
 	}
+
+	public void setBase(Object value) {
+		base = value;		
+	}
 }

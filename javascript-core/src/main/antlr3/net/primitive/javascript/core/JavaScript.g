@@ -20,28 +20,24 @@ import net.primitive.javascript.core.ast.*;
 package net.primitive.javascript.core;
 }
 
-program returns [Program result]
+@members {
+public Program program;
+}
+
+program
   :
   
   {
-   $result = new Program();
+   program = new Program();
   }
-  LT!* sourceElements 
-                     {
-                      $result.setSourceElements($sourceElements.result);
-                     }
-  LT!* EOF!
+  LT!* sourceElements LT!* EOF!
   ;
 
-sourceElements returns [List result]
+sourceElements
   :
-  
-  {
-   $result = new ArrayList();
-  }
   (LT!* sourceElement 
                      {
-                      $result.add($sourceElement.result);
+                      program.addAstNode($sourceElement.result);
                      })*
   ;
 
@@ -86,11 +82,7 @@ formalParameterList returns [List result]
 
 functionBody returns [List result]
   :
-  '{' LT!* sourceElements 
-                         {
-                          $result = $sourceElements.result;
-                         }
-  LT!* '}'
+  '{' LT!* sourceElements LT!* '}'
   ;
 
 // statements
@@ -101,10 +93,7 @@ statement returns [Statement result]
                 {
                  $result = $statementBlock.result;
                 }
-  | variableStatement 
-                     {
-                      $result = $variableStatement.result;
-                     }
+  | variableStatement
   | emptyStatement
   | expressionStatement 
                        {
@@ -176,31 +165,24 @@ statementList returns [List < Statement > result]
                      })*
   ;
 
-variableStatement returns [Statement result]
+variableStatement
   :
-  'var' LT!* variableDeclarationList 
-                                    {
-                                     $result = new VariableStatement($variableDeclarationList.result);
-                                    }
+  'var' LT!* variableDeclarationList
   (
     LT
     | ';'
   )!
   ;
 
-variableDeclarationList returns [List result]
+variableDeclarationList
   :
-  
-  {
-   $result = new ArrayList();
-  }
   v1=variableDeclaration 
                         {
-                         $result.add($v1.result);
+                         program.addAstNode($v1.result);
                         }
   (LT!* ',' LT!* v2=variableDeclaration 
                                        {
-                                        $result.add($v2.result);
+                                        program.addAstNode($v2.result);
                                        })*
   ;
 
@@ -1046,12 +1028,20 @@ List nameValuePairs = new ArrayList();
                                                               }
   ;
 
+//propertyAssignment
+//  :
+//  'get' LT!* propertyName LT!* '(' LT!* ')' LT!* functionBody
+//  | 'set' LT!* propertyName LT!* '(' LT!* Identifier LT!* ')' LT!* functionBody
+//  ;
+
 propertyNameAndValue returns [NameValuePair result]
   :
   propertyName LT!* ':' LT!* assignmentExpression 
                                                  {
                                                   $result = new NameValuePair($propertyName.text, $assignmentExpression.result);
                                                  }
+  | 'get' LT!* propertyName LT!* '(' LT!* ')' LT!* functionBody
+  | 'set' LT!* propertyName LT!* '(' LT!* Identifier LT!* ')' LT!* functionBody
   ;
 
 propertyName

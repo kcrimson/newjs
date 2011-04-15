@@ -1,6 +1,7 @@
 package net.primitive.javascript.interpreter;
 
-import static net.primitive.javascript.interpreter.ExecutionContext.exitContext;
+import static net.primitive.javascript.interpreter.RuntimeContext.enterContext;
+import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,17 +30,16 @@ public class Interpreter {
 
 		JavaScriptParser javaScriptParser = new JavaScriptParser(
 				commonTokenStream);
-		program = javaScriptParser.program().result;
+		javaScriptParser.program();
+		program = javaScriptParser.program;
 
 	}
 
-	public void execute(Scriptable scope) {
-		ExecutionContext currentContext = ExecutionContext.enterContext();
-		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext,
-				scope);
+	public void execute(Scriptable globalObject) {
+		RuntimeContext currentContext = enterContext(globalObject);
 
-		// pushing this object as scope
-		currentContext.enter(scope);
+		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext,
+				globalObject);
 
 		program.accept(visitor);
 

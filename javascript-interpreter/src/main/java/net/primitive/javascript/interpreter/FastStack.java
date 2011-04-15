@@ -26,4 +26,8 @@ public class FastStack<T> {
 		return topSlot != null ? topSlot.item : null;
 	}
 
+	public boolean isEmpty() {
+		return topSlot == null;
+	}
+
 }

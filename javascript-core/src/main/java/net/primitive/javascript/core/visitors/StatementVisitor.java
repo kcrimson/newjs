@@ -13,7 +13,7 @@ import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.VariableStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 
-public interface StatementVisitor extends SourceElementVisitor {
+public interface StatementVisitor {
 
 	void visitVariableDeclaration(VariableDeclaration variableDeclaration);
 

@@ -1,32 +1,35 @@
 package net.primitive.javascript.interpreter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.primitive.javascript.core.Undefined;
 
 public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
+	private Map<String, Reference> bindings = new HashMap<String, Reference>();
+
 	@Override
 	public boolean hasBinding(String name) {
-		// TODO Auto-generated method stub
-		return false;
+		return bindings.containsKey(name);
 	}
 
 	@Override
 	public void createMutableBinding(String name, boolean d) {
-		// TODO Auto-generated method stub
-
+		Reference ref = new Reference(Undefined.Value, name, true);
+		bindings.put(name, ref);
 	}
 
 	@Override
 	public void setMutableBinding(String name, Object value,
 			boolean useStrictMode) {
-		// TODO Auto-generated method stub
-
+		Reference ref = bindings.get(name);
+		ref.setBase(value);
 	}
 
 	@Override
-	public Object getBindingValue(String name, boolean useStrictMode) {
-		// TODO Auto-generated method stub
-		return null;
+	public Reference getBindingValue(String name, boolean useStrictMode) {
+		return bindings.get(name);
 	}
 
 	@Override
@@ -44,7 +47,7 @@ public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
 	}
 
-	public void InitializeImmutableBinding(String name, Object value) {
+	public void initializeImmutableBinding(String name, Object value) {
 
 	}
 

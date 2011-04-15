@@ -3,9 +3,9 @@ package net.primitive.javascript.interpreter;
 import java.util.List;
 
 import net.primitive.javascript.core.Function;
+import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
-import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
@@ -25,16 +25,11 @@ import net.primitive.javascript.core.visitors.ExpressionVisitor;
 public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	private Object result;
-	private final ExecutionContext context;
+	private final RuntimeContext context;
 
-	protected ExpressionVisitorImpl(ExecutionContext context) {
+	protected ExpressionVisitorImpl(RuntimeContext context) {
 		super();
 		this.context = context;
-	}
-
-	@Override
-	public Scriptable getScope() {
-		return context.currentStatementScope();
 	}
 
 	public Object getResult() {
@@ -68,9 +63,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		// System.out.println("visitIndentifier " +
 		// identifier.getIdentfierName());
 
-		PropertyDescriptor property = getScope().getProperty(
-				identifier.getIdentfierName());
-		result = property;
+//		PropertyDescriptor property = getScope().getProperty(
+//				identifier.getIdentfierName());
+//		result = property;
 	}
 
 	@Override
@@ -118,9 +113,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 			for (Expression suffix : suffixes) {
 				value = getValue(result);
 				if (value instanceof Scriptable) {
-					context.enter((Scriptable) value);
-					suffix.accept(visitor);
-					context.exitScope();
+//					context.enter((Scriptable) value);
+//					suffix.accept(visitor);
+//					context.exitScope();
 				}
 				value = result;
 			}
@@ -137,9 +132,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scope = new ScriptableObject();
 		// scope.setParentScope(thisObj);
 		Function function = (Function) getValue(result2);
-		context.enter(scope);
+//		context.enter(scope);
 		// result = function.call(scope, thisObj, null);
-		context.exitScope();
+//		context.exitScope();
 	}
 
 	@Override
@@ -163,7 +158,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitThis(This this1) {
-		result = context.currentScope();
+		//result = context.currentScope();
 	}
 
 	@Override

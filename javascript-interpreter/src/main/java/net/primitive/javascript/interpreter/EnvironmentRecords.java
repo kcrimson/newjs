@@ -8,7 +8,7 @@ public interface EnvironmentRecords {
 
 	void setMutableBinding(String name, Object value, boolean useStrictMode);
 
-	Object getBindingValue(String name, boolean useStrictMode);
+	Reference getBindingValue(String name, boolean useStrictMode);
 
 	boolean deleteBinding(String name);
 

@@ -172,7 +172,7 @@ public class PropertyDescriptor {
 	private final class DataDescriptorValueHolder implements
 			DescriptorValueHolder {
 
-		private Object value;
+		private Object value = Undefined.Value;
 		private boolean valueSet;
 		private boolean writeable;
 

@@ -5,21 +5,18 @@ import java.util.List;
 
 public class AstNode {
 
-	private AstNode parentAstNode;
-
 	private final List<AstNode> childNodes = new ArrayList<AstNode>();
 
 	public AstNode() {
 		super();
 	}
 
-	public void setParentAstNode(AstNode node) {
-		parentAstNode = node;
-		parentAstNode.addChildAstNode(this);
+	public void addAstNode(AstNode astNode) {
+		childNodes.add(astNode);
 	}
 
-	public void addChildAstNode(AstNode astNode) {
-		childNodes.add(astNode);
+	public List<AstNode> getAstNodes() {
+		return childNodes;
 	}
 
 }

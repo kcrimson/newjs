@@ -14,7 +14,7 @@ import net.primitive.javascript.core.ast.This;
 import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 
-public interface ExpressionVisitor extends SourceElementVisitor {
+public interface ExpressionVisitor {
 
 	void visitBinaryExpression(BinaryExpression binaryExpression);
 

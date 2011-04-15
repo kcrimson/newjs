@@ -24,18 +24,26 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
-	private final ExecutionContext context;
+	private final RuntimeContext context;
 
-	protected StatementVisitorImpl(ExecutionContext context) {
+	protected StatementVisitorImpl(RuntimeContext context) {
 		this.context = context;
 	}
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
+		ExecutionContext executionContext = context.currentExecutionContext();
+		LexicalEnvironment env = executionContext.getVariableEnvironment();
+		EnvironmentRecords environmentRecords = env.getEnvironmentRecords();
+		if(environmentRecords.hasBinding(variableDeclaration.getVariableName())){
+			
+		} else{
+			environmentRecords.createMutableBinding(variableDeclaration.getVariableName(), false);
+		}
 		Expression expression = variableDeclaration.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object result = context.getExpressionVisitor().getResult();
-		//getScope().put(variableDeclaration.getVariableName(), result);
+		environmentRecords.setMutableBinding(variableDeclaration.getVariableName(), result, true);
 	}
 
 	@Override
@@ -147,9 +155,9 @@ public class StatementVisitorImpl implements StatementVisitor {
 		List<VariableDeclaration> variableDeclarations = variableStatement
 				.getVariableDeclarations();
 		for (VariableDeclaration declaration : variableDeclarations) {
-			context.enter(declaration, context.currentStatementScope());
+			context.enter(declaration);
 			declaration.accept(this);
-			context.exitStatement();
+			context.exit();
 		}
 	}
 

@@ -97,8 +97,7 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public boolean hasProperty(String propertyName) {
-		// TODO Auto-generated method stub
-		return false;
+		return getProperty(propertyName) != null;
 	}
 
 	@Override

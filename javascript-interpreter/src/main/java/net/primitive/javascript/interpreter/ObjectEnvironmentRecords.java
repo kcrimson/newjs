@@ -1,42 +1,59 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.Undefined;
+
 public class ObjectEnvironmentRecords implements EnvironmentRecords {
 
-	@Override
-	public boolean hasBinding(String name) {
-		// TODO Auto-generated method stub
-		return false;
+	private final Scriptable bindingObject;
+
+	private final boolean provideThis;
+
+	public ObjectEnvironmentRecords(Scriptable bindingObject,
+			boolean provideThis) {
+		super();
+		this.bindingObject = bindingObject;
+		this.provideThis = provideThis;
 	}
 
 	@Override
-	public void createMutableBinding(String name, boolean d) {
-		// TODO Auto-generated method stub
+	public boolean hasBinding(String name) {
+		return bindingObject.hasProperty(name);
+	}
 
+	@Override
+	public void createMutableBinding(String name, boolean configValue) {
+		if (!bindingObject.hasProperty(name)) {
+			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
+					bindingObject).isConfigurable(configValue)
+					.isWriteable(true).isEnumerable(true);
+			bindingObject.defineOwnProperty(name, propertyDescriptor, false);
+		}
 	}
 
 	@Override
 	public void setMutableBinding(String name, Object value,
 			boolean useStrictMode) {
-		// TODO Auto-generated method stub
-
+		bindingObject.put(name, value, useStrictMode);
 	}
 
 	@Override
-	public Object getBindingValue(String name, boolean useStrictMode) {
-		// TODO Auto-generated method stub
-		return null;
+	public Reference getBindingValue(String name, boolean useStrictMode) {
+		return new Reference(bindingObject.get(name), name, useStrictMode);
 	}
 
 	@Override
 	public boolean deleteBinding(String name) {
-		// TODO Auto-generated method stub
-		return false;
+		return bindingObject.delete(name, false);
 	}
 
 	@Override
 	public Object implicitThisValue() {
-		// TODO Auto-generated method stub
-		return null;
+		if (provideThis) {
+			return bindingObject;
+		}
+		return Undefined.Value;
 	}
 
 }
