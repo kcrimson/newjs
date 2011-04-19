@@ -33,14 +33,13 @@ public class ObjectEnvironmentRecords implements EnvironmentRecords {
 	}
 
 	@Override
-	public void setMutableBinding(String name, Object value,
-			boolean useStrictMode) {
-		bindingObject.put(name, value, useStrictMode);
+	public void setMutableBinding(String name, Object value) {
+		bindingObject.put(name, value);
 	}
 
 	@Override
-	public Reference getBindingValue(String name, boolean useStrictMode) {
-		return new Reference(bindingObject.get(name), name, useStrictMode);
+	public Reference getBindingValue(String name) {
+		return new Reference(bindingObject.get(name), name);
 	}
 
 	@Override

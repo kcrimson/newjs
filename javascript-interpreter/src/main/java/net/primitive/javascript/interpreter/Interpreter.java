@@ -30,20 +30,20 @@ public class Interpreter {
 
 		JavaScriptParser javaScriptParser = new JavaScriptParser(
 				commonTokenStream);
-		javaScriptParser.program();
-		program = javaScriptParser.program;
+		program = javaScriptParser.program().result;
 
 	}
 
-	public void execute(Scriptable globalObject) {
+	public EnvironmentRecords execute(Scriptable globalObject) {
 		RuntimeContext currentContext = enterContext(globalObject);
 
-		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext,
-				globalObject);
+		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext);
 
 		program.accept(visitor);
 
 		exitContext();
+
+		return currentContext.getVariables();
 	}
 
 }

@@ -7,19 +7,11 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class CaseClauseStatement extends Statement {
 
 	private final Expression expression;
-	private final List<Statement> statements;
+	private final AstNodeList statements;
 
-	public CaseClauseStatement(Expression expression, List<Statement> statements) {
+	public CaseClauseStatement(Expression expression, AstNodeList astNodeList) {
 		this.expression = expression;
-		this.statements = statements;
-		for (Statement statement : statements) {
-			statement.setParentAstNode(this);
-		}
-	}
-
-	@Override
-	public void accept(StatementVisitor visitor) {
-		throw new UnsupportedOperationException("acceptCaseClauseStatement");
+		this.statements = astNodeList;
 	}
 
 	/**
@@ -32,8 +24,12 @@ public class CaseClauseStatement extends Statement {
 	/**
 	 * @return the statements
 	 */
-	public List<Statement> getStatements() {
+	public AstNodeList getStatements() {
 		return statements;
 	}
 
+	@Override
+	public void accept(StatementVisitor visitor) {
+		throw new UnsupportedOperationException("acceptCaseClauseStatement");
+	}
 }

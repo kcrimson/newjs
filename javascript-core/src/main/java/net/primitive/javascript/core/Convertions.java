@@ -302,4 +302,8 @@ public class Convertions {
 		return sum;
 	}
 
+	public static String toString(Object val) {
+		return val.toString();
+	}
+
 }

@@ -5,17 +5,30 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class WithStatement extends Statement {
 
 	private final Expression expression;
-	private final Statement statement;
+	private final AstNodeList statement;
 
-	public WithStatement(Expression expression, Statement statement) {
+	public WithStatement(Expression expression, AstNode astNode) {
 		this.expression = expression;
-		this.statement = statement;
+		this.statement = AstNodeList.wrapAstNode(astNode);
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("acceptWithStatement");
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+
+	/**
+	 * @return the statement
+	 */
+	public AstNodeList getStatement() {
+		return statement;
 	}
 
 }

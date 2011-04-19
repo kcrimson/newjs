@@ -14,13 +14,11 @@ public class Reference {
 
 	private Object base;
 	private final String referencedName;
-	private final boolean strictReference;
 
-	public Reference(Object base, String referencedName, boolean strictReference) {
+	public Reference(Object base, String referencedName) {
 		super();
 		this.base = base;
 		this.referencedName = referencedName;
-		this.strictReference = strictReference;
 	}
 
 	/**
@@ -37,13 +35,6 @@ public class Reference {
 		return referencedName;
 	}
 
-	/**
-	 * @return the strictReference
-	 */
-	public boolean isStrictReference() {
-		return strictReference;
-	}
-
 	public boolean hasPrimitiveBase() {
 		return base instanceof String || base instanceof Number
 				|| base instanceof Boolean;
@@ -58,7 +49,8 @@ public class Reference {
 	}
 
 	public static Object getValue(Object object) {
-		if (object instanceof Reference) {
+		// for speed improvements using direct class compare
+		if (object != null && Reference.class.equals(object.getClass())) {
 			Reference ref = (Reference) object;
 			if (ref.isUnresolvableReference()) {
 				throw new ReferenceErrorException();
@@ -72,8 +64,8 @@ public class Reference {
 					return ((Scriptable) base).get(ref.getReferencedName());
 				}
 			}
-			return ((EnvironmentRecords) base).getBindingValue(
-					ref.getReferencedName(), ref.isStrictReference());
+			return ((EnvironmentRecords) base).getBindingValue(ref
+					.getReferencedName());
 		}
 		return object;
 	}
@@ -84,6 +76,18 @@ public class Reference {
 	}
 
 	public void setBase(Object value) {
-		base = value;		
+		base = value;
+	}
+
+	public static void putValue(Object object, Object value) {
+		if (!(object instanceof Reference)) {
+			throw new ReferenceErrorException();
+		}
+
+		Reference reference = (Reference) object;
+		Object base = reference.getBase();
+
+		((EnvironmentRecords) base).setMutableBinding(
+				reference.getReferencedName(), value);
 	}
 }

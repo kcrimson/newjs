@@ -15,11 +15,11 @@ public class SwitchStatement extends Statement {
 		this.expression = expression;
 		this.clauses = clauses;
 		for (Statement statement : clauses) {
-			statement.setParentAstNode(this);
+			statement.setParentNode(this);
 		}
 		this.defaultClause = defaultClause;
 		for (Statement statement : defaultClause) {
-			statement.setParentAstNode(this);
+			statement.setParentNode(this);
 		}
 	}
 

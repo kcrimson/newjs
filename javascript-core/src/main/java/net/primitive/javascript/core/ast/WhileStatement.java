@@ -5,12 +5,12 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class WhileStatement extends Statement {
 
 	private final Expression expression;
-	private final Statement statement;
+	private final AstNodeList statements;
 
-	public WhileStatement(Expression expression, Statement statement) {
+	public WhileStatement(Expression expression, AstNodeList astNodeList) {
 		this.expression = expression;
-		this.statement = statement;
-		statement.setParentAstNode(this);
+		this.statements = astNodeList;
+		astNodeList.setParentNode(this);
 	}
 
 	@Override
@@ -28,8 +28,8 @@ public class WhileStatement extends Statement {
 	/**
 	 * @return the statement
 	 */
-	public Statement getStatement() {
-		return statement;
+	public AstNodeList getStatements() {
+		return statements;
 	}
 
 }

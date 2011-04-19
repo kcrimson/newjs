@@ -5,17 +5,17 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class IfStatement extends Statement {
 
 	private final Expression expression;
-	private final Statement ifStatement;
-	private final Statement elseStatement;
+	private final AstNodeList ifStatement;
+	private final AstNodeList elseStatement;
 
-	public IfStatement(Expression expression, Statement ifStatement,
-			Statement elseStatement) {
+	public IfStatement(Expression expression, AstNodeList ifStatement,
+			AstNodeList elseStatement) {
 		this.expression = expression;
 		this.ifStatement = ifStatement;
-		ifStatement.setParentAstNode(this);
+		ifStatement.setParentNode(this);
 		this.elseStatement = elseStatement;
 		if (elseStatement != null) {
-			elseStatement.setParentAstNode(this);
+			elseStatement.setParentNode(this);
 		}
 	}
 
@@ -34,14 +34,14 @@ public class IfStatement extends Statement {
 	/**
 	 * @return the ifStatement
 	 */
-	public Statement getIfStatement() {
+	public AstNodeList getIfStatement() {
 		return ifStatement;
 	}
 
 	/**
 	 * @return the elseStatement
 	 */
-	public Statement getElseStatement() {
+	public AstNodeList getElseStatement() {
 		return elseStatement;
 	}
 

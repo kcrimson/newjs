@@ -39,7 +39,7 @@ public interface Scriptable {
 
 	PropertyDescriptor getProperty(String propertyName);
 
-	void put(String propertyName, Object value, boolean failureHandling);
+	void put(String propertyName, Object value);
 
 	boolean canPut(String propertyName);
 

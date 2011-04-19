@@ -1,9 +1,8 @@
-package net.primitive.javascript;
+package net.primitive.javascript.interpreter;
 
 import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.ReferenceErrorException;
 import net.primitive.javascript.core.Undefined;
-import net.primitive.javascript.interpreter.Reference;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -26,7 +25,7 @@ public class ReferenceTest {
 
 	@Test
 	public void should_throw_reference_error() {
-		Reference ref = new Reference(Undefined.Value, "obj", false);
+		Reference ref = new Reference(Undefined.Value, "obj");
 
 		expectedException.expect(ReferenceErrorException.class);
 
@@ -37,7 +36,7 @@ public class ReferenceTest {
 	@Test
 	public void should_return_unreferenced_value() {
 		JSObject jsObject = new JSObject();
-		Reference ref = new Reference(jsObject, "obj", false);
+		Reference ref = new Reference(jsObject, "obj");
 
 		Object object = Reference.getValue(ref);
 

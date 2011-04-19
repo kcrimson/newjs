@@ -4,13 +4,13 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class DoWhileStatement extends Statement {
 
-	private final Statement statement;
+	private final AstNodeList statements;
 	private final Expression expression;
 
-	public DoWhileStatement(Statement statement, Expression expression) {
-		this.statement = statement;
+	public DoWhileStatement(AstNode statements, Expression expression) {
+		this.statements = AstNodeList.wrapAstNode(statements);
 		this.expression = expression;
-		statement.setParentAstNode(this);
+		statements.setParentNode(this);
 	}
 
 	@Override
@@ -21,8 +21,8 @@ public class DoWhileStatement extends Statement {
 	/**
 	 * @return the statement
 	 */
-	public Statement getStatement() {
-		return statement;
+	public AstNodeList getStatements() {
+		return statements;
 	}
 
 	/**

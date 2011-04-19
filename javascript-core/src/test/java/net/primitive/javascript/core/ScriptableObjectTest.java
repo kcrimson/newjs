@@ -18,7 +18,7 @@ public class ScriptableObjectTest {
 
 		ScriptableObject scriptableObject = new ScriptableObject();
 
-		scriptableObject.put("obj", "obj", false);
+		scriptableObject.put("obj", "obj");
 
 		PropertyDescriptor property = scriptableObject.getProperty("obj");
 
@@ -33,7 +33,9 @@ public class ScriptableObjectTest {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		scriptableObject.setExtensible(false);
 
-		scriptableObject.put("obj", "obj", false);
+		expectedException.expect(TypeErrorException.class);
+
+		scriptableObject.put("obj", "obj");
 
 		PropertyDescriptor property = scriptableObject.getProperty("obj");
 
@@ -48,7 +50,7 @@ public class ScriptableObjectTest {
 		expectedException.expect(TypeErrorException.class);
 
 		try {
-			scriptableObject.put("obj", "obj", true);
+			scriptableObject.put("obj", "obj");
 		} finally {
 			PropertyDescriptor property = scriptableObject.getProperty("obj");
 
@@ -59,8 +61,8 @@ public class ScriptableObjectTest {
 	@Test
 	public void should_overwrite_property_with_data_descriptor() {
 		ScriptableObject scriptableObject = new ScriptableObject();
-		scriptableObject.put("obj", "value0", false);
-		scriptableObject.put("obj", "value1", false);
+		scriptableObject.put("obj", "value0");
+		scriptableObject.put("obj", "value1");
 
 		PropertyDescriptor property = scriptableObject.getProperty("obj");
 		assertEquals("value1", property.getValue());
@@ -69,12 +71,12 @@ public class ScriptableObjectTest {
 	@Test
 	public void should_put_property_in_prototype_chain() {
 		ScriptableObject prototype = new ScriptableObject();
-		prototype.put("name", "value", false);
+		prototype.put("name", "value");
 
 		ScriptableObject object = new ScriptableObject();
 		object.setPrototype(prototype);
 
-		object.put("name", "changed", false);
+		object.put("name", "changed");
 
 		assertEquals("value", prototype.get("name"));
 		assertEquals("changed", object.get("name"));
@@ -83,7 +85,7 @@ public class ScriptableObjectTest {
 	@Test
 	public void should_get_property_in_prototype_chain() {
 		ScriptableObject prototype = new ScriptableObject();
-		prototype.put("name", "value", false);
+		prototype.put("name", "value");
 
 		ScriptableObject object = new ScriptableObject();
 		object.setPrototype(prototype);

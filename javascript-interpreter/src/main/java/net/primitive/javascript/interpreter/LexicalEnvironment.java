@@ -1,6 +1,7 @@
 package net.primitive.javascript.interpreter;
 
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.Undefined;
 
 public class LexicalEnvironment {
 
@@ -21,8 +22,6 @@ public class LexicalEnvironment {
 	public LexicalEnvironment getOuterLexicalEnvironment() {
 		return outerLexicalEnvironment;
 	}
-	
-	
 
 	/**
 	 * @return the environmentRecords
@@ -41,5 +40,23 @@ public class LexicalEnvironment {
 			LexicalEnvironment outerLexicalEnvironment) {
 		return new LexicalEnvironment(outerLexicalEnvironment,
 				new DeclarativeEnvironmentRecords());
+	}
+
+	public static Reference getIdentifierReference(LexicalEnvironment env,
+			String name) {
+		if (env == null) {
+			return new Reference(Undefined.Value, name);
+		}
+
+		EnvironmentRecords records = env.getEnvironmentRecords();
+		if (records.hasBinding(name)) {
+			// TODO look at possible ways to cache Reference instances,
+			// otherwise we create Reference every time we call
+			// getIdentifierReference
+			return new Reference(records, name);
+		}
+
+		LexicalEnvironment outerenv = env.getOuterLexicalEnvironment();
+		return getIdentifierReference(outerenv, name);
 	}
 }

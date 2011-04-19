@@ -1,22 +1,32 @@
 package net.primitive.javascript.core.ast;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * Represents AST node
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
+public abstract class AstNode {
 
-public class AstNode {
-
-	private final List<AstNode> childNodes = new ArrayList<AstNode>();
+	private AstNode parentNode;
 
 	public AstNode() {
 		super();
 	}
 
-	public void addAstNode(AstNode astNode) {
-		childNodes.add(astNode);
+	/**
+	 * @return the parent
+	 */
+	public AstNode getParentNode() {
+		return parentNode;
 	}
 
-	public List<AstNode> getAstNodes() {
-		return childNodes;
+	/**
+	 * @param parent
+	 *            the parent to set
+	 */
+	public void setParentNode(AstNode parent) {
+		this.parentNode = parent;
 	}
 
 }

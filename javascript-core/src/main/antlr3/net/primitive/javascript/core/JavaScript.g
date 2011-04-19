@@ -20,28 +20,32 @@ import net.primitive.javascript.core.ast.*;
 package net.primitive.javascript.core;
 }
 
-@members {
-public Program program;
-}
-
-program
+program returns [Program result]
   :
   
   {
-   program = new Program();
+   $result = new Program();
   }
-  LT!* sourceElements LT!* EOF!
+  LT!* sourceElements 
+                     {
+                      $result.addAstNode($sourceElements.result);
+                     }
+  LT!* EOF!
   ;
 
-sourceElements
+sourceElements returns [AstNodeList result]
   :
+  
+  {
+   $result = new AstNodeList();
+  }
   (LT!* sourceElement 
                      {
-                      program.addAstNode($sourceElement.result);
+                      $result.addAstNode($sourceElement.result);
                      })*
   ;
 
-sourceElement returns [SourceElement result]
+sourceElement returns [AstNode result]
   :
   functionDeclaration 
                      {
@@ -55,7 +59,7 @@ sourceElement returns [SourceElement result]
 
 // functions
 
-functionDeclaration returns [Statement result]
+functionDeclaration returns [AstNode result]
   :
   'function' LT!* Identifier LT!* formalParameterList LT!* functionBody 
                                                                        {
@@ -80,20 +84,27 @@ formalParameterList returns [List result]
                                   })*))? LT!* ')'
   ;
 
-functionBody returns [List result]
+functionBody returns [AstNodeList result]
   :
-  '{' LT!* sourceElements LT!* '}'
+  '{' LT!* sourceElements 
+                         {
+                          $result = $sourceElements.result;
+                         }
+  LT!* '}'
   ;
-
+  
 // statements
 
-statement returns [Statement result]
+statement returns [AstNode result]
   :
   statementBlock 
                 {
                  $result = $statementBlock.result;
                 }
-  | variableStatement
+  | variableStatement 
+                     {
+                      $result = $variableStatement.result;
+                     }
   | emptyStatement
   | expressionStatement 
                        {
@@ -141,48 +152,55 @@ statement returns [Statement result]
                 }
   ;
 
-statementBlock returns [Statement result]
+statementBlock returns [AstNodeList result]
   :
   '{' LT!* statementList? LT!* '}' 
                                   {
-                                   $result = new StatementBlock($statementList.result);
+                                   $result = $statementList.result;
                                   }
   ;
 
-statementList returns [List < Statement > result]
+statementList returns [AstNodeList result]
   :
   
   {
-   $result = new ArrayList<Statement>();
+   $result = new AstNodeList();
   }
   st1=statement 
                {
-                $result.add($st1.result);
+                $result.addAstNode($st1.result);
                }
   (LT!* st2=statement 
                      {
-                      $result.add($st2.result);
+                      $result.addAstNode($st2.result);
                      })*
   ;
 
-variableStatement
+variableStatement returns [AstNode result]
   :
-  'var' LT!* variableDeclarationList
+  'var' LT!* variableDeclarationList 
+                                    {
+                                     $result = $variableDeclarationList.result;
+                                    }
   (
     LT
     | ';'
   )!
   ;
 
-variableDeclarationList
+variableDeclarationList returns [AstNodeList result]
   :
+  
+  {
+   $result = new AstNodeList();
+  }
   v1=variableDeclaration 
                         {
-                         program.addAstNode($v1.result);
+                         $result.addAstNode($v1.result);
                         }
   (LT!* ',' LT!* v2=variableDeclaration 
                                        {
-                                        program.addAstNode($v2.result);
+                                        $result.addAstNode($v2.result);
                                        })*
   ;
 
@@ -242,12 +260,12 @@ ifStatement returns [Statement result]
   :
   'if' LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
                                                                                                                {
-                                                                                                                $result = new IfStatement($expression.result, $ifstatement.result,
-                                                                                                                		$elsestatement.result);
+                                                                                                                $result = new IfStatement($expression.result, (AstNodeList)$ifstatement.result,
+                                                                                                                		(AstNodeList)$elsestatement.result);
                                                                                                                }
   ;
 
-iterationStatement returns [Statement result]
+iterationStatement returns [AstNode result]
   :
   doWhileStatement 
                   {
@@ -277,11 +295,11 @@ doWhileStatement returns [Statement result]
   }
   ;
 
-whileStatement returns [Statement result]
+whileStatement returns [AstNode result]
   :
   'while' LT!* '(' LT!* expression LT!* ')' LT!* statement 
                                                           {
-                                                           $result = new WhileStatement($expression.result, $statement.result);
+                                                           $result = new WhileStatement($expression.result, (AstNodeList)$statement.result);
                                                           }
   ;
 
@@ -397,7 +415,7 @@ caseClause returns [CaseClauseStatement result]
                                                      }
   ;
 
-defaultClause returns [List < Statement > result]
+defaultClause returns [AstNodeList result]
   :
   'default' LT!* ':' LT!* statementList? 
                                         {
@@ -427,8 +445,8 @@ tryStatement returns [Statement result]
   )
   
   {
-   $result = new TryStatement($statementBlock.result, $catchClause.result,
-   		$fc2.result);
+   $result = new TryStatement($statementBlock.result, $fc1.result,
+   		$catchClause.result, $fc2.result);
   }
   ;
 
@@ -440,7 +458,7 @@ catchClause returns [Statement result]
                                                                }
   ;
 
-finallyClause returns [Statement result]
+finallyClause returns [AstNodeList result]
   :
   'finally' LT!* statementBlock 
                                {
@@ -1028,20 +1046,12 @@ List nameValuePairs = new ArrayList();
                                                               }
   ;
 
-//propertyAssignment
-//  :
-//  'get' LT!* propertyName LT!* '(' LT!* ')' LT!* functionBody
-//  | 'set' LT!* propertyName LT!* '(' LT!* Identifier LT!* ')' LT!* functionBody
-//  ;
-
 propertyNameAndValue returns [NameValuePair result]
   :
   propertyName LT!* ':' LT!* assignmentExpression 
                                                  {
                                                   $result = new NameValuePair($propertyName.text, $assignmentExpression.result);
                                                  }
-  | 'get' LT!* propertyName LT!* '(' LT!* ')' LT!* functionBody
-  | 'set' LT!* propertyName LT!* '(' LT!* Identifier LT!* ')' LT!* functionBody
   ;
 
 propertyName

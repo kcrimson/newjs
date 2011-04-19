@@ -5,12 +5,12 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class CatchClause extends Statement {
 
 	private final String identifier;
-	private final Statement statement;
+	private final AstNodeList statements;
 
-	public CatchClause(String identifier, Statement statement) {
+	public CatchClause(String identifier, AstNodeList astNode) {
 		this.identifier = identifier;
-		this.statement = statement;
-		statement.setParentAstNode(this);
+		this.statements = astNode;
+		astNode.setParentNode(this);
 	}
 
 	@Override
@@ -28,8 +28,8 @@ public class CatchClause extends Statement {
 	/**
 	 * @return the statement
 	 */
-	public Statement getStatement() {
-		return statement;
+	public AstNodeList getStatement() {
+		return statements;
 	}
 
 }

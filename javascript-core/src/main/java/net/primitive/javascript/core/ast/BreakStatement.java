@@ -19,7 +19,7 @@ public class BreakStatement extends Statement {
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-
+		visitor.visitBreakStatement(this);
 	}
 
 }

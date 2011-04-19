@@ -32,7 +32,7 @@ public class ObjectEnvironmentRecordsTest {
 	@Test
 	public void should_have_object_binding_value() {
 		ScriptableObject bindingObject = new ScriptableObject();
-		bindingObject.put("name", "value", false);
+		bindingObject.put("name", "value");
 		ObjectEnvironmentRecords environmentRecords = new ObjectEnvironmentRecords(
 				bindingObject, false);
 		assertTrue(environmentRecords.hasBinding("name"));
@@ -66,7 +66,7 @@ public class ObjectEnvironmentRecordsTest {
 		ObjectEnvironmentRecords environmentRecords = new ObjectEnvironmentRecords(
 				bindingObject, false);
 		environmentRecords.createMutableBinding("name", false);
-		environmentRecords.setMutableBinding("name", "value", false);
+		environmentRecords.setMutableBinding("name", "value");
 		PropertyDescriptor propertyDescriptor = bindingObject
 				.getOwnProperty("name");
 		assertNotNull(propertyDescriptor);

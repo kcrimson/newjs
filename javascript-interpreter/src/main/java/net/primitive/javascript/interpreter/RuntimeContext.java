@@ -4,6 +4,7 @@ import static net.primitive.javascript.interpreter.LexicalEnvironment.newDeclara
 import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Statement;
+import net.primitive.javascript.interpreter.utils.FastStack;
 
 public class RuntimeContext {
 
@@ -56,9 +57,8 @@ public class RuntimeContext {
 			thisObj = globalObject;
 		} else {
 			ExecutionContext currentContext = callStack.peek();
-			lexEnv = newDeclarativeEnvironment(currentContext
-					.getLexicalEnvironment());
-			varEnv = lexEnv;
+			lexEnv = currentContext.getLexicalEnvironment();
+			varEnv = currentContext.getVariableEnvironment();
 			thisObj = currentContext.getThisBinding();
 		}
 
@@ -97,6 +97,11 @@ public class RuntimeContext {
 
 	public void exit() {
 		callStack.pop();
+	}
+
+	public EnvironmentRecords getVariables() {
+		// TODO Auto-generated method stub
+		return variableEnvironment.getEnvironmentRecords();
 	}
 
 }

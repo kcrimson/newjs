@@ -10,11 +10,6 @@ public class ContinueStatement extends Statement {
 		this.identifier = identifier;
 	}
 
-	@Override
-	public void accept(StatementVisitor visitor) {
-		throw new UnsupportedOperationException("acceptContinueStatement");
-	}
-
 	/**
 	 * @return the identifier
 	 */
@@ -22,4 +17,8 @@ public class ContinueStatement extends Statement {
 		return identifier;
 	}
 
+	@Override
+	public void accept(StatementVisitor visitor) {
+		throw new UnsupportedOperationException("acceptContinueStatement");
+	}
 }

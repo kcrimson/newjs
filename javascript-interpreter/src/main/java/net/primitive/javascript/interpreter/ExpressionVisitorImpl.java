@@ -2,9 +2,9 @@ package net.primitive.javascript.interpreter;
 
 import java.util.List;
 
+import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.PropertyDescriptor;
-import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
@@ -39,10 +39,10 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		binaryExpression.getOp1().accept(this);
-		Object result1 = getValue(result);
+		Object result1 = Reference.getValue(result);
 
 		binaryExpression.getOp2().accept(this);
-		Object result2 = getValue(result);
+		Object result2 = Reference.getValue(result);
 
 		result = binaryExpression.getOperator().operator(result1, result2);
 	}
@@ -60,12 +60,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitIdentifier(Identifier identifier) {
 
-		// System.out.println("visitIndentifier " +
-		// identifier.getIdentfierName());
-
-//		PropertyDescriptor property = getScope().getProperty(
-//				identifier.getIdentfierName());
-//		result = property;
+		result = LexicalEnvironment.getIdentifierReference(context
+				.currentExecutionContext().getLexicalEnvironment(), identifier
+				.getIdentfierName());
 	}
 
 	@Override
@@ -75,8 +72,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Object value = result;
 		ExpressionVisitor leftVisitor = context.getExpressionVisitor();
 		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
-		PropertyDescriptor property = (PropertyDescriptor) result;
-		property.setValue(value);
+		Reference.putValue(result, value);
+		// property.setValue(value);
 	}
 
 	/*
@@ -100,26 +97,36 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		unaryExpression.getOperand().accept(this);
 
-		result = unaryExpression.getOperator().operator(getValue(result));
+		result = unaryExpression.getOperator().operator(
+				Reference.getValue(result));
 	}
 
 	@Override
 	public void visitMemberExpression(MemberExpression memberExpression) {
 		memberExpression.getExpression().accept(this);
+
 		List<Expression> suffixes = memberExpression.getExpresionSuffixes();
-		ExpressionVisitorImpl visitor = context.getExpressionVisitor();
 		if (suffixes != null && suffixes.size() > 0) {
-			Object value = null;
+			Object baseReference = result;
+			Object baseValue = null;
 			for (Expression suffix : suffixes) {
-				value = getValue(result);
-				if (value instanceof Scriptable) {
-//					context.enter((Scriptable) value);
-//					suffix.accept(visitor);
-//					context.exitScope();
+				String propertyNameString;
+				if (Identifier.class.equals(suffix.getClass())) {
+					propertyNameString = ((Identifier) suffix)
+							.getIdentfierName();
+				} else {
+					suffix.accept(this);
+					Object propertyNameReference = result;
+					Object propertyNameValue = Reference
+							.getValue(propertyNameReference);
+					propertyNameString = Convertions
+							.toString(propertyNameValue);
 				}
-				value = result;
+				baseValue = Reference.getValue(baseReference);
+
+				baseReference = new Reference(baseValue, propertyNameString);
 			}
-			result = value;
+			result = baseReference;
 		}
 	}
 
@@ -132,9 +139,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scope = new ScriptableObject();
 		// scope.setParentScope(thisObj);
 		Function function = (Function) getValue(result2);
-//		context.enter(scope);
+		// context.enter(scope);
 		// result = function.call(scope, thisObj, null);
-//		context.exitScope();
+		// context.exitScope();
 	}
 
 	@Override
@@ -143,8 +150,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), getValue(result),
-					false);
+			scriptableObject.put((String) pair.getName(), getValue(result));
 		}
 		result = scriptableObject;
 	}
@@ -153,12 +159,12 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitFunctionExpression(FunctionExpression functionExpression) {
 		result = new JSNativeFunction(functionExpression.getFunctionName(),
 				functionExpression.getParameterList(),
-				functionExpression.getSourceElements());
+				functionExpression.getFunctionBody());
 	}
 
 	@Override
 	public void visitThis(This this1) {
-		//result = context.currentScope();
+		// result = context.currentScope();
 	}
 
 	@Override

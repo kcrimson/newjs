@@ -62,7 +62,7 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public void put(String propertyName, Object value, boolean failureHandling) {
+	public void put(String propertyName, Object value) {
 
 		if (canPut(propertyName)) {
 
@@ -84,7 +84,7 @@ public class ScriptableObject implements Scriptable {
 					.isWriteable(true).isEnumerable(true).isConfigurable(true);
 			propertyDescriptor.setValue(value);
 			associatedProperties.put(propertyName, propertyDescriptor);
-		} else if (failureHandling) {
+		} else if (true) {
 			throw new TypeErrorException();
 		}
 

@@ -7,20 +7,19 @@ import java.util.List;
 import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
-import net.primitive.javascript.core.ast.SourceElement;
-import net.primitive.javascript.core.ast.Statement;
+import net.primitive.javascript.core.ast.AstNodeList;
 
 public class JSNativeFunction extends ScriptableObject implements Function {
 
 	private final String functionName;
 	private final List<String> parameterList;
-	private final SourceElement[] sourceElements;
+	private final AstNodeList functionBody;
 
 	public JSNativeFunction(String functionName, List<String> parameterList,
-			SourceElement[] sourceElements) {
+			AstNodeList functionBody) {
 		this.functionName = functionName;
 		this.parameterList = parameterList;
-		this.sourceElements = sourceElements;
+		this.functionBody = functionBody;
 	}
 
 	@Override
@@ -28,11 +27,11 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 
 		RuntimeContext  currentContext = currentContext();
 		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
-		for (int i = 0; i < sourceElements.length; i++) {
-			((Statement) sourceElements[i]).accept(visitor);
-		}
-		Object returnValue = currentContext.returnValue();
-		return returnValue;
+//		for (int i = 0; i < functionBody.length; i++) {
+//			((Statement) functionBody[i]).accept(visitor);
+//		}
+//		Object returnValue = currentContext.returnValue();
+		return null;//returnValue;
 	}
 
 	@Override
@@ -58,8 +57,8 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	/**
 	 * @return the sourceElements
 	 */
-	public SourceElement[] getSourceElements() {
-		return sourceElements;
+	public AstNodeList getFunctionBody() {
+		return functionBody;
 	}
 
 }

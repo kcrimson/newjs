@@ -28,7 +28,7 @@ class Main {
 		Interpreter interpreter = new Interpreter();
 
 		interpreter
-				.interpret(new File("src/test/resources/this.js"));
+				.interpret(new File("src/test/resources/if.js"));
 
 		long time = System.currentTimeMillis();
 
@@ -48,16 +48,16 @@ class Main {
 		// }
 		// System.out.println(System.currentTimeMillis() - time);
 		//
-		sun.org.mozilla.javascript.internal.Context context = sun.org.mozilla.javascript.internal.Context
-				.enter();
-		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context
-				.initStandardObjects();
-		Script script = context.compileReader(new FileReader(
-				"src/test/resources/this.js"), "", 0, null);
-		time = System.currentTimeMillis();
-		for (int i = 0; i < 3000000; i++) {
-			script.exec(context, standardObjects);
-		}
+//		sun.org.mozilla.javascript.internal.Context context = sun.org.mozilla.javascript.internal.Context
+//				.enter();
+//		sun.org.mozilla.javascript.internal.ScriptableObject standardObjects = context
+//				.initStandardObjects();
+//		Script script = context.compileReader(new FileReader(
+//				"src/test/resources/if.js"), "", 0, null);
+//		time = System.currentTimeMillis();
+//		for (int i = 0; i < 3000000; i++) {
+//			script.exec(context, standardObjects);
+//		}
 		System.out.println(System.currentTimeMillis() - time);
 	}
 

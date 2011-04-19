@@ -28,7 +28,8 @@ public class InterpreterTest {
 
 	@Parameters
 	public static List<Object[]> getParameters() {
-        Collection<String> scripts = ResourceList.getResources(Pattern.compile(".*\\.js"));
+		Collection<String> scripts = ResourceList.getResources(Pattern
+				.compile(".*\\.js"));
 		List<Object[]> parameters = new ArrayList<Object[]>();
 
 		for (String script : scripts) {
@@ -48,8 +49,8 @@ public class InterpreterTest {
 		Interpreter interpreter = new Interpreter();
 
 		interpreter.interpret(new File(javaScriptFile));
-		interpreter.execute(scope);
-		Object object = scope.get("assertResult");
+		EnvironmentRecords records = interpreter.execute(scope);
+		Object object = records.getBindingValue("assertResult");
 		System.out.println(object);
 		assertTrue(Convertions.toBoolean(object));
 

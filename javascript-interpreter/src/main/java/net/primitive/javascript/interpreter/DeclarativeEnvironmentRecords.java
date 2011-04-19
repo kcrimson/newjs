@@ -7,7 +7,7 @@ import net.primitive.javascript.core.Undefined;
 
 public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
-	private Map<String, Reference> bindings = new HashMap<String, Reference>();
+	private Map<String, Object> bindings = new HashMap<String, Object>();
 
 	@Override
 	public boolean hasBinding(String name) {
@@ -16,25 +16,22 @@ public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
 	@Override
 	public void createMutableBinding(String name, boolean d) {
-		Reference ref = new Reference(Undefined.Value, name, true);
-		bindings.put(name, ref);
+		// Reference ref = new Reference(Undefined.Value, name);
+		bindings.put(name, Undefined.Value);
 	}
 
 	@Override
-	public void setMutableBinding(String name, Object value,
-			boolean useStrictMode) {
-		Reference ref = bindings.get(name);
-		ref.setBase(value);
+	public void setMutableBinding(String name, Object value) {
+		bindings.put(name, value);
 	}
 
 	@Override
-	public Reference getBindingValue(String name, boolean useStrictMode) {
+	public Object getBindingValue(String name) {
 		return bindings.get(name);
 	}
 
 	@Override
 	public boolean deleteBinding(String name) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

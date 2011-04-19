@@ -4,8 +4,10 @@ import static net.primitive.javascript.core.Convertions.toBoolean;
 
 import java.util.List;
 
-import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.ast.AstNode;
+import net.primitive.javascript.core.ast.AstNodeList;
+import net.primitive.javascript.core.ast.BreakStatement;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
@@ -14,11 +16,9 @@ import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
-import net.primitive.javascript.core.ast.StatementBlock;
 import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
-import net.primitive.javascript.core.ast.VariableStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
@@ -35,15 +35,19 @@ public class StatementVisitorImpl implements StatementVisitor {
 		ExecutionContext executionContext = context.currentExecutionContext();
 		LexicalEnvironment env = executionContext.getVariableEnvironment();
 		EnvironmentRecords environmentRecords = env.getEnvironmentRecords();
-		if(environmentRecords.hasBinding(variableDeclaration.getVariableName())){
-			
-		} else{
-			environmentRecords.createMutableBinding(variableDeclaration.getVariableName(), false);
+		if (environmentRecords
+				.hasBinding(variableDeclaration.getVariableName())) {
+
+		} else {
+			environmentRecords.createMutableBinding(
+					variableDeclaration.getVariableName(), false);
 		}
 		Expression expression = variableDeclaration.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object result = context.getExpressionVisitor().getResult();
-		environmentRecords.setMutableBinding(variableDeclaration.getVariableName(), result, true);
+		environmentRecords.setMutableBinding(
+				variableDeclaration.getVariableName(),
+				Reference.getValue(result));
 	}
 
 	@Override
@@ -51,8 +55,17 @@ public class StatementVisitorImpl implements StatementVisitor {
 		JSNativeFunction jsFunction = new JSNativeFunction(
 				functionDeclaration.getFunctionName(),
 				functionDeclaration.getParameterList(),
-				functionDeclaration.getSourceElements());
-	//	getScope().put(functionDeclaration.getFunctionName(), jsFunction);
+				functionDeclaration.getFunctionBody());
+		EnvironmentRecords environmentRecords = context
+				.currentExecutionContext().getVariableEnvironment()
+				.getEnvironmentRecords();
+		environmentRecords.createMutableBinding(
+				functionDeclaration.getFunctionName(), false);
+		environmentRecords.setMutableBinding(
+				functionDeclaration.getFunctionName(), jsFunction);
+
+		// lexigetScope().put(functionDeclaration.getFunctionName(),
+		// jsFunction);
 	}
 
 	@Override
@@ -65,41 +78,45 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitIfStatement(IfStatement ifStatement) {
-		// context.enter(ifStatement);
 		Expression expression = ifStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
-		boolean expressionResult = toBoolean(context.getExpressionVisitor()
-				.getResult());
+		boolean expressionResult = toBoolean(Reference.getValue(context
+				.getExpressionVisitor().getResult()));
 
 		if (expressionResult) {
-			ifStatement.getIfStatement().accept(this);
-		} else if (ifStatement.getElseStatement() != null) {
-			ifStatement.getElseStatement().accept(this);
-		}
-		// context.exitStatement();
-	}
 
-	@Override
-	public void visitStatementBlock(StatementBlock statementBlock) {
-		// context.enter(statementBlock);
-		Statement[] statements = statementBlock.getStatements();
-		for (int i = 0; i < statements.length; i++) {
-			statements[i].accept(this);
+			List<AstNode> astNodes = ifStatement.getIfStatement().getAstNodes();
+			for (AstNode astNode : astNodes) {
+				context.enter((Statement) astNode);
+				((Statement) astNode).accept(this);
+				context.exit();
+			}
+		} else if (ifStatement.getElseStatement() != null) {
+			List<AstNode> astNodes = ifStatement.getElseStatement()
+					.getAstNodes();
+			for (AstNode astNode : astNodes) {
+				context.enter((Statement) astNode);
+				((Statement) astNode).accept(this);
+				context.exit();
+			}
 		}
-		// context.exitStatement();
 	}
 
 	@Override
 	public void visitWhileStatement(WhileStatement whileStatement) {
-		// context.enter(whileStatement);
 		Expression expression = whileStatement.getExpression();
+		AstNodeList statements = whileStatement.getStatements();
 
 		for (expression.accept(context.getExpressionVisitor()); toBoolean(context
 				.getExpressionVisitor().getResult()); expression.accept(context
 				.getExpressionVisitor())) {
-			whileStatement.getStatement().accept(this);
+
+			for (AstNode astNode : statements.getAstNodes()) {
+				context.enter((Statement) astNode);
+				((Statement) astNode).accept(this);
+				context.exit();
+			}
 		}
-		// context.exitStatement();
 	}
 
 	@Override
@@ -112,12 +129,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		// context.enter(returnStatement);
 		Expression expression = returnStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
-		context.exitReturn(getValue(context.getExpressionVisitor().getResult()));
-	}
-
-	@Override
-	public Scriptable getScope() {
-		return context.currentStatementScope();
+		// context.exitReturn(getValue(context.getExpressionVisitor().getResult()));
 	}
 
 	private static Object getValue(Object object) {
@@ -132,33 +144,27 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Expression expression = throwStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
 		Object exceptionObject = context.getExpressionVisitor().getResult();
-		context.handleException(exceptionObject);
+		// context.handleException(exceptionObject);
 	}
 
 	@Override
 	public void visitCatchClause(CatchClause catchClause) {
 		// context.enter(catchClause);
-		catchClause.getStatement().accept(context.getStatementVisitor());
+		//catchClause.getStatement().accept(context.getStatementVisitor());
 		// context.exitStatement();
 	}
 
 	@Override
 	public void visitTryStatement(TryStatement tryStatement) {
 		// context.enter(tryStatement);
-		Statement blockStatement = tryStatement.getBlockStatement();
-		blockStatement.accept(context.getStatementVisitor());
+		//Statement blockStatement = tryStatement.getBlockStatement();
+		//blockStatement.accept(context.getStatementVisitor());
 		// context.exitStatement();
 	}
 
 	@Override
-	public void visitVariableStatement(VariableStatement variableStatement) {
-		List<VariableDeclaration> variableDeclarations = variableStatement
-				.getVariableDeclarations();
-		for (VariableDeclaration declaration : variableDeclarations) {
-			context.enter(declaration);
-			declaration.accept(this);
-			context.exit();
-		}
+	public void visitBreakStatement(BreakStatement breakStatement) {
+		throw new UnsupportedOperationException("visitBreakStatement");
 	}
 
 }

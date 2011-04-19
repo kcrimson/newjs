@@ -5,12 +5,12 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class LabelledStatement extends Statement {
 
 	private final String identifier;
-	private final Statement statement;
+	private final AstNode statement;
 
-	public LabelledStatement(String identifier, Statement statement) {
+	public LabelledStatement(String identifier, AstNode astNode) {
 		this.identifier = identifier;
-		this.statement = statement;
-		statement.setParentAstNode(this);
+		this.statement = astNode;
+		astNode.setParentNode(this);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class LabelledStatement extends Statement {
 	/**
 	 * @return the statement
 	 */
-	public Statement getStatement() {
+	public AstNode getStatement() {
 		return statement;
 	}
 

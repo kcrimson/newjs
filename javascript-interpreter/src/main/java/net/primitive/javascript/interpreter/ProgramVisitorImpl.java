@@ -1,11 +1,8 @@
 package net.primitive.javascript.interpreter;
 
-import static net.primitive.javascript.interpreter.RuntimeContext.currentContext;
-
 import java.util.Iterator;
 import java.util.List;
 
-import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.ast.Statement;
@@ -13,13 +10,10 @@ import net.primitive.javascript.core.visitors.ProgramVisitor;
 
 public class ProgramVisitorImpl implements ProgramVisitor {
 
-	private final Scriptable scope;
 	private final RuntimeContext context;
 
-	public ProgramVisitorImpl(RuntimeContext context,
-			Scriptable scriptableObject) {
+	public ProgramVisitorImpl(RuntimeContext context) {
 		this.context = context;
-		this.scope = scriptableObject;
 	}
 
 	@Override

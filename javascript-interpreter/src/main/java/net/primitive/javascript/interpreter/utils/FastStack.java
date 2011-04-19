@@ -1,4 +1,4 @@
-package net.primitive.javascript.interpreter;
+package net.primitive.javascript.interpreter.utils;
 
 public class FastStack<T> {
 

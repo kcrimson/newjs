@@ -7,17 +7,17 @@ public class ForStatement extends Statement {
 	private final Statement initializeStatement;
 	private final Expression incrementExpression;
 	private final Expression testExpression;
-	private final Statement statement;
+	private final AstNodeList statement;
 
 	public ForStatement(Statement initializeStatement,
 			Expression incrementExpression, Expression testExpression,
-			Statement statement) {
+			AstNode statement) {
 		this.initializeStatement = initializeStatement;
-		initializeStatement.setParentAstNode(this);
+		initializeStatement.setParentNode(this);
 		this.incrementExpression = incrementExpression;
 		this.testExpression = testExpression;
-		this.statement = statement;
-		statement.setParentAstNode(this);
+		this.statement = AstNodeList.wrapAstNode(statement);
+		statement.setParentNode(this);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class ForStatement extends Statement {
 	/**
 	 * @return the statement
 	 */
-	public Statement getStatement() {
+	public AstNodeList getStatement() {
 		return statement;
 	}
 

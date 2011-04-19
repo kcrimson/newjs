@@ -4,19 +4,19 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class TryStatement extends Statement {
 
-	private final Statement blockStatement;
+	private final AstNodeList blockStatement;
 	private final Statement catchStatement;
-	private final Statement finallyStatement;
+	private final AstNodeList finallyStatement;
 
-	public TryStatement(Statement blockStatement, Statement catchStatement,
-			Statement finallyStatement) {
-		this.blockStatement = blockStatement;
-		blockStatement.setParentAstNode(this);
+	public TryStatement(AstNode astNode, AstNodeList astNodeList, Statement catchStatement,
+			AstNodeList astNodeList2) {
+		this.blockStatement = astNodeList;
+		astNodeList.setParentNode(this);
 		this.catchStatement = catchStatement;
-		catchStatement.setParentAstNode(this);
-		this.finallyStatement = finallyStatement;
-		if (finallyStatement != null) {
-			finallyStatement.setParentAstNode(this);
+		catchStatement.setParentNode(this);
+		this.finallyStatement = astNodeList2;
+		if (astNodeList2 != null) {
+			astNodeList2.setParentNode(this);
 		}
 	}
 
@@ -28,7 +28,7 @@ public class TryStatement extends Statement {
 	/**
 	 * @return the blockStatement
 	 */
-	public Statement getBlockStatement() {
+	public AstNodeList getBlockStatement() {
 		return blockStatement;
 	}
 
@@ -42,7 +42,7 @@ public class TryStatement extends Statement {
 	/**
 	 * @return the finallyStatement
 	 */
-	public Statement getFinallyStatement() {
+	public AstNodeList getFinallyStatement() {
 		return finallyStatement;
 	}
 
