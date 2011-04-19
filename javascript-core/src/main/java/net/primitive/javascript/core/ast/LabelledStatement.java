@@ -1,11 +1,12 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class LabelledStatement extends Statement {
 
-	private final String identifier;
-	private final AstNode statement;
+	@Getter private final String identifier;
+	@Getter private final AstNode statement;
 
 	public LabelledStatement(String identifier, AstNode astNode) {
 		this.identifier = identifier;
@@ -16,20 +17,6 @@ public class LabelledStatement extends Statement {
 	@Override
 	public void accept(StatementVisitor visitor) {
 		throw new UnsupportedOperationException("acceptLabelledStatement");
-	}
-
-	/**
-	 * @return the identifier
-	 */
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	/**
-	 * @return the statement
-	 */
-	public AstNode getStatement() {
-		return statement;
 	}
 
 }

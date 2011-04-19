@@ -1,10 +1,11 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
+
 public class NameValuePair {
 
-	private final Object name;
-
-	private final Expression value;
+	@Getter private final Object name;
+	@Getter private final Expression value;
 
 	public NameValuePair(Object name, Expression value) {
 		super();
@@ -12,20 +13,6 @@ public class NameValuePair {
 		this.value = value;
 		
 		System.out.println(name);
-	}
-
-	/**
-	 * @return the name
-	 */
-	public Object getName() {
-		return name;
-	}
-
-	/**
-	 * @return the value
-	 */
-	public Expression getValue() {
-		return value;
 	}
 
 }

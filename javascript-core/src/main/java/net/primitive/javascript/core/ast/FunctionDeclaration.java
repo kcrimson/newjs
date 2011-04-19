@@ -4,40 +4,20 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public final class FunctionDeclaration extends Statement {
 
-	private final String functionName;
-	private final List<String> parameterList;
-	private final AstNodeList functionBody;
+	@Getter private final String functionName;
+	@Getter private final List<String> parameterList;
+	@Getter private final AstNodeList functionBody;
 
 	public FunctionDeclaration(String functionName, List<String> parameterList,
 			AstNodeList functionBody) {
 		this.functionName = functionName;
 		this.parameterList = unmodifiableList(parameterList);
 		this.functionBody = functionBody;
-	}
-
-	/**
-	 * @return the functionName
-	 */
-	public String getFunctionName() {
-		return functionName;
-	}
-
-	/**
-	 * @return the parameterList
-	 */
-	public List<String> getParameterList() {
-		return parameterList;
-	}
-
-	/**
-	 * @return the sourceElements
-	 */
-	public AstNodeList getFunctionBody() {
-		return functionBody;
 	}
 
 	@Override

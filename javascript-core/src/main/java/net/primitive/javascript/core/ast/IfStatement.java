@@ -1,12 +1,13 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class IfStatement extends Statement {
 
-	private final Expression expression;
-	private final AstNodeList ifStatement;
-	private final AstNodeList elseStatement;
+	@Getter private final Expression expression;
+	@Getter private final AstNodeList ifStatement;
+	@Getter private final AstNodeList elseStatement;
 
 	public IfStatement(Expression expression, AstNodeList ifStatement,
 			AstNodeList elseStatement) {
@@ -22,27 +23,6 @@ public class IfStatement extends Statement {
 	@Override
 	public void accept(StatementVisitor visitor) {
 		visitor.visitIfStatement(this);
-	}
-
-	/**
-	 * @return the expression
-	 */
-	public Expression getExpression() {
-		return expression;
-	}
-
-	/**
-	 * @return the ifStatement
-	 */
-	public AstNodeList getIfStatement() {
-		return ifStatement;
-	}
-
-	/**
-	 * @return the elseStatement
-	 */
-	public AstNodeList getElseStatement() {
-		return elseStatement;
 	}
 
 }

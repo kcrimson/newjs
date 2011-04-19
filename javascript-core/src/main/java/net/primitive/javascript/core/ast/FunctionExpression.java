@@ -4,40 +4,21 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
+import lombok.Getter;
+
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
 public class FunctionExpression extends Expression {
 
-	private final String functionName;
-	private final List parameterList;
-	private final AstNodeList functionBody;
+	@Getter private final String functionName;
+	@Getter private final List parameterList;
+	@Getter private final AstNodeList functionBody;
 
 	public FunctionExpression(String functionName, List parameterList,
 			AstNodeList functionBody) {
 		this.functionName = functionName;
 		this.parameterList = unmodifiableList(parameterList);
 		this.functionBody = functionBody;
-	}
-
-	/**
-	 * @return the functionName
-	 */
-	public String getFunctionName() {
-		return functionName;
-	}
-
-	/**
-	 * @return the parameterList
-	 */
-	public List getParameterList() {
-		return parameterList;
-	}
-
-	/**
-	 * @return the sourceElements
-	 */
-	public AstNodeList getFunctionBody() {
-		return functionBody;
 	}
 
 	@Override

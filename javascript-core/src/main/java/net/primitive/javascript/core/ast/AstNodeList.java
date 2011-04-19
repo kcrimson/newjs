@@ -3,6 +3,8 @@ package net.primitive.javascript.core.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 /**
  * Represents fragment of AST.
  * 
@@ -11,7 +13,7 @@ import java.util.List;
  */
 public class AstNodeList extends AstNode {
 
-	private final List<AstNode> childNodes = new ArrayList<AstNode>();
+	@Getter private final List<AstNode> astNodes = new ArrayList<AstNode>();
 
 	public void addAstNode(AstNode astNode) {
 		if (astNode instanceof AstNodeList) {
@@ -26,13 +28,9 @@ public class AstNodeList extends AstNode {
 		}
 	}
 
-	public List<AstNode> getAstNodes() {
-		return childNodes;
-	}
-
 	private void appendAstNode(AstNode astNode) {
 		astNode.setParentNode(this);
-		childNodes.add(astNode);
+		astNodes.add(astNode);
 	}
 
 	public static AstNodeList wrapAstNode(AstNode node) {

@@ -1,21 +1,13 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
+@AllArgsConstructor
 public class BreakStatement extends Statement {
 
-	private final String identifier;
-
-	public BreakStatement(String identifier) {
-		this.identifier = identifier;
-	}
-
-	/**
-	 * @return the identifier
-	 */
-	public String getIdentifier() {
-		return identifier;
-	}
+	@Getter private final String identifier;
 
 	@Override
 	public void accept(StatementVisitor visitor) {

@@ -1,11 +1,12 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class CatchClause extends Statement {
 
-	private final String identifier;
-	private final AstNodeList statements;
+	@Getter private final String identifier;
+	@Getter private final AstNodeList statements;
 
 	public CatchClause(String identifier, AstNodeList astNode) {
 		this.identifier = identifier;
@@ -16,20 +17,6 @@ public class CatchClause extends Statement {
 	@Override
 	public void accept(StatementVisitor visitor) {
 		visitor.visitCatchClause(this);
-	}
-
-	/**
-	 * @return the identifier
-	 */
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	/**
-	 * @return the statement
-	 */
-	public AstNodeList getStatement() {
-		return statements;
 	}
 
 }

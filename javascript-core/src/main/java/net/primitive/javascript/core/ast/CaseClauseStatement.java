@@ -1,32 +1,14 @@
 package net.primitive.javascript.core.ast;
 
-import java.util.List;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
+@AllArgsConstructor
 public class CaseClauseStatement extends Statement {
 
-	private final Expression expression;
-	private final AstNodeList statements;
-
-	public CaseClauseStatement(Expression expression, AstNodeList astNodeList) {
-		this.expression = expression;
-		this.statements = astNodeList;
-	}
-
-	/**
-	 * @return the expression
-	 */
-	public Expression getExpression() {
-		return expression;
-	}
-
-	/**
-	 * @return the statements
-	 */
-	public AstNodeList getStatements() {
-		return statements;
-	}
+	@Getter private final Expression expression;
+	@Getter private final AstNodeList statements;
 
 	@Override
 	public void accept(StatementVisitor visitor) {

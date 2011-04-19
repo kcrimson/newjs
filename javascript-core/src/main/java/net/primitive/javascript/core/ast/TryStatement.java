@@ -1,12 +1,13 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class TryStatement extends Statement {
 
-	private final AstNodeList blockStatement;
-	private final Statement catchStatement;
-	private final AstNodeList finallyStatement;
+	@Getter private final AstNodeList blockStatement;
+	@Getter private final Statement catchStatement;
+	@Getter private final AstNodeList finallyStatement;
 
 	public TryStatement(AstNode astNode, AstNodeList astNodeList, Statement catchStatement,
 			AstNodeList astNodeList2) {
@@ -23,27 +24,6 @@ public class TryStatement extends Statement {
 	@Override
 	public void accept(StatementVisitor visitor) {
 		visitor.visitTryStatement(this);
-	}
-
-	/**
-	 * @return the blockStatement
-	 */
-	public AstNodeList getBlockStatement() {
-		return blockStatement;
-	}
-
-	/**
-	 * @return the catchStatement
-	 */
-	public Statement getCatchStatement() {
-		return catchStatement;
-	}
-
-	/**
-	 * @return the finallyStatement
-	 */
-	public AstNodeList getFinallyStatement() {
-		return finallyStatement;
 	}
 
 }

@@ -1,21 +1,13 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
+@AllArgsConstructor
 public class ReturnStatement extends Statement {
 
-	private final Expression expression;
-
-	public ReturnStatement(Expression expression) {
-		this.expression = expression;
-	}
-
-	/**
-	 * @return the expression
-	 */
-	public Expression getExpression() {
-		return expression;
-	}
+	@Getter private final Expression expression;
 
 	@Override
 	public void accept(StatementVisitor visitor) {

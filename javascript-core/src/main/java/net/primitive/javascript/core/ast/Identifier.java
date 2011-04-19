@@ -1,21 +1,13 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
+@AllArgsConstructor
 public class Identifier extends Expression {
 
-	private final String identfierName;
-
-	public Identifier(String identfierName) {
-		this.identfierName = identfierName;
-	}
-
-	/**
-	 * @return the identfierName
-	 */
-	public String getIdentfierName() {
-		return identfierName;
-	}
+	@Getter private final String identfierName;
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {

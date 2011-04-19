@@ -1,13 +1,14 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class ForStatement extends Statement {
 
-	private final Statement initializeStatement;
-	private final Expression incrementExpression;
-	private final Expression testExpression;
-	private final AstNodeList statement;
+	@Getter private final Statement initializeStatement;
+	@Getter private final Expression incrementExpression;
+	@Getter private final Expression testExpression;
+	@Getter private final AstNodeList statement;
 
 	public ForStatement(Statement initializeStatement,
 			Expression incrementExpression, Expression testExpression,
@@ -23,34 +24,6 @@ public class ForStatement extends Statement {
 	@Override
 	public void accept(StatementVisitor visitor) {
 		visitor.visitForStatement(this);
-	}
-
-	/**
-	 * @return the initializeStatement
-	 */
-	public Statement getInitializeStatement() {
-		return initializeStatement;
-	}
-
-	/**
-	 * @return the incrementExpression
-	 */
-	public Expression getIncrementExpression() {
-		return incrementExpression;
-	}
-
-	/**
-	 * @return the testExpression
-	 */
-	public Expression getTestExpression() {
-		return testExpression;
-	}
-
-	/**
-	 * @return the statement
-	 */
-	public AstNodeList getStatement() {
-		return statement;
 	}
 
 }

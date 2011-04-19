@@ -1,25 +1,17 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
+@AllArgsConstructor
 public class Literal extends Expression {
 
-	private final Object value;
-
-	public Literal(Object value) {
-		this.value = value;
-	}
+	@Getter private final Object value;
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
 		visitor.visitLiteral(this);
-	}
-
-	/**
-	 * @return the value
-	 */
-	public Object getValue() {
-		return value;
 	}
 
 	public static String unwrapString(String string) {
