@@ -2,10 +2,13 @@ package net.primitive.javascript.interpreter;
 
 import java.util.List;
 
+import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
@@ -134,14 +137,20 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitCallExpression(CallExpression callExpression) {
 		Expression memberExpression = callExpression.getMemberExpression();
 		memberExpression.accept(this);
-		PropertyDescriptor result2 = (PropertyDescriptor) result;
-		// Scriptable thisObj = result2.getScope();
-		ScriptableObject scope = new ScriptableObject();
-		// scope.setParentScope(thisObj);
-		Function function = (Function) getValue(result2);
-		// context.enter(scope);
-		// result = function.call(scope, thisObj, null);
-		// context.exitScope();
+		Object ref = result;
+		Object func = Reference.getValue(ref);
+		Object thisValue = Undefined.Value;
+		if (Reference.class.equals(ref.getClass())) {
+			Reference reference = (Reference) ref;
+			if (reference.isPropertyReference()) {
+				thisValue = reference.getBase();
+			} else {
+				thisValue = ((EnvironmentRecords) reference.getBase())
+						.implicitThisValue();
+			}
+		}
+		((Callable) func).call(null /* should be newly created scope */,
+				(Scriptable) thisValue, null/* rewrite arguments */);
 	}
 
 	@Override
