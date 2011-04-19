@@ -7,7 +7,9 @@ import java.util.List;
 import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
+import net.primitive.javascript.core.ast.Statement;
 
 public class JSNativeFunction extends ScriptableObject implements Function {
 
@@ -25,13 +27,21 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	@Override
 	public Object call(Scriptable scope, Scriptable thisObj, Object[] args) {
 
-		RuntimeContext  currentContext = currentContext();
+		RuntimeContext currentContext = currentContext();
 		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
-//		for (int i = 0; i < functionBody.length; i++) {
-//			((Statement) functionBody[i]).accept(visitor);
-//		}
-//		Object returnValue = currentContext.returnValue();
-		return null;//returnValue;
+		// new lexical env
+		LexicalEnvironment newDeclEnv = LexicalEnvironment
+				.newDeclarativeEnvironment(currentContext
+						.currentExecutionContext().getLexicalEnvironment());
+
+		for (AstNode astNode : functionBody.getAstNodes()) {
+			Statement statement = (Statement) astNode;
+			currentContext.enter(statement, newDeclEnv, thisObj);
+			statement.accept(visitor);
+			currentContext.exit();
+		}
+
+		return null;// returnValue;
 	}
 
 	@Override

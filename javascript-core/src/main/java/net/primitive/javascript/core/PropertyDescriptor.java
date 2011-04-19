@@ -97,7 +97,8 @@ public class PropertyDescriptor {
 	@Override
 	public String toString() {
 		ToStringBuilder builder = new ToStringBuilder(this,
-				ToStringStyle.SHORT_PREFIX_STYLE);// .append("value", value);
+				ToStringStyle.SHORT_PREFIX_STYLE).append("descriptor",
+				valueHolder);
 		return builder.toString();
 	}
 
@@ -217,6 +218,19 @@ public class PropertyDescriptor {
 			newDescriptor.setValue(PropertyDescriptor.this.getValue());
 			return newDescriptor;
 		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			ToStringBuilder builder = new ToStringBuilder(this).append("value",
+					value);
+			return builder.toString();
+		}
+
 	}
 
 	private final class AccessorDescriptorValueHolder implements

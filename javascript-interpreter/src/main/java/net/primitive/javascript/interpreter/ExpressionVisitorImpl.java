@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Convertions;
-import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
@@ -149,6 +148,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 						.implicitThisValue();
 			}
 		}
+		
+		//push new declarative lexical environment
+		
 		((Callable) func).call(null /* should be newly created scope */,
 				(Scriptable) thisValue, null/* rewrite arguments */);
 	}
@@ -159,7 +161,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), getValue(result));
+			scriptableObject.put((String) pair.getName(), Reference.getValue(result));
 		}
 		result = scriptableObject;
 	}
@@ -173,20 +175,13 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitThis(This this1) {
-		// result = context.currentScope();
+		result = context.currentExecutionContext().getThisBinding();
 	}
 
 	@Override
 	public void visitConditionalExpression(
 			ConditionalExpression conditionalExpression) {
 		System.out.println("leva cipa");
-	}
-
-	private static Object getValue(Object object) {
-		if (object instanceof PropertyDescriptor) {
-			return ((PropertyDescriptor) object).getValue();
-		}
-		return object;
 	}
 
 }

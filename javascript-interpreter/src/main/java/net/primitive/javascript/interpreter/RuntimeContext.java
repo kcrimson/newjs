@@ -1,8 +1,8 @@
 package net.primitive.javascript.interpreter;
 
-import static net.primitive.javascript.interpreter.LexicalEnvironment.newDeclarativeEnvironment;
 import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
@@ -29,7 +29,7 @@ public class RuntimeContext {
 	private RuntimeContext(final Scriptable globalObject) {
 		this.globalObject = globalObject;
 		this.globalEnvironment = newObjectEnvironment(globalObject, null);
-		this.lexicalEnvironment = newDeclarativeEnvironment(globalEnvironment);
+		this.lexicalEnvironment = globalEnvironment;// newDeclarativeEnvironment(globalEnvironment);
 		this.variableEnvironment = lexicalEnvironment;
 	}
 
@@ -64,6 +64,22 @@ public class RuntimeContext {
 
 		final ExecutionContext newContext = new ExecutionContext(lexEnv,
 				varEnv, thisObj, statement);
+		callStack.push(newContext);
+		return newContext;
+	}
+
+	/**
+	 * Enters new execution context for function call
+	 * 
+	 * @param statement
+	 * @param lexEnv
+	 * @param thisObj
+	 * @return
+	 */
+	public ExecutionContext enter(Statement statement,
+			LexicalEnvironment lexEnv, Scriptable thisObj) {
+		final ExecutionContext newContext = new ExecutionContext(lexEnv,
+				lexEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
 	}

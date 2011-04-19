@@ -33,14 +33,4 @@ public class ReferenceTest {
 
 	}
 
-	@Test
-	public void should_return_unreferenced_value() {
-		JSObject jsObject = new JSObject();
-		Reference ref = new Reference(jsObject, "obj");
-
-		Object object = Reference.getValue(ref);
-
-		Assert.assertSame(jsObject, object);
-	}
-
 }

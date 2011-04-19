@@ -38,8 +38,8 @@ public class ObjectEnvironmentRecords implements EnvironmentRecords {
 	}
 
 	@Override
-	public Reference getBindingValue(String name) {
-		return new Reference(bindingObject.get(name), name);
+	public Object getBindingValue(String name) {
+		return bindingObject.get(name);
 	}
 
 	@Override
