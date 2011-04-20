@@ -65,8 +65,9 @@ public class ObjectEnvironmentRecordsTest {
 		ScriptableObject bindingObject = new ScriptableObject();
 		ObjectEnvironmentRecords environmentRecords = new ObjectEnvironmentRecords(
 				bindingObject, false);
-		environmentRecords.createMutableBinding("name", false);
-		environmentRecords.setMutableBinding("name", "value");
+		Reference mutableBinding = environmentRecords.createMutableBinding(
+				"name", false);
+		mutableBinding.setValue("value");
 		PropertyDescriptor propertyDescriptor = bindingObject
 				.getOwnProperty("name");
 		assertNotNull(propertyDescriptor);

@@ -45,7 +45,7 @@ public class LexicalEnvironment {
 	public static Reference getIdentifierReference(LexicalEnvironment env,
 			String name) {
 		if (env == null) {
-			return new Reference(Undefined.Value, name);
+			return new ObjectReference(Undefined.Value, name);
 		}
 
 		EnvironmentRecords records = env.getEnvironmentRecords();
@@ -53,7 +53,7 @@ public class LexicalEnvironment {
 			// TODO look at possible ways to cache Reference instances,
 			// otherwise we create Reference every time we call
 			// getIdentifierReference
-			return new Reference(records, name);
+			return records.getBinding(name);
 		}
 
 		LexicalEnvironment outerenv = env.getOuterLexicalEnvironment();

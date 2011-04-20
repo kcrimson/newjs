@@ -4,11 +4,9 @@ public interface EnvironmentRecords {
 
 	boolean hasBinding(String name);
 
-	void createMutableBinding(String name, boolean d);
+	Reference createMutableBinding(String name, boolean d);
 
-	void setMutableBinding(String name, Object value);
-
-	Object getBindingValue(String name);
+	Reference getBinding(String name);
 
 	boolean deleteBinding(String name);
 
