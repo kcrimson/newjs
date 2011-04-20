@@ -4,7 +4,6 @@ import static net.primitive.javascript.core.Convertions.toBoolean;
 
 import java.util.List;
 
-import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
@@ -24,80 +23,82 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
-	private final RuntimeContext context;
+	private final RuntimeContext runtimeContext;
 
 	protected StatementVisitorImpl(RuntimeContext context) {
-		this.context = context;
+		this.runtimeContext = context;
 	}
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
-		ExecutionContext executionContext = context.currentExecutionContext();
+		ExecutionContext executionContext = runtimeContext
+				.currentExecutionContext();
 		LexicalEnvironment env = executionContext.getVariableEnvironment();
-		EnvironmentRecords environmentRecords = env.getEnvironmentRecords();
-		if (environmentRecords
-				.hasBinding(variableDeclaration.getVariableName())) {
+		EnvironmentRecords envrec = env.getEnvironmentRecords();
+		String varname = variableDeclaration.getVariableName();
+		if (envrec.hasBinding(varname)) {
 
 		} else {
-			environmentRecords.createMutableBinding(
-					variableDeclaration.getVariableName(), false);
+
+			Reference mutableBinding = envrec.createMutableBinding(varname,
+					false);
+
+			Expression expression = variableDeclaration.getExpression();
+			ExpressionVisitorImpl expressionVisitor = runtimeContext
+					.getExpressionVisitor();
+			expression.accept(expressionVisitor);
+			Object value = expressionVisitor.getResult();
+
+			mutableBinding.setValue(Reference.getValue(value));
+
 		}
-		Expression expression = variableDeclaration.getExpression();
-		expression.accept(context.getExpressionVisitor());
-		Object result = context.getExpressionVisitor().getResult();
-		environmentRecords.setMutableBinding(
-				variableDeclaration.getVariableName(),
-				Reference.getValue(result));
 	}
 
 	@Override
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
-		JSNativeFunction jsFunction = new JSNativeFunction(
-				functionDeclaration.getFunctionName(),
+		ExecutionContext executionContext = runtimeContext
+				.currentExecutionContext();
+		String functionName = functionDeclaration.getFunctionName();
+		JSNativeFunction jsFunction = new JSNativeFunction(functionName,
 				functionDeclaration.getParameterList(),
 				functionDeclaration.getFunctionBody());
-		EnvironmentRecords environmentRecords = context
-				.currentExecutionContext().getVariableEnvironment()
+		EnvironmentRecords envrecs = executionContext.getVariableEnvironment()
 				.getEnvironmentRecords();
-		environmentRecords.createMutableBinding(
-				functionDeclaration.getFunctionName(), false);
-		environmentRecords.setMutableBinding(
-				functionDeclaration.getFunctionName(), jsFunction);
-
-		// lexigetScope().put(functionDeclaration.getFunctionName(),
-		// jsFunction);
+		Reference mutableBinding = envrecs.createMutableBinding(functionName,
+				false);
+		mutableBinding.setValue(jsFunction);
 	}
 
 	@Override
 	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
-		// context.enter(expressionStatement);
 		expressionStatement.getExpression().accept(
-				context.getExpressionVisitor());
-		// context.exitStatement();
+				runtimeContext.getExpressionVisitor());
 	}
 
 	@Override
 	public void visitIfStatement(IfStatement ifStatement) {
 		Expression expression = ifStatement.getExpression();
-		expression.accept(context.getExpressionVisitor());
-		boolean expressionResult = toBoolean(Reference.getValue(context
-				.getExpressionVisitor().getResult()));
+		ExpressionVisitorImpl expressionVisitor = runtimeContext
+				.getExpressionVisitor();
+		expression.accept(expressionVisitor);
+		boolean expressionResult = toBoolean(Reference
+				.getValue(expressionVisitor.getResult()));
 
 		if (expressionResult) {
 
 			List<AstNode> astNodes = ifStatement.getIfStatement().getAstNodes();
 			for (AstNode astNode : astNodes) {
-				context.enter((Statement) astNode);
+				runtimeContext.enter((Statement) astNode);
 				((Statement) astNode).accept(this);
-				context.exit();
+				runtimeContext.exit();
 			}
 		} else if (ifStatement.getElseStatement() != null) {
 			List<AstNode> astNodes = ifStatement.getElseStatement()
 					.getAstNodes();
 			for (AstNode astNode : astNodes) {
-				context.enter((Statement) astNode);
+				runtimeContext.enter((Statement) astNode);
 				((Statement) astNode).accept(this);
-				context.exit();
+				runtimeContext.exit();
 			}
 		}
 	}
@@ -107,14 +108,14 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Expression expression = whileStatement.getExpression();
 		AstNodeList statements = whileStatement.getStatements();
 
-		for (expression.accept(context.getExpressionVisitor()); toBoolean(context
-				.getExpressionVisitor().getResult()); expression.accept(context
-				.getExpressionVisitor())) {
+		for (expression.accept(runtimeContext.getExpressionVisitor()); toBoolean(runtimeContext
+				.getExpressionVisitor().getResult()); expression
+				.accept(runtimeContext.getExpressionVisitor())) {
 
 			for (AstNode astNode : statements.getAstNodes()) {
-				context.enter((Statement) astNode);
+				runtimeContext.enter((Statement) astNode);
 				((Statement) astNode).accept(this);
-				context.exit();
+				runtimeContext.exit();
 			}
 		}
 	}
@@ -126,31 +127,48 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitReturnStatement(ReturnStatement returnStatement) {
+		ExpressionVisitorImpl expressionVisitor = runtimeContext
+				.getExpressionVisitor();
 		Expression expression = returnStatement.getExpression();
-		expression.accept(context.getExpressionVisitor());
+		expression.accept(expressionVisitor);
+		runtimeContext.currentExecutionContext().returnValue(
+				expressionVisitor.getResult());
 	}
 
 	@Override
 	public void visitThrowStatement(ThrowStatement throwStatement) {
+		ExecutionContext executionContext = runtimeContext
+				.currentExecutionContext();
 		Expression expression = throwStatement.getExpression();
-		expression.accept(context.getExpressionVisitor());
-		Object exceptionObject = context.getExpressionVisitor().getResult();
-		// context.handleException(exceptionObject);
+		ExpressionVisitorImpl expressionVisitor = runtimeContext
+				.getExpressionVisitor();
+		expression.accept(expressionVisitor);
+		Object exceptionObject = expressionVisitor.getResult();
+		executionContext.throwException(exceptionObject);
 	}
 
 	@Override
 	public void visitCatchClause(CatchClause catchClause) {
-		// context.enter(catchClause);
-		// catchClause.getStatement().accept(context.getStatementVisitor());
-		// context.exitStatement();
+		List<AstNode> astNodes = catchClause.getStatement().getAstNodes();
+		for (AstNode astNode : astNodes) {
+			Statement statement = (Statement) astNode;
+			runtimeContext.enter(statement);
+			statement.accept(this);
+			runtimeContext.exit();
+		}
 	}
 
 	@Override
 	public void visitTryStatement(TryStatement tryStatement) {
-		// context.enter(tryStatement);
-		// Statement blockStatement = tryStatement.getBlockStatement();
-		// blockStatement.accept(context.getStatementVisitor());
-		// context.exitStatement();
+		AstNodeList blockStatement = tryStatement.getBlockStatement();
+		List<AstNode> astNodes = blockStatement.getAstNodes();
+		for (AstNode astNode : astNodes) {
+			Statement statement = (Statement) astNode;
+			statement.accept(this);
+			if (!runtimeContext.exit()) {
+				break;
+			}
+		}
 	}
 
 	@Override

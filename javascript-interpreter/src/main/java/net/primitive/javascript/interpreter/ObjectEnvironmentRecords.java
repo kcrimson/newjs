@@ -1,14 +1,20 @@
 package net.primitive.javascript.interpreter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
 
 public class ObjectEnvironmentRecords implements EnvironmentRecords {
 
-	private final Scriptable bindingObject;
+	final Scriptable bindingObject;
 
 	private final boolean provideThis;
+
+	// holds references to binding object properties
+	private Map<String, Reference> bindings = new HashMap<String, Reference>();
 
 	public ObjectEnvironmentRecords(Scriptable bindingObject,
 			boolean provideThis) {
@@ -23,23 +29,19 @@ public class ObjectEnvironmentRecords implements EnvironmentRecords {
 	}
 
 	@Override
-	public void createMutableBinding(String name, boolean configValue) {
+	public Reference createMutableBinding(String name, boolean configValue) {
+		PropertyDescriptor propertyDescriptor;
 		if (!bindingObject.hasProperty(name)) {
-			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
-					bindingObject).isConfigurable(configValue)
-					.isWriteable(true).isEnumerable(true);
+			propertyDescriptor = new PropertyDescriptor(bindingObject)
+					.isConfigurable(configValue).isWriteable(true)
+					.isEnumerable(true);
 			bindingObject.defineOwnProperty(name, propertyDescriptor, false);
+
 		}
-	}
 
-	@Override
-	public void setMutableBinding(String name, Object value) {
-		bindingObject.put(name, value);
-	}
-
-	@Override
-	public Object getBindingValue(String name) {
-		return bindingObject.get(name);
+		ObjectReference reference = new ObjectReference(bindingObject, name);
+		bindings.put(name, reference);
+		return reference;
 	}
 
 	@Override
@@ -53,6 +55,11 @@ public class ObjectEnvironmentRecords implements EnvironmentRecords {
 			return bindingObject;
 		}
 		return Undefined.Value;
+	}
+
+	@Override
+	public Reference getBinding(String name) {
+		return bindings.get(name);
 	}
 
 }

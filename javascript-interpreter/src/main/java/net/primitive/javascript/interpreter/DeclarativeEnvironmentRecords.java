@@ -7,7 +7,7 @@ import net.primitive.javascript.core.Undefined;
 
 public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
-	private Map<String, Object> bindings = new HashMap<String, Object>();
+	private Map<String, Reference> bindings = new HashMap<String, Reference>();
 
 	@Override
 	public boolean hasBinding(String name) {
@@ -15,19 +15,10 @@ public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 	}
 
 	@Override
-	public void createMutableBinding(String name, boolean d) {
-		// Reference ref = new Reference(Undefined.Value, name);
-		bindings.put(name, Undefined.Value);
-	}
-
-	@Override
-	public void setMutableBinding(String name, Object value) {
-		bindings.put(name, value);
-	}
-
-	@Override
-	public Object getBindingValue(String name) {
-		return bindings.get(name);
+	public Reference createMutableBinding(String name, boolean d) {
+		Reference ref = new DeclarativeReference(name);
+		bindings.put(name, ref);
+		return ref;
 	}
 
 	@Override
@@ -46,6 +37,41 @@ public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
 	public void initializeImmutableBinding(String name, Object value) {
 
+	}
+
+	private class DeclarativeReference extends Reference {
+
+		private Object value = Undefined.Value;
+
+		public DeclarativeReference(String referencedName) {
+			super(referencedName);
+		}
+
+		@Override
+		public Object getBase() {
+			return DeclarativeEnvironmentRecords.this;
+		}
+
+		@Override
+		protected Object getValue() {
+			return value;
+		}
+
+		@Override
+		protected void setValue(Object value) {
+			this.value = value;
+		}
+
+		@Override
+		public boolean isPropertyReference() {
+			return false;
+		}
+
+	}
+
+	@Override
+	public Reference getBinding(String name) {
+		return bindings.get(name);
 	}
 
 }

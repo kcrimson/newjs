@@ -74,7 +74,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitAssignmentExpression(
 			AssignmentExpression assignmentExpression) {
 		assignmentExpression.getRightHandSideExpression().accept(this);
-		Object value = result;
+		Object value = Reference.getValue(result);
 		ExpressionVisitor leftVisitor = context.getExpressionVisitor();
 		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
 		Reference.putValue(result, value);
@@ -129,7 +129,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 				}
 				baseValue = Reference.getValue(baseReference);
 
-				baseReference = new Reference(baseValue, propertyNameString);
+				baseReference = new ObjectReference(baseValue,
+						propertyNameString);
 			}
 			result = baseReference;
 		}
@@ -142,7 +143,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Object ref = result;
 		Object func = Reference.getValue(ref);
 		Object thisValue = Undefined.Value;
-		if (Reference.class.equals(ref.getClass())) {
+		if (ref instanceof Reference) {
 			Reference reference = (Reference) ref;
 			if (reference.isPropertyReference()) {
 				thisValue = reference.getBase();
@@ -154,7 +155,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		// push new declarative lexical environment
 
-		((Callable) func).call(null /* should be newly created scope */,
+		result = ((Callable) func).call(
+				null /* should be newly created scope */,
 				(Scriptable) thisValue, null/* rewrite arguments */);
 	}
 

@@ -1,6 +1,5 @@
 package net.primitive.javascript.interpreter;
 
-import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.ReferenceErrorException;
 import net.primitive.javascript.core.Undefined;
 
@@ -9,7 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class ReferenceTest {
+public class ObjectReferenceTest {
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -25,7 +24,7 @@ public class ReferenceTest {
 
 	@Test
 	public void should_throw_reference_error() {
-		Reference ref = new Reference(Undefined.Value, "obj");
+		Reference ref = new ObjectReference(Undefined.Value, "obj");
 
 		expectedException.expect(ReferenceErrorException.class);
 

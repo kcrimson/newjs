@@ -50,7 +50,7 @@ public class InterpreterTest {
 
 		interpreter.interpret(new File(javaScriptFile));
 		EnvironmentRecords records = interpreter.execute(scope);
-		Object object = records.getBindingValue("assertResult");
+		Object object = records.getBinding("assertResult").getValue();
 		System.out.println(object);
 		assertTrue(Convertions.toBoolean(object));
 

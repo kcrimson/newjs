@@ -5,19 +5,19 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 public class TryStatement extends Statement {
 
 	private final AstNodeList blockStatement;
-	private final Statement catchStatement;
+	private Statement catchStatement;
 	private final AstNodeList finallyStatement;
 
-	public TryStatement(AstNode astNode, AstNodeList astNodeList, Statement catchStatement,
-			AstNodeList astNodeList2) {
-		this.blockStatement = astNodeList;
-		astNodeList.setParentNode(this);
-		this.catchStatement = catchStatement;
-		catchStatement.setParentNode(this);
-		this.finallyStatement = astNodeList2;
-		if (astNodeList2 != null) {
-			astNodeList2.setParentNode(this);
-		}
+	public TryStatement(AstNodeList statements, Statement catchClause,
+			AstNodeList finallyClause) {
+		blockStatement = statements;
+		catchStatement = catchClause;
+		finallyStatement = finallyClause;
+	}
+
+	public TryStatement(AstNodeList statements, AstNodeList finallyClause) {
+		blockStatement = statements;
+		finallyStatement = finallyClause;
 	}
 
 	@Override

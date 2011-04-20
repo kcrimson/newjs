@@ -1,5 +1,8 @@
 package net.primitive.javascript.interpreter.utils;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class FastStack<T> {
 
 	private Slot<T> topSlot;
@@ -30,4 +33,22 @@ public class FastStack<T> {
 		return topSlot == null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		ToStringBuilder stringBuilder = new ToStringBuilder(this,
+				ToStringStyle.MULTI_LINE_STYLE);
+
+		Slot<T> nextSlot = topSlot;
+		while (nextSlot != null) {
+			stringBuilder.append("item",nextSlot.item);
+			nextSlot = nextSlot.next;
+		}
+
+		return stringBuilder.toString();
+	}
 }

@@ -46,7 +46,7 @@ public class Convertions {
 			return false;
 		}
 		if (object instanceof String) {
-			return ((String) object).isEmpty();
+			return !((String) object).isEmpty();
 		}
 		if (object instanceof Number) {
 			return ((Number) object).doubleValue() != 0.0;

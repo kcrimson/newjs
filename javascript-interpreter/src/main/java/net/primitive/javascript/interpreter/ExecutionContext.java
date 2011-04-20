@@ -1,6 +1,10 @@
 package net.primitive.javascript.interpreter;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.Statement;
 
 public class ExecutionContext {
@@ -13,6 +17,8 @@ public class ExecutionContext {
 
 	private final Statement statement;
 
+	private Completion completion;
+
 	protected ExecutionContext(LexicalEnvironment lexicalEnvironment,
 			LexicalEnvironment variableEnvironment, Scriptable thisBinding,
 			Statement statement) {
@@ -21,6 +27,8 @@ public class ExecutionContext {
 		this.variableEnvironment = variableEnvironment;
 		this.thisBinding = thisBinding;
 		this.statement = statement;
+		completion = new Completion(CompletionType.Normal, Undefined.Value,
+				null);
 	}
 
 	/**
@@ -54,6 +62,39 @@ public class ExecutionContext {
 
 	public void accept(StatementVisitorImpl visitor) {
 		statement.accept(visitor);
+	}
+
+	public Completion getCompletion() {
+		return completion;
+	}
+
+	public void returnValue(Object value) {
+		completion = new Completion(CompletionType.Return, value, null);
+	}
+
+	public void throwException(Object exceptionObject) {
+		completion = new Completion(CompletionType.Throw, exceptionObject, null);
+	}
+
+	public Statement getStatement() {
+		return statement;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		ToStringBuilder stringBuilder = new ToStringBuilder(this,
+				ToStringStyle.SIMPLE_STYLE).append("statement", statement);
+		return stringBuilder.toString();
+	}
+
+	public void normalCompletion() {
+		completion = new Completion(CompletionType.Normal, null, null);
+
 	}
 
 }

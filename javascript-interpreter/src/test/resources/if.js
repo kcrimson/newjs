@@ -1,5 +1,5 @@
 var a;
-if(true){
+if("a"){
 	a = 5;
 }
 

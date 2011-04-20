@@ -441,14 +441,17 @@ tryStatement returns [Statement result]
   :
   'try' LT!* statementBlock LT!*
   (
-    fc1=finallyClause
-    | catchClause (LT!* fc2=finallyClause)?
+    fc1=finallyClause 
+                     {
+                      $result = new TryStatement($statementBlock.result, $fc1.result);
+                     }
+    | catchClause (LT!* fc2=finallyClause)? 
+                                           {
+                                            $result = new TryStatement($statementBlock.result, $catchClause.result,
+                                            		$fc2.result);
+                                           }
   )
   
-  {
-   $result = new TryStatement($statementBlock.result, $fc1.result,
-   		$catchClause.result, $fc2.result);
-  }
   ;
 
 catchClause returns [Statement result]
@@ -541,9 +544,9 @@ newExpression returns [Expression result]
                    $result = $memberExpression.result;
                   }
   | 'new' LT!* exp=newExpression 
-                            {
-                             $result = new NewExpression($exp.result);
-                            }
+                                {
+                                 $result = new NewExpression($exp.result);
+                                }
   ;
 
 memberExpression returns [Expression result]
@@ -560,7 +563,10 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
                         {
                          $result = $functionExpression.result;
                         }
-    | 'new' LT!* exp=memberExpression LT!* arguments {$result = new NewExpression($exp.result);}
+    | 'new' LT!* exp=memberExpression LT!* arguments 
+                                                    {
+                                                     $result = new NewExpression($exp.result);
+                                                    }
   )
   (LT!* memberExpressionSuffix 
                               {

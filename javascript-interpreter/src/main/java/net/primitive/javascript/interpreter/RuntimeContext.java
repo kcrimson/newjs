@@ -2,8 +2,9 @@ package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.Statement;
+import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
 public class RuntimeContext {
@@ -111,12 +112,68 @@ public class RuntimeContext {
 		return callStack.peek();
 	}
 
-	public void exit() {
-		callStack.pop();
+	public boolean exit() {
+		ExecutionContext current = callStack.peek();
+
+		Completion completion = current.getCompletion();
+		CompletionType completionType = completion.getType();
+		if (CompletionType.Normal.equals(completionType)
+				|| CompletionType.Return.equals(completionType)) {
+			callStack.pop();
+			if (!callStack.isEmpty()) {
+				// rewrite return completion to previous statement on stack
+				ExecutionContext previous = callStack.peek();
+				if (CompletionType.Return.equals(completionType)) {
+					previous.getCompletion().setValue(completion.getValue());
+				}
+			}
+			return CompletionType.Normal.equals(completionType);
+		}
+
+		if (CompletionType.Throw.equals(completionType)) {
+			Statement statement = current.getStatement();
+			if (TryStatement.class.equals(statement.getClass())) {
+				TryStatement tryStatement = (TryStatement) statement;
+				CatchClause catchStatement = (CatchClause) tryStatement
+						.getCatchStatement();
+				if (catchStatement != null) {
+					LexicalEnvironment newDeclarativeEnvironment = LexicalEnvironment
+							.newDeclarativeEnvironment(current
+									.getLexicalEnvironment());
+
+					Reference mutableBinding = newDeclarativeEnvironment.getEnvironmentRecords()
+							.createMutableBinding(
+									catchStatement.getIdentifier(), false);
+					Reference.putValue(mutableBinding, completion.getValue());
+
+					enter(catchStatement,newDeclarativeEnvironment,current.getThisBinding());
+					catchStatement.accept(statementVisitor);
+					boolean exitStatus = exit();
+					// callStack.pop();
+					current.normalCompletion();
+					return exitStatus;
+				}
+			} else if (!callStack.isEmpty()) {
+				callStack.pop();
+				ExecutionContext previous = callStack.peek();
+				previous.throwException(completion.getValue());
+				return false;
+			}
+		}
+
+		return false;
 	}
 
+//	private void enter(CatchClause catchStatement,
+//			LexicalEnvironment newDeclarativeEnvironment) {
+//		final ExecutionContext newContext = new ExecutionContext(newDeclarativeEnvironment,
+//				newDeclarativeEnvironment, thisObj, catchStatement);
+//		callStack.push(newContext);
+//		return newContext;
+//		
+//	}
+
 	public EnvironmentRecords getVariables() {
-		// TODO Auto-generated method stub
 		return variableEnvironment.getEnvironmentRecords();
 	}
 
