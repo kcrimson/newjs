@@ -17,4 +17,8 @@ public final class Types {
 	private Types() {
 
 	}
+
+	public static boolean isConstructor(Object obj) {
+		return obj instanceof Constructor;
+	}
 }

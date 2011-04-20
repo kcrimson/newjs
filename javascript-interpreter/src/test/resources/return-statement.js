@@ -1,5 +1,5 @@
 function hello() {
-	return 1;
+	return "hello";
 }
-
-var assertResult = hello() == 1;
+var h = hello();
+var assertResult = (h == "hello");

@@ -28,7 +28,7 @@ class BenchmarkTestDriver {
 
 		Interpreter interpreter = new Interpreter();
 
-		interpreter.interpret(new File("src/test/resources/while.js"));
+		interpreter.interpret(new File("src/test/resources/new-function.js"));
 
 		long time = System.currentTimeMillis();
 
@@ -43,7 +43,7 @@ class BenchmarkTestDriver {
 		org.mozilla.javascript.ScriptableObject standardObjects = context
 				.initStandardObjects();
 		org.mozilla.javascript.Script script = context.compileReader(
-				new FileReader("src/test/resources/while.js"), "", 0, null);
+				new FileReader("src/test/resources/new-function.js"), "", 0, null);
 		time = System.currentTimeMillis();
 		for (int i = 0; i < 3000000; i++) {
 			script.exec(context, standardObjects);

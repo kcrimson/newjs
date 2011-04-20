@@ -34,6 +34,9 @@ public class ScriptableObject implements Scriptable {
 	@Override
 	public Object get(String propertyName) {
 		PropertyDescriptor descriptor = getProperty(propertyName);
+		if (descriptor == null) {
+			return Undefined.Value;
+		}
 		return descriptor.getValue();
 	}
 

@@ -9,6 +9,7 @@ import net.primitive.javascript.core.ast.FunctionExpression;
 import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.MemberExpression;
+import net.primitive.javascript.core.ast.NewExpression;
 import net.primitive.javascript.core.ast.ObjectLiteral;
 import net.primitive.javascript.core.ast.This;
 import net.primitive.javascript.core.ast.UnaryExpression;
@@ -41,5 +42,7 @@ public interface ExpressionVisitor {
 	void visitThis(This this1);
 
 	void visitConditionalExpression(ConditionalExpression conditionalExpression);
+
+	void visitNewExpression(NewExpression newExpression);
 
 }

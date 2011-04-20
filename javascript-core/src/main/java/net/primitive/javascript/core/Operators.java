@@ -25,13 +25,24 @@ public class Operators {
 					return ((String) op1).equals(op2);
 				}
 			}
-			return null;
+			return false;
 		}
 	};
 	public static final BinaryOperator DoesNotEquals = null;
 	public static final BinaryOperator StrictEquals = null;
 	public static final BinaryOperator StrictDoesNotEquals = null;
-	public static final BinaryOperator LogicalAND = null;
+
+	public static final BinaryOperator LogicalAND = new BinaryOperator() {
+
+		@Override
+		public Object operator(Object op1, Object op2) {
+			if (!Convertions.toBoolean(op1)) {
+				return op1;
+			}
+			return op2;
+		}
+	};
+
 	public static final BinaryOperator LogicalOR = null;
 	public static final BinaryOperator BitwiseOR = null;
 	public static final BinaryOperator BitwiseXOR = null;
