@@ -92,7 +92,7 @@ functionBody returns [AstNodeList result]
                          }
   LT!* '}'
   ;
-  
+
 // statements
 
 statement returns [AstNode result]
@@ -260,8 +260,8 @@ ifStatement returns [Statement result]
   :
   'if' LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
                                                                                                                {
-                                                                                                                $result = new IfStatement($expression.result, (AstNodeList)$ifstatement.result,
-                                                                                                                		(AstNodeList)$elsestatement.result);
+                                                                                                                $result = new IfStatement($expression.result,
+                                                                                                                		(AstNodeList) $ifstatement.result, (AstNodeList) $elsestatement.result);
                                                                                                                }
   ;
 
@@ -299,7 +299,8 @@ whileStatement returns [AstNode result]
   :
   'while' LT!* '(' LT!* expression LT!* ')' LT!* statement 
                                                           {
-                                                           $result = new WhileStatement($expression.result, (AstNodeList)$statement.result);
+                                                           $result = new WhileStatement($expression.result,
+                                                           		(AstNodeList) $statement.result);
                                                           }
   ;
 
@@ -539,7 +540,10 @@ newExpression returns [Expression result]
                   {
                    $result = $memberExpression.result;
                   }
-  | 'new' LT!* newExpression
+  | 'new' LT!* exp=newExpression 
+                            {
+                             $result = new NewExpression($exp.result);
+                            }
   ;
 
 memberExpression returns [Expression result]
@@ -556,7 +560,7 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
                         {
                          $result = $functionExpression.result;
                         }
-    | 'new' LT!* memberExpression LT!* arguments
+    | 'new' LT!* exp=memberExpression LT!* arguments {$result = new NewExpression($exp.result);}
   )
   (LT!* memberExpressionSuffix 
                               {

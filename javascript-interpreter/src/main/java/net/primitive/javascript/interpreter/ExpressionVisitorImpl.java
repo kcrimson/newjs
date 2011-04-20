@@ -3,10 +3,12 @@ package net.primitive.javascript.interpreter;
 import java.util.List;
 
 import net.primitive.javascript.core.Callable;
+import net.primitive.javascript.core.Constructor;
 import net.primitive.javascript.core.Convertions;
-import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.TypeErrorException;
+import net.primitive.javascript.core.Types;
 import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
@@ -18,6 +20,7 @@ import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.Literal;
 import net.primitive.javascript.core.ast.MemberExpression;
 import net.primitive.javascript.core.ast.NameValuePair;
+import net.primitive.javascript.core.ast.NewExpression;
 import net.primitive.javascript.core.ast.ObjectLiteral;
 import net.primitive.javascript.core.ast.This;
 import net.primitive.javascript.core.ast.UnaryExpression;
@@ -148,9 +151,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 						.implicitThisValue();
 			}
 		}
-		
-		//push new declarative lexical environment
-		
+
+		// push new declarative lexical environment
+
 		((Callable) func).call(null /* should be newly created scope */,
 				(Scriptable) thisValue, null/* rewrite arguments */);
 	}
@@ -161,7 +164,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ScriptableObject scriptableObject = new ScriptableObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), Reference.getValue(result));
+			scriptableObject.put((String) pair.getName(),
+					Reference.getValue(result));
 		}
 		result = scriptableObject;
 	}
@@ -182,6 +186,18 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitConditionalExpression(
 			ConditionalExpression conditionalExpression) {
 		System.out.println("leva cipa");
+	}
+
+	@Override
+	public void visitNewExpression(NewExpression newExpression) {
+		newExpression.getExpression().accept(this);
+		Object ref = result;
+		Object constructor = Reference.getValue(ref);
+		if (Types.isConstructor(constructor)) {
+			result = ((Constructor) constructor).construct(null, null);
+			return;
+		}
+		throw new TypeErrorException();
 	}
 
 }

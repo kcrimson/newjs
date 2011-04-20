@@ -226,7 +226,7 @@ public class PropertyDescriptor {
 		 */
 		@Override
 		public String toString() {
-			ToStringBuilder builder = new ToStringBuilder(this).append("value",
+			ToStringBuilder builder = new ToStringBuilder(this,ToStringStyle.SHORT_PREFIX_STYLE).append("value",
 					value);
 			return builder.toString();
 		}

@@ -47,7 +47,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	@Override
 	public Scriptable construct(Scriptable scope, Object[] args) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ScriptableObject();
 	}
 
 	/**

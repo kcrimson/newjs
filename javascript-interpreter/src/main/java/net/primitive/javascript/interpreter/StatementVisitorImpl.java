@@ -126,17 +126,8 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitReturnStatement(ReturnStatement returnStatement) {
-		// context.enter(returnStatement);
 		Expression expression = returnStatement.getExpression();
 		expression.accept(context.getExpressionVisitor());
-		// context.exitReturn(getValue(context.getExpressionVisitor().getResult()));
-	}
-
-	private static Object getValue(Object object) {
-		if (object instanceof PropertyDescriptor) {
-			return ((PropertyDescriptor) object).getValue();
-		}
-		return object;
 	}
 
 	@Override
@@ -150,15 +141,15 @@ public class StatementVisitorImpl implements StatementVisitor {
 	@Override
 	public void visitCatchClause(CatchClause catchClause) {
 		// context.enter(catchClause);
-		//catchClause.getStatement().accept(context.getStatementVisitor());
+		// catchClause.getStatement().accept(context.getStatementVisitor());
 		// context.exitStatement();
 	}
 
 	@Override
 	public void visitTryStatement(TryStatement tryStatement) {
 		// context.enter(tryStatement);
-		//Statement blockStatement = tryStatement.getBlockStatement();
-		//blockStatement.accept(context.getStatementVisitor());
+		// Statement blockStatement = tryStatement.getBlockStatement();
+		// blockStatement.accept(context.getStatementVisitor());
 		// context.exitStatement();
 	}
 
