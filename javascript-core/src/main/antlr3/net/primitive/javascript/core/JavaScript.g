@@ -451,7 +451,6 @@ tryStatement returns [Statement result]
                                             		$fc2.result);
                                            }
   )
-  
   ;
 
 catchClause returns [Statement result]
@@ -614,8 +613,21 @@ callExpressionSuffix
   ;
 
 arguments returns [Expression result]
+@init {
+List<Expression> argsList = new ArrayList<Expression>();
+}
   :
-  '(' (LT!* assignmentExpression (LT!* ',' LT!* assignmentExpression)*)? LT!* ')'
+  '(' (LT!* exp1=assignmentExpression 
+                                     {
+                                      argsList.add($exp1.result);
+                                     }
+    (LT!* ',' LT!* exp2=assignmentExpression 
+                                            {
+                                             argsList.add($exp2.result);
+                                            })*)? LT!* ')' 
+                                                          {
+                                                           $result = new Arguments(argsList);
+                                                          }
   ;
 
 indexSuffix returns [Expression result]

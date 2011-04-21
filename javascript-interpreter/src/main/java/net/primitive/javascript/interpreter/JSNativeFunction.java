@@ -36,6 +36,11 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		LexicalEnvironment newDeclEnv = LexicalEnvironment
 				.newDeclarativeEnvironment(currentContext
 						.currentExecutionContext().getLexicalEnvironment());
+		
+		for(int i=0;i<parameterList.size();i++){
+			Reference mutableBinding = newDeclEnv.getEnvironmentRecords().createMutableBinding(parameterList.get(i), false);
+			mutableBinding.setValue(args[i]);
+		}
 
 		for (AstNode astNode : functionBody.getAstNodes()) {
 			Statement statement = (Statement) astNode;

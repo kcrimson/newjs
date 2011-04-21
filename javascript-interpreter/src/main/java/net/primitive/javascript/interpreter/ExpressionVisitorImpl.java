@@ -1,5 +1,7 @@
 package net.primitive.javascript.interpreter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.primitive.javascript.core.Callable;
@@ -10,6 +12,7 @@ import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.TypeErrorException;
 import net.primitive.javascript.core.Types;
 import net.primitive.javascript.core.Undefined;
+import net.primitive.javascript.core.ast.Arguments;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
@@ -78,7 +81,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		ExpressionVisitor leftVisitor = context.getExpressionVisitor();
 		assignmentExpression.getLeftHandSideExpression().accept(leftVisitor);
 		Reference.putValue(result, value);
-		// property.setValue(value);
+
 	}
 
 	/*
@@ -153,11 +156,36 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 			}
 		}
 
+		// bind parameters
+		Expression arguments = callExpression.getArguments();
+		// evaluate parameters
+		arguments.accept(this);
+
+		List<Object> values = (List<Object>) result;
+
+		List<String> parameterList = ((JSNativeFunction) func)
+				.getParameterList();
+
+		if (values.size() < parameterList.size()) {
+			int diff = parameterList.size() - values.size();
+			for (int i = 0; i < diff; i++) {
+				values.add(Undefined.Value);
+			}
+		}
+		// List<Object> args = new ArrayList<Object>();
+		// for (int i = 0; i < parameterList.size(); i++) {
+		// if (i < values.size()) {
+		// args.add(values.get(i));
+		// } else {
+		// args.add(Undefined.Value);
+		// }
+		// }
+
 		// push new declarative lexical environment
 
-		result = ((Callable) func).call(
-				null /* should be newly created scope */,
-				(Scriptable) thisValue, null/* rewrite arguments */);
+		result = ((Callable) func).call(null, (Scriptable) thisValue,
+				values.toArray(new Object[] {}));
+
 	}
 
 	@Override
@@ -200,6 +228,17 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 			return;
 		}
 		throw new TypeErrorException();
+	}
+
+	@Override
+	public void visitArguments(Arguments arguments) {
+		List<Expression> argumentsList = arguments.getArgumentsList();
+		List<Object> values = new ArrayList<Object>();
+		for (Expression exp : argumentsList) {
+			exp.accept(this);
+			values.add(result);
+		}
+		result = values;
 	}
 
 }

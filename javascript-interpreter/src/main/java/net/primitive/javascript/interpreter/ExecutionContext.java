@@ -88,7 +88,8 @@ public class ExecutionContext {
 	@Override
 	public String toString() {
 		ToStringBuilder stringBuilder = new ToStringBuilder(this,
-				ToStringStyle.SIMPLE_STYLE).append("statement", statement);
+				ToStringStyle.SIMPLE_STYLE).append("statement", statement)
+				.append("completion", completion);
 		return stringBuilder.toString();
 	}
 

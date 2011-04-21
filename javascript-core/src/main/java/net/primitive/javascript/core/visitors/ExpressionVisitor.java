@@ -1,5 +1,6 @@
 package net.primitive.javascript.core.visitors;
 
+import net.primitive.javascript.core.ast.Arguments;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
@@ -44,5 +45,7 @@ public interface ExpressionVisitor {
 	void visitConditionalExpression(ConditionalExpression conditionalExpression);
 
 	void visitNewExpression(NewExpression newExpression);
+
+	void visitArguments(Arguments arguments);
 
 }

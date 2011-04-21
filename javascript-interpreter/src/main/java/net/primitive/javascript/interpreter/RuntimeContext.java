@@ -123,9 +123,9 @@ public class RuntimeContext {
 			if (!callStack.isEmpty()) {
 				// rewrite return completion to previous statement on stack
 				ExecutionContext previous = callStack.peek();
-				if (CompletionType.Return.equals(completionType)) {
-					previous.getCompletion().setValue(completion.getValue());
-				}
+				// if (CompletionType.Return.equals(completionType)) {
+				previous.getCompletion().setValue(completion.getValue());
+				// }
 			}
 			return CompletionType.Normal.equals(completionType);
 		}
@@ -141,12 +141,13 @@ public class RuntimeContext {
 							.newDeclarativeEnvironment(current
 									.getLexicalEnvironment());
 
-					Reference mutableBinding = newDeclarativeEnvironment.getEnvironmentRecords()
-							.createMutableBinding(
+					Reference mutableBinding = newDeclarativeEnvironment
+							.getEnvironmentRecords().createMutableBinding(
 									catchStatement.getIdentifier(), false);
 					Reference.putValue(mutableBinding, completion.getValue());
 
-					enter(catchStatement,newDeclarativeEnvironment,current.getThisBinding());
+					enter(catchStatement, newDeclarativeEnvironment,
+							current.getThisBinding());
 					catchStatement.accept(statementVisitor);
 					boolean exitStatus = exit();
 					// callStack.pop();
@@ -164,14 +165,15 @@ public class RuntimeContext {
 		return false;
 	}
 
-//	private void enter(CatchClause catchStatement,
-//			LexicalEnvironment newDeclarativeEnvironment) {
-//		final ExecutionContext newContext = new ExecutionContext(newDeclarativeEnvironment,
-//				newDeclarativeEnvironment, thisObj, catchStatement);
-//		callStack.push(newContext);
-//		return newContext;
-//		
-//	}
+	// private void enter(CatchClause catchStatement,
+	// LexicalEnvironment newDeclarativeEnvironment) {
+	// final ExecutionContext newContext = new
+	// ExecutionContext(newDeclarativeEnvironment,
+	// newDeclarativeEnvironment, thisObj, catchStatement);
+	// callStack.push(newContext);
+	// return newContext;
+	//
+	// }
 
 	public EnvironmentRecords getVariables() {
 		return variableEnvironment.getEnvironmentRecords();

@@ -88,9 +88,9 @@ public class Operators {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			int i = Integer.parseInt((String) op1)
-					- +Integer.parseInt((String) op2);
-			return Integer.toString(i);
+			double number1 = Convertions.toNumber(op1);
+			double number2 = Convertions.toNumber(op2);
+			return number1 - number2;
 		}
 	};
 	public static final BinaryOperator Modulo = null;
@@ -98,8 +98,9 @@ public class Operators {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return Integer.toString(Integer.parseInt((String) op1)
-					* +Integer.parseInt((String) op2));
+			double number1 = Convertions.toNumber(op1);
+			double number2 = Convertions.toNumber(op2);
+			return number1 * number2;
 		}
 	};
 	public static final BinaryOperator Divide = null;

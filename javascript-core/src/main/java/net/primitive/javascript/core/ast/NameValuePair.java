@@ -12,7 +12,7 @@ public class NameValuePair {
 		this.name = name;
 		this.value = value;
 		
-		System.out.println(name);
+	//	System.out.println(name);
 	}
 
 }

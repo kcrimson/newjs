@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.primitive.javascript.core.Undefined;
+import net.primitive.javascript.core.utils.FastMap;
 
 public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 
-	private Map<String, Reference> bindings = new HashMap<String, Reference>();
+	private Map<String, Reference> bindings = new FastMap<String, Reference>();
 
 	@Override
 	public boolean hasBinding(String name) {

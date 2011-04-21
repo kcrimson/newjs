@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * Test driver program for the ANTLR3 Maven Architype demo
@@ -57,7 +58,8 @@ public class BenchmarkTestDriver {
 				.println("Running benchmark test for " + testScript.getPath());
 
 		interpreter.interpret(testScript);
-		for (int i = 0; i < 30000; i++) {
+		int repCount = 300000;
+		for (int i = 0; i < repCount; i++) {
 
 			net.primitive.javascript.core.ScriptableObject scriptableObject = new net.primitive.javascript.core.ScriptableObject();
 
@@ -70,12 +72,24 @@ public class BenchmarkTestDriver {
 		org.mozilla.javascript.Script script = context.compileReader(
 				new FileReader(testScript), "", 0, null);
 		time = System.currentTimeMillis();
-		
-		for (int i = 0; i < 30000; i++) {
-			org.mozilla.javascript.ScriptableObject standardObjects = context
-			.initStandardObjects();	script.exec(context, standardObjects);
+		for (int i = 0; i < repCount; i++) {
+			org.mozilla.javascript.ScriptableObject standardObjects = new ScriptableObject() {
+				
+				@Override
+				public String getClassName() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
+			script.exec(context, standardObjects);
 		}
 		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
+	public static void main(String[] argv) throws Exception {
+		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
+				"src/test/resources/silnia.js");
+		testDriver.run_benchmark();
+
+	}
 }
