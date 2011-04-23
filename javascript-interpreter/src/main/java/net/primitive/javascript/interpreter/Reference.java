@@ -33,6 +33,8 @@ public abstract class Reference {
 	 */
 	public abstract Object getBase();
 
+	public abstract boolean isPropertyReference();
+
 	protected abstract Object getValue();
 
 	protected abstract void setValue(Object value);
@@ -58,5 +60,4 @@ public abstract class Reference {
 		reference.setValue(value);
 	}
 
-	public abstract boolean isPropertyReference();
 }

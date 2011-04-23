@@ -6,7 +6,6 @@ import java.util.Map;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
-import net.primitive.javascript.core.utils.FastMap;
 
 public class ObjectEnvironmentRecords implements EnvironmentRecords {
 
@@ -15,7 +14,7 @@ public class ObjectEnvironmentRecords implements EnvironmentRecords {
 	private final boolean provideThis;
 
 	// holds references to binding object properties
-	private Map<String, Reference> bindings = new FastMap<String, Reference>();
+	private Map<String, Reference> bindings = new HashMap<String, Reference>();
 
 	public ObjectEnvironmentRecords(Scriptable bindingObject,
 			boolean provideThis) {

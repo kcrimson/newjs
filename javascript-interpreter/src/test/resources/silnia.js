@@ -6,6 +6,13 @@ function silnia(a) {
 	}
 }
 
-var s = silnia(3);
+var arg = 3;
+var s;
+s = silnia(arg);
+
+var same = false;
+if (s == arg) {
+	same = true;
+}
 
 var assertResult = (s == 6);

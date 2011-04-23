@@ -1,7 +1,6 @@
 package net.primitive.javascript.interpreter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.primitive.javascript.core.Callable;
@@ -113,11 +112,14 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitMemberExpression(MemberExpression memberExpression) {
 		memberExpression.getExpression().accept(this);
 
-		List<Expression> suffixes = memberExpression.getExpresionSuffixes();
-		if (suffixes != null && suffixes.size() > 0) {
+		Expression[] suffixes = memberExpression.getExpresionSuffixes();
+		int len = suffixes != null ? suffixes.length : 0;
+		if (len > 0) {
 			Object baseReference = result;
 			Object baseValue = null;
-			for (Expression suffix : suffixes) {
+			Expression suffix;
+			for (int i = 0; i < len; i++) {
+				suffix = suffixes[i];
 				String propertyNameString;
 				if (Identifier.class.equals(suffix.getClass())) {
 					propertyNameString = ((Identifier) suffix)

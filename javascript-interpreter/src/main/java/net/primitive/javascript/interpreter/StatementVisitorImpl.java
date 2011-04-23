@@ -106,16 +106,24 @@ public class StatementVisitorImpl implements StatementVisitor {
 	@Override
 	public void visitWhileStatement(WhileStatement whileStatement) {
 		Expression expression = whileStatement.getExpression();
-		AstNodeList statements = whileStatement.getStatements();
+		Statement[] statements = whileStatement.getStatements();
+		int len = statements != null ? statements.length : 0;
 
-		for (expression.accept(runtimeContext.getExpressionVisitor()); toBoolean(runtimeContext
-				.getExpressionVisitor().getResult()); expression
-				.accept(runtimeContext.getExpressionVisitor())) {
+		ExpressionVisitorImpl expressionVisitor = runtimeContext
+				.getExpressionVisitor();
+		boolean continues = true;
+		for (expression.accept(expressionVisitor); continues
+				&& toBoolean(expressionVisitor.getResult()); expression
+				.accept(expressionVisitor)) {
 
-			for (AstNode astNode : statements.getAstNodes()) {
-				runtimeContext.enter((Statement) astNode);
-				((Statement) astNode).accept(this);
-				runtimeContext.exit();
+			for (int i = 0; i < len; i++) {
+				Statement statement = statements[i];
+				runtimeContext.enter(statement);
+				statement.accept(this);
+				if (!runtimeContext.exit()) {
+					continues = false;
+					break;
+				}
 			}
 		}
 	}

@@ -3,11 +3,9 @@ package net.primitive.javascript.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.primitive.javascript.core.utils.FastMap;
-
 public class ScriptableObject implements Scriptable {
 
-	private final Map<String, PropertyDescriptor> associatedProperties = new FastMap<String, PropertyDescriptor>();
+	private final Map<String, PropertyDescriptor> associatedProperties = new HashMap<String, PropertyDescriptor>();
 
 	private boolean extensible = true;
 

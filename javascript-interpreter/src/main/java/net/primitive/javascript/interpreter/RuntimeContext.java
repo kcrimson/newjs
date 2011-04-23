@@ -165,16 +165,6 @@ public class RuntimeContext {
 		return false;
 	}
 
-	// private void enter(CatchClause catchStatement,
-	// LexicalEnvironment newDeclarativeEnvironment) {
-	// final ExecutionContext newContext = new
-	// ExecutionContext(newDeclarativeEnvironment,
-	// newDeclarativeEnvironment, thisObj, catchStatement);
-	// callStack.push(newContext);
-	// return newContext;
-	//
-	// }
-
 	public EnvironmentRecords getVariables() {
 		return variableEnvironment.getEnvironmentRecords();
 	}

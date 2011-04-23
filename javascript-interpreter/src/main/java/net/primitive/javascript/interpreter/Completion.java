@@ -1,9 +1,9 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.ast.AstNode;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
-import net.primitive.javascript.core.ast.AstNode;
 
 public class Completion {
 

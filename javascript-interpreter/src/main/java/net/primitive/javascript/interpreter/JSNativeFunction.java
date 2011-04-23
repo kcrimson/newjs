@@ -36,10 +36,11 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		LexicalEnvironment newDeclEnv = LexicalEnvironment
 				.newDeclarativeEnvironment(currentContext
 						.currentExecutionContext().getLexicalEnvironment());
-		
-		for(int i=0;i<parameterList.size();i++){
-			Reference mutableBinding = newDeclEnv.getEnvironmentRecords().createMutableBinding(parameterList.get(i), false);
-			mutableBinding.setValue(args[i]);
+
+		for (int i = 0; i < parameterList.size(); i++) {
+			Reference mutableBinding = newDeclEnv.getEnvironmentRecords()
+					.createMutableBinding(parameterList.get(i), false);
+			mutableBinding.setValue(Reference.getValue(args[i]));
 		}
 
 		for (AstNode astNode : functionBody.getAstNodes()) {
@@ -59,7 +60,6 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 
 	@Override
 	public Scriptable construct(Scriptable scope, Object[] args) {
-		// TODO Auto-generated method stub
 		return new ScriptableObject();
 	}
 
