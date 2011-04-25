@@ -3,9 +3,12 @@ package net.primitive.javascript.interpreter;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Constructor;
 import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.Function;
+import net.primitive.javascript.core.Reference;
+import net.primitive.javascript.core.Scope;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.TypeErrorException;
@@ -94,9 +97,6 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitLeftHandSideExpression(Expression leftHandSideExpression) {
 		ExpressionVisitor visitor = context.getExpressionVisitor();
 		leftHandSideExpression.accept(visitor);
-
-		// result = visitor.getResult();
-
 	}
 
 	@Override
@@ -148,21 +148,26 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Object ref = result;
 		Object func = Reference.getValue(ref);
 		Object thisValue = Undefined.Value;
+
+		// resolving this
 		if (ref instanceof Reference) {
 			Reference reference = (Reference) ref;
 			if (reference.isPropertyReference()) {
 				thisValue = reference.getBase();
 			} else {
-				thisValue = ((EnvironmentRecords) reference.getBase())
+				thisValue = ((ScopeBindings) reference.getBase())
 						.implicitThisValue();
 			}
+		} else {
+			thisValue = context.getGlobalObject();
 		}
 
-		// bind parameters
+		// binding parameters
 		Expression arguments = callExpression.getArguments();
 		// evaluate parameters
 		arguments.accept(this);
 
+		@SuppressWarnings("unchecked")
 		List<Object> values = (List<Object>) result;
 
 		List<String> parameterList = ((JSNativeFunction) func)
@@ -174,18 +179,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 				values.add(Undefined.Value);
 			}
 		}
-		// List<Object> args = new ArrayList<Object>();
-		// for (int i = 0; i < parameterList.size(); i++) {
-		// if (i < values.size()) {
-		// args.add(values.get(i));
-		// } else {
-		// args.add(Undefined.Value);
-		// }
-		// }
 
-		// push new declarative lexical environment
-
-		result = ((Callable) func).call(null, (Scriptable) thisValue,
+		Function callable = (Function) func;
+		result = callable.call(callable.getScope(), (Scriptable) thisValue,
 				values.toArray(new Object[] {}));
 
 	}
@@ -204,7 +200,12 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitFunctionExpression(FunctionExpression functionExpression) {
-		result = new JSNativeFunction(functionExpression.getFunctionName(),
+
+		ExecutionContext executionContext = context.currentExecutionContext();
+		Scope lexenv = executionContext.getLexicalEnvironment();
+
+		result = new JSNativeFunction(lexenv,
+				functionExpression.getFunctionName(),
 				functionExpression.getParameterList(),
 				functionExpression.getFunctionBody());
 	}

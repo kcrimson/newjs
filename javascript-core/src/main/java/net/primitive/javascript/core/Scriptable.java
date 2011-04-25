@@ -33,23 +33,23 @@ public interface Scriptable {
 
 	boolean isExtensible();
 
+	boolean hasProperty(String propertyName);
+
 	Object get(String propertyName);
 
 	PropertyDescriptor getOwnProperty(String propertyName);
 
 	PropertyDescriptor getProperty(String propertyName);
 
-	void put(String propertyName, Object value);
-
 	boolean canPut(String propertyName);
 
-	boolean hasProperty(String propertyName);
+	void put(String propertyName, Object value);
+
+	boolean defineOwnProperty(String propertyName,
+			PropertyDescriptor propertyDescriptor, boolean failureHandling);
 
 	boolean delete(String propertyName, boolean failureHandling);
 
 	Object getDefaultValue(Class<?> hint);
-
-	boolean defineOwnProperty(String propertyName,
-			PropertyDescriptor propertyDescriptor, boolean failureHandling);
 
 }

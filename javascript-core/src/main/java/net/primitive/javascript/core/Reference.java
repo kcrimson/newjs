@@ -1,7 +1,4 @@
-package net.primitive.javascript.interpreter;
-
-import net.primitive.javascript.core.ReferenceErrorException;
-import net.primitive.javascript.core.Undefined;
+package net.primitive.javascript.core;
 
 /**
  * A Reference is a resolved name binding.
@@ -35,9 +32,9 @@ public abstract class Reference {
 
 	public abstract boolean isPropertyReference();
 
-	protected abstract Object getValue();
+	public abstract Object getValue();
 
-	protected abstract void setValue(Object value);
+	public abstract void setValue(Object value);
 
 	public static Object getValue(Object object) {
 		if (object instanceof Reference) {

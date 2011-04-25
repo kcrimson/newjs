@@ -42,16 +42,18 @@ package net.primitive.javascript.core;
  * Generic notion of callable object that can execute some script-related code
  * upon request with specified values for script scope and this objects.
  */
-public interface Callable
-{
-    /**
-     * Perform the call.
-     * @param scope the scope to use to resolve properties.
-     * @param thisObj the JavaScript <code>this</code> object
-     * @param args the array of arguments
-     *
-     * @return the result of the call
-     */
-    public Object call(Scriptable scope, Scriptable thisObj, Object[] args);
+public interface Callable {
+	/**
+	 * Perform the call.
+	 * 
+	 * @param scope
+	 *            the scope to use to resolve properties.
+	 * @param thisObj
+	 *            the JavaScript <code>this</code> object
+	 * @param args
+	 *            the array of arguments
+	 * 
+	 * @return the result of the call
+	 */
+	public Object call(Scope scope, Scriptable thisObj, Object[] args);
 }
-

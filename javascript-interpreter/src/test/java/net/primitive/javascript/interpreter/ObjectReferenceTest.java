@@ -1,5 +1,6 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.ReferenceErrorException;
 import net.primitive.javascript.core.Undefined;
 

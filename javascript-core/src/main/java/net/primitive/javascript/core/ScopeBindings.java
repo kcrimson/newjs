@@ -1,6 +1,7 @@
-package net.primitive.javascript.interpreter;
+package net.primitive.javascript.core;
 
-public interface EnvironmentRecords {
+
+public interface ScopeBindings {
 
 	boolean hasBinding(String name);
 

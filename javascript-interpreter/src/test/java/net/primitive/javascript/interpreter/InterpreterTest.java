@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.ScriptableObject;
 
 import net.primitive.javascript.utils.ResourceList;
@@ -49,7 +50,7 @@ public class InterpreterTest {
 		Interpreter interpreter = new Interpreter();
 
 		interpreter.interpret(new File(javaScriptFile));
-		EnvironmentRecords records = interpreter.execute(scope);
+		ScopeBindings records = interpreter.execute(scope);
 		Object object = records.getBinding("assertResult").getValue();
 		//System.out.println(object);
 		assertTrue(Convertions.toBoolean(object));

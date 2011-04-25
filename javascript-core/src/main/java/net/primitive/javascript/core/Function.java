@@ -50,4 +50,6 @@ package net.primitive.javascript.core;
 
 public interface Function extends Scriptable, Callable, Constructor {
 
+	Scope getScope();
+
 }

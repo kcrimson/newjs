@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import net.primitive.javascript.core.JavaScriptLexer;
 import net.primitive.javascript.core.JavaScriptParser;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
 
@@ -34,7 +35,7 @@ public class Interpreter {
 
 	}
 
-	public EnvironmentRecords execute(Scriptable globalObject) {
+	public ScopeBindings execute(Scriptable globalObject) {
 		RuntimeContext currentContext = enterContext(globalObject);
 
 		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext);

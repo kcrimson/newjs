@@ -1,6 +1,7 @@
 package net.primitive.javascript.interpreter;
 
 import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scriptable;
 
 class ObjectReference extends Reference {
@@ -18,12 +19,12 @@ class ObjectReference extends Reference {
 	}
 
 	@Override
-	protected Object getValue() {
+	public Object getValue() {
 		return getBindingObject().get(getReferencedName());
 	}
 
 	@Override
-	protected void setValue(Object value) {
+	public void setValue(Object value) {
 		getBindingObject().put(getReferencedName(), value);
 	}
 

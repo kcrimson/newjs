@@ -1,6 +1,7 @@
 package net.primitive.javascript.utils;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Script;
 
 /**
  * Test driver program for the ANTLR3 Maven Architype demo
@@ -45,8 +48,8 @@ public class BenchmarkTestDriver {
 	 */
 	@Test
 	public void run_benchmark() throws Exception {
-		
-		System.gc();
+
+		// System.gc();
 		long time = System.currentTimeMillis();
 
 		Interpreter interpreter = new Interpreter();
@@ -56,7 +59,7 @@ public class BenchmarkTestDriver {
 		System.out
 				.println("Running benchmark test for " + testScript.getPath());
 
-		int repCount = 300000;
+		int repCount = 3000000;
 		for (int i = 0; i < repCount; i++) {
 
 			net.primitive.javascript.core.ScriptableObject scriptableObject = new net.primitive.javascript.core.ScriptableObject();
@@ -65,21 +68,25 @@ public class BenchmarkTestDriver {
 		}
 		System.out.println("NewJS times: "
 				+ (System.currentTimeMillis() - time));
-//		System.gc();
-//		Context context = Context.enter();
-////				, "", 0, null);
-//		time = System.currentTimeMillis();
-//		org.mozilla.javascript.ScriptableObject standardObjects = context.initStandardObjects();
-//		for (int i = 0; i < repCount; i++) {
-//			context.evaluateReader(standardObjects, new FileReader(testScript), "", 0, null);
-////			script.exec(context, standardObjects);
-//		}
-//		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
+		System.gc();
+		Context context = Context.enter();
+		// , "", 0, null);
+		Script script = context.compileReader(new FileReader(testScript), "",
+				0, null);
+		time = System.currentTimeMillis();
+		org.mozilla.javascript.ScriptableObject standardObjects = context
+				.initStandardObjects();
+		for (int i = 0; i < repCount; i++) {
+			// context.evaluateReader(standardObjects, new
+			// FileReader(testScript), "", 0, null);
+			script.exec(context, standardObjects);
+		}
+		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"src/test/resources/var-decl.js");
+				"src/test/resources/if.js");
 		testDriver.run_benchmark();
 
 	}

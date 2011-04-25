@@ -34,8 +34,7 @@ public class PropertyDescriptorTest {
 		Callable getter = new Callable() {
 
 			@Override
-			public Object call(Scriptable scope, Scriptable thisObj,
-					Object[] args) {
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
 				return propertyHolder.value;
 			}
 		};
@@ -43,8 +42,7 @@ public class PropertyDescriptorTest {
 		Callable setter = new Callable() {
 
 			@Override
-			public Object call(Scriptable scope, Scriptable thisObj,
-					Object[] args) {
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
 				propertyHolder.value = args[0];
 				propertyHolder.setterInvoked = true;
 				return null;

@@ -1,6 +1,8 @@
 package net.primitive.javascript.interpreter;
 
-import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
+import net.primitive.javascript.core.Reference;
+import net.primitive.javascript.core.Scope;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.Statement;
@@ -21,15 +23,16 @@ public class RuntimeContext {
 
 	private final Scriptable globalObject;
 
-	private final LexicalEnvironment globalEnvironment;
+	private final Scope globalEnvironment;
 
-	private final LexicalEnvironment variableEnvironment;
+	private final Scope variableEnvironment;
 
-	private LexicalEnvironment lexicalEnvironment;
+	private Scope lexicalEnvironment;
 
 	private RuntimeContext(final Scriptable globalObject) {
 		this.globalObject = globalObject;
-		this.globalEnvironment = newObjectEnvironment(globalObject, null);
+		this.globalEnvironment = LexicalEnvironment.newObjectEnvironment(
+				globalObject, null);
 		this.lexicalEnvironment = globalEnvironment;// newDeclarativeEnvironment(globalEnvironment);
 		this.variableEnvironment = lexicalEnvironment;
 	}
@@ -49,8 +52,8 @@ public class RuntimeContext {
 	}
 
 	public ExecutionContext enter(Statement statement) {
-		LexicalEnvironment varEnv;
-		LexicalEnvironment lexEnv;
+		Scope varEnv;
+		Scope lexEnv;
 		Scriptable thisObj;
 		if (callStack.isEmpty()) {
 			varEnv = variableEnvironment;
@@ -77,8 +80,8 @@ public class RuntimeContext {
 	 * @param thisObj
 	 * @return
 	 */
-	public ExecutionContext enter(Statement statement,
-			LexicalEnvironment lexEnv, Scriptable thisObj) {
+	public ExecutionContext enter(Statement statement, Scope lexEnv,
+			Scriptable thisObj) {
 		final ExecutionContext newContext = new ExecutionContext(lexEnv,
 				lexEnv, thisObj, statement);
 		callStack.push(newContext);
@@ -117,32 +120,32 @@ public class RuntimeContext {
 
 		Completion completion = current.getCompletion();
 		CompletionType completionType = completion.getType();
+
 		if (CompletionType.Normal.equals(completionType)
 				|| CompletionType.Return.equals(completionType)) {
 			callStack.pop();
 			if (!callStack.isEmpty()) {
 				// rewrite return completion to previous statement on stack
 				ExecutionContext previous = callStack.peek();
-				// if (CompletionType.Return.equals(completionType)) {
 				previous.getCompletion().setValue(completion.getValue());
-				// }
 			}
 			return CompletionType.Normal.equals(completionType);
 		}
 
 		if (CompletionType.Throw.equals(completionType)) {
 			Statement statement = current.getStatement();
+			// if this is TryStatement handle exception with catch and finally
 			if (TryStatement.class.equals(statement.getClass())) {
 				TryStatement tryStatement = (TryStatement) statement;
 				CatchClause catchStatement = (CatchClause) tryStatement
 						.getCatchStatement();
 				if (catchStatement != null) {
-					LexicalEnvironment newDeclarativeEnvironment = LexicalEnvironment
+					Scope newDeclarativeEnvironment = LexicalEnvironment
 							.newDeclarativeEnvironment(current
 									.getLexicalEnvironment());
 
 					Reference mutableBinding = newDeclarativeEnvironment
-							.getEnvironmentRecords().createMutableBinding(
+							.getBindings().createMutableBinding(
 									catchStatement.getIdentifier(), false);
 					Reference.putValue(mutableBinding, completion.getValue());
 
@@ -150,11 +153,12 @@ public class RuntimeContext {
 							current.getThisBinding());
 					catchStatement.accept(statementVisitor);
 					boolean exitStatus = exit();
-					// callStack.pop();
+					callStack.pop();
 					current.normalCompletion();
 					return exitStatus;
 				}
 			} else if (!callStack.isEmpty()) {
+				// fold exception to previous statement
 				callStack.pop();
 				ExecutionContext previous = callStack.peek();
 				previous.throwException(completion.getValue());
@@ -165,8 +169,12 @@ public class RuntimeContext {
 		return false;
 	}
 
-	public EnvironmentRecords getVariables() {
-		return variableEnvironment.getEnvironmentRecords();
+	public ScopeBindings getVariables() {
+		return variableEnvironment.getBindings();
+	}
+
+	public Scriptable getGlobalObject() {
+		return globalObject;
 	}
 
 }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.Undefined;
 

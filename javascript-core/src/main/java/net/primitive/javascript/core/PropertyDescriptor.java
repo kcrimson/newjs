@@ -226,8 +226,8 @@ public class PropertyDescriptor {
 		 */
 		@Override
 		public String toString() {
-			ToStringBuilder builder = new ToStringBuilder(this,ToStringStyle.SHORT_PREFIX_STYLE).append("value",
-					value);
+			ToStringBuilder builder = new ToStringBuilder(this,
+					ToStringStyle.SHORT_PREFIX_STYLE).append("value", value);
 			return builder.toString();
 		}
 
@@ -245,14 +245,14 @@ public class PropertyDescriptor {
 
 		@Override
 		public Object get() {
-			return getterCallable.call(new ScriptableObject(),
+			return getterCallable.call(null,
 					PropertyDescriptor.this.thisObject, EMPTY_ARGS);
 		}
 
 		@Override
 		public void set(Object value) {
-			setterCallable.call(new ScriptableObject(),
-					PropertyDescriptor.this.thisObject, new Object[] { value });
+			setterCallable.call(null, PropertyDescriptor.this.thisObject,
+					new Object[] { value });
 		}
 
 		@Override

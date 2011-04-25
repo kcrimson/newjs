@@ -5,6 +5,8 @@ import static net.primitive.javascript.interpreter.RuntimeContext.currentContext
 import java.util.List;
 
 import net.primitive.javascript.core.Function;
+import net.primitive.javascript.core.Reference;
+import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.Undefined;
@@ -17,28 +19,28 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	private final String functionName;
 	private final List<String> parameterList;
 	private final AstNodeList functionBody;
+	private final Scope scope;
 
-	public JSNativeFunction(String functionName, List<String> parameterList,
-			AstNodeList functionBody) {
+	public JSNativeFunction(Scope scope, String functionName,
+			List<String> parameterList, AstNodeList functionBody) {
+		this.scope = scope;
 		this.functionName = functionName;
 		this.parameterList = parameterList;
 		this.functionBody = functionBody;
 	}
 
 	@Override
-	public Object call(Scriptable scope, Scriptable thisObj, Object[] args) {
+	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
 
 		Object returnValue = Undefined.Value;
 
 		RuntimeContext currentContext = currentContext();
 		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
 		// new lexical env
-		LexicalEnvironment newDeclEnv = LexicalEnvironment
-				.newDeclarativeEnvironment(currentContext
-						.currentExecutionContext().getLexicalEnvironment());
+		Scope newDeclEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
 		for (int i = 0; i < parameterList.size(); i++) {
-			Reference mutableBinding = newDeclEnv.getEnvironmentRecords()
+			Reference mutableBinding = newDeclEnv.getBindings()
 					.createMutableBinding(parameterList.get(i), false);
 			mutableBinding.setValue(Reference.getValue(args[i]));
 		}
@@ -82,6 +84,13 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	 */
 	public AstNodeList getFunctionBody() {
 		return functionBody;
+	}
+
+	/**
+	 * @return the scope
+	 */
+	public Scope getScope() {
+		return scope;
 	}
 
 }

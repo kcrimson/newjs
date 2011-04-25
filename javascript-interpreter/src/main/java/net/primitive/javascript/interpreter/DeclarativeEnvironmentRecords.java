@@ -3,9 +3,11 @@ package net.primitive.javascript.interpreter;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.primitive.javascript.core.Reference;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Undefined;
 
-public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
+public class DeclarativeEnvironmentRecords implements ScopeBindings {
 
 	private Map<String, Reference> bindings = new HashMap<String, Reference>();
 
@@ -53,12 +55,12 @@ public class DeclarativeEnvironmentRecords implements EnvironmentRecords {
 		}
 
 		@Override
-		protected Object getValue() {
+		public Object getValue() {
 			return value;
 		}
 
 		@Override
-		protected void setValue(Object value) {
+		public void setValue(Object value) {
 			this.value = value;
 		}
 

@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Reference;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
 
-public class ObjectEnvironmentRecords implements EnvironmentRecords {
+public class ObjectEnvironmentRecords implements ScopeBindings {
 
 	final Scriptable bindingObject;
 

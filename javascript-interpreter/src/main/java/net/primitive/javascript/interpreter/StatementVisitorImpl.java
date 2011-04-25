@@ -4,6 +4,9 @@ import static net.primitive.javascript.core.Convertions.toBoolean;
 
 import java.util.List;
 
+import net.primitive.javascript.core.Reference;
+import net.primitive.javascript.core.Scope;
+import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
@@ -33,8 +36,8 @@ public class StatementVisitorImpl implements StatementVisitor {
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
 		ExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
-		LexicalEnvironment env = executionContext.getVariableEnvironment();
-		EnvironmentRecords envrec = env.getEnvironmentRecords();
+		Scope env = executionContext.getVariableEnvironment();
+		ScopeBindings envrec = env.getBindings();
 		String varname = variableDeclaration.getVariableName();
 		if (envrec.hasBinding(varname)) {
 
@@ -58,12 +61,12 @@ public class StatementVisitorImpl implements StatementVisitor {
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
 		ExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
+		Scope varenv = executionContext.getVariableEnvironment();
 		String functionName = functionDeclaration.getFunctionName();
-		JSNativeFunction jsFunction = new JSNativeFunction(functionName,
-				functionDeclaration.getParameterList(),
+		JSNativeFunction jsFunction = new JSNativeFunction(varenv,
+				functionName, functionDeclaration.getParameterList(),
 				functionDeclaration.getFunctionBody());
-		EnvironmentRecords envrecs = executionContext.getVariableEnvironment()
-				.getEnvironmentRecords();
+		ScopeBindings envrecs = varenv.getBindings();
 		Reference mutableBinding = envrecs.createMutableBinding(functionName,
 				false);
 		mutableBinding.setValue(jsFunction);
@@ -88,19 +91,29 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 			List<AstNode> astNodes = ifStatement.getIfStatement().getAstNodes();
 			for (AstNode astNode : astNodes) {
-				runtimeContext.enter((Statement) astNode);
-				((Statement) astNode).accept(this);
-				runtimeContext.exit();
+				if (!executeStatement((Statement) astNode)) {
+					return;
+				}
 			}
 		} else if (ifStatement.getElseStatement() != null) {
 			List<AstNode> astNodes = ifStatement.getElseStatement()
 					.getAstNodes();
 			for (AstNode astNode : astNodes) {
-				runtimeContext.enter((Statement) astNode);
-				((Statement) astNode).accept(this);
-				runtimeContext.exit();
+				if (!executeStatement((Statement) astNode)) {
+					return;
+				}
 			}
 		}
+	}
+
+	private boolean executeStatement(Statement statement) {
+		runtimeContext.enter(statement);
+		try {
+			statement.accept(this);
+		} catch (Throwable e) {
+			runtimeContext.currentExecutionContext().throwException(e);
+		}
+		return runtimeContext.exit();
 	}
 
 	@Override
@@ -118,9 +131,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 			for (int i = 0; i < len; i++) {
 				Statement statement = statements[i];
-				runtimeContext.enter(statement);
-				statement.accept(this);
-				if (!runtimeContext.exit()) {
+				if (!executeStatement(statement)) {
 					continues = false;
 					break;
 				}
@@ -160,9 +171,10 @@ public class StatementVisitorImpl implements StatementVisitor {
 		List<AstNode> astNodes = catchClause.getStatement().getAstNodes();
 		for (AstNode astNode : astNodes) {
 			Statement statement = (Statement) astNode;
-			runtimeContext.enter(statement);
-			statement.accept(this);
-			runtimeContext.exit();
+			if (!executeStatement(statement)) {
+				return;
+			}
+
 		}
 	}
 
@@ -172,8 +184,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		List<AstNode> astNodes = blockStatement.getAstNodes();
 		for (AstNode astNode : astNodes) {
 			Statement statement = (Statement) astNode;
-			statement.accept(this);
-			if (!runtimeContext.exit()) {
+			if (!executeStatement(statement)) {
 				break;
 			}
 		}

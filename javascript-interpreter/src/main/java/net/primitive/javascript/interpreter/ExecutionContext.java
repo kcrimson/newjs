@@ -1,5 +1,6 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.Statement;
@@ -9,9 +10,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class ExecutionContext {
 
-	private LexicalEnvironment lexicalEnvironment;
+	private Scope lexicalEnvironment;
 
-	private final LexicalEnvironment variableEnvironment;
+	private final Scope variableEnvironment;
 
 	private final Scriptable thisBinding;
 
@@ -19,8 +20,8 @@ public class ExecutionContext {
 
 	private Completion completion;
 
-	protected ExecutionContext(LexicalEnvironment lexicalEnvironment,
-			LexicalEnvironment variableEnvironment, Scriptable thisBinding,
+	protected ExecutionContext(Scope lexicalEnvironment,
+			Scope variableEnvironment, Scriptable thisBinding,
 			Statement statement) {
 		super();
 		this.lexicalEnvironment = lexicalEnvironment;
@@ -34,7 +35,7 @@ public class ExecutionContext {
 	/**
 	 * @return the lexicalEnvironment
 	 */
-	public LexicalEnvironment getLexicalEnvironment() {
+	public Scope getLexicalEnvironment() {
 		return lexicalEnvironment;
 	}
 
@@ -42,14 +43,14 @@ public class ExecutionContext {
 	 * @param lexicalEnvironment
 	 *            the lexicalEnvironment to set
 	 */
-	public void setLexicalEnvironment(LexicalEnvironment lexicalEnvironment) {
+	public void setLexicalEnvironment(Scope lexicalEnvironment) {
 		this.lexicalEnvironment = lexicalEnvironment;
 	}
 
 	/**
 	 * @return the variableEnvironment
 	 */
-	public LexicalEnvironment getVariableEnvironment() {
+	public Scope getVariableEnvironment() {
 		return variableEnvironment;
 	}
 
