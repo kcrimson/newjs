@@ -5,12 +5,14 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class CatchClause extends Statement {
 
-	@Getter private final String identifier;
-	@Getter private final AstNodeList statements;
+	@Getter
+	private final String identifier;
+	@Getter
+	private final Statement[] statements;
 
 	public CatchClause(String identifier, AstNodeList astNode) {
 		this.identifier = identifier;
-		this.statements = astNode;
+		this.statements = astNode.getAstNodes().toArray(new Statement[] {});
 		astNode.setParentNode(this);
 	}
 

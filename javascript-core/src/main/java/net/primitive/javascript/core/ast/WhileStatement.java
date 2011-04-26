@@ -5,12 +5,14 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class WhileStatement extends Statement {
 
-	@Getter private final Expression expression;
-	@Getter private final AstNodeList statements;
+	@Getter
+	private final Expression expression;
+	@Getter
+	private final Statement[] statements;
 
 	public WhileStatement(Expression expression, AstNodeList astNodeList) {
 		this.expression = expression;
-		this.statements = astNodeList;
+		this.statements = astNodeList.getAstNodes().toArray(new Statement[] {});
 		astNodeList.setParentNode(this);
 	}
 

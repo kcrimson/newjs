@@ -168,7 +168,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitCatchClause(CatchClause catchClause) {
-		List<AstNode> astNodes = catchClause.getStatement().getAstNodes();
+		Statement[] astNodes = catchClause.getStatements();
 		for (AstNode astNode : astNodes) {
 			Statement statement = (Statement) astNode;
 			if (!executeStatement(statement)) {

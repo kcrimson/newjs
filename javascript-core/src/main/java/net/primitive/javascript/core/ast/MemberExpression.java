@@ -2,16 +2,22 @@ package net.primitive.javascript.core.ast;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
-@AllArgsConstructor
 public class MemberExpression extends Expression {
 
-	@Getter private final Expression expression;
-	@Getter private final List<Expression> expresionSuffixes;
+	@Getter
+	private final Expression expression;
+	@Getter
+	private final Expression[] expresionSuffixes;
+
+	public MemberExpression(Expression expression,
+			List<Expression> expresionSuffixes) {
+		super();
+		this.expression = expression;
+		this.expresionSuffixes = expresionSuffixes.toArray(new Expression[] {});
+	}
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
