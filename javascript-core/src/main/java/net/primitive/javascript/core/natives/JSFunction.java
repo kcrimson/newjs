@@ -13,30 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.primitive.javascript.core.ast;
+package net.primitive.javascript.core.natives;
 
-import java.util.List;
+import net.primitive.javascript.core.ScriptableObject;
 
-import lombok.Getter;
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
-
-public class MemberExpression extends Expression {
-
-	@Getter
-	private final Expression expression;
-	@Getter
-	private final Expression[] expresionSuffixes;
-
-	public MemberExpression(Expression expression,
-			List<Expression> expresionSuffixes) {
-		super();
-		this.expression = expression;
-		this.expresionSuffixes = expresionSuffixes.toArray(new Expression[] {});
-	}
-
-	@Override
-	public void accept(ExpressionVisitor visitor) {
-		visitor.visitMemberExpression(this);
-	}
+public class JSFunction extends ScriptableObject {
 
 }

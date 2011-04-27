@@ -15,22 +15,29 @@
  */
 package net.primitive.javascript.core.natives;
 
+import net.primitive.javascript.core.JSObject;
+import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 
-public abstract class JSPrimitveWrapper<T> extends ScriptableObject {
+public class StandardObjects {
 
-	private final T primitiveValue;
+	public static Scriptable init() {
 
-	public JSPrimitveWrapper(T primitiveValue) {
-		super();
-		this.primitiveValue = primitiveValue;
-	}
+		ScriptableObject standardObjects = new ScriptableObject();
 
-	/**
-	 * @return the primitiveValue
-	 */
-	public T getPrimitiveValue() {
-		return primitiveValue;
+		Scriptable objectPrototype = new JSObject();
+
+		Scriptable object = new JSObject();
+		object.setPrototype(objectPrototype);
+
+		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects)
+				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		descriptor.setValue(object);
+
+		standardObjects.defineOwnProperty("Object", descriptor, true);
+
+		return standardObjects;
 	}
 
 }

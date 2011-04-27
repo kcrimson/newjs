@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2011 Primitive Team <jpalka@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.interpreter.RuntimeContext.currentContext;
@@ -9,6 +25,7 @@ import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.TypeErrorException;
 import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
@@ -61,8 +78,32 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	}
 
 	@Override
-	public Scriptable construct(Scriptable scope, Object[] args) {
-		return new ScriptableObject();
+	public Scriptable construct(Scope scope, Object[] args) {
+		RuntimeContext currentContext = currentContext();
+		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
+
+		ScriptableObject scriptableObject = new ScriptableObject();
+		// set prototype
+		scriptableObject.setPrototype(getPrototype());
+		// set constructor property
+
+		// create new scope
+		Scope newDeclEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
+
+		// execute statements
+		List<AstNode> astNodes = getFunctionBody().getAstNodes();
+		for (AstNode astNode : astNodes) {
+			Statement statement = (Statement) astNode;
+			currentContext.enter(statement, newDeclEnv, scriptableObject);
+			statement.accept(visitor);
+			if (!currentContext.exit()) {
+				// called return statement
+				break;
+			}
+
+		}
+
+		return scriptableObject;
 	}
 
 	/**
@@ -91,6 +132,25 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	 */
 	public Scope getScope() {
 		return scope;
+	}
+
+	@Override
+	public Object hasInstance(Object obj) {
+		if (obj instanceof Scriptable) {
+			Object o = getPrototype();
+			if (o instanceof Scriptable) {
+				Scriptable v = (Scriptable) obj;
+				while (v != null) {
+					v = v.getPrototype();
+					if (v == o) {
+						return true;
+					}
+				}
+				return false;
+			}
+			throw new TypeErrorException();
+		}
+		return false;
 	}
 
 }
