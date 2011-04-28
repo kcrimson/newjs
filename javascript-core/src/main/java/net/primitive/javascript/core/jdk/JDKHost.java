@@ -18,12 +18,19 @@ package net.primitive.javascript.core.jdk;
 import java.lang.reflect.Method;
 
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.annotations.JSFunction;
 
 public class JDKHost {
 
 	// wraps java object
 	public static Scriptable wrapJavaObject(Object object) {
 		Method[] methods = object.getClass().getMethods();
+
+		for (Method method : methods) {
+			if (method.isAnnotationPresent(JSFunction.class)) {
+				new JSWrappedMethod(method);
+			}
+		}
 
 		return null;
 	}

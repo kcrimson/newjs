@@ -9,11 +9,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<groupId>net.primitive.javascript</groupId>
 	<artifactId>javascript-core</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>javascript-core</name>
-	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

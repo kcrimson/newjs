@@ -1,24 +1,22 @@
 package net.primitive.javascript.compiler;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.security.Signature;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import net.primitive.javascript.core.Function;
-import net.primitive.javascript.core.JavaScriptLexer;
-import net.primitive.javascript.core.JavaScriptParser;
-import net.primitive.javascript.core.ast.Program;
+import net.primitive.javascript.core.Scriptable;
 
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.cojen.classfile.ClassFile;
-import org.cojen.classfile.Modifiers;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.signature.SignatureWriter;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFormatter;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JVar;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
 
 public class Compiler {
 
@@ -26,65 +24,44 @@ public class Compiler {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
+		JCodeModel codeModel = new JCodeModel();
 
-		
-//		Class.forName("Script").newInstance();
-//		
-//		File file = new File("src/test/resources/while.js");
-//
-//		JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRFileStream(
-//				file.getAbsolutePath()));
-//
-//		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-//
-//		JavaScriptParser javaScriptParser = new JavaScriptParser(
-//				commonTokenStream);
-//		Program result = javaScriptParser.program().result;
-		
-		ClassFile classFile = new ClassFile("Script",Object.class);
-		classFile.addDefaultConstructor();
-		ClassFile innerClass = classFile.addInnerClass(null, "Ello",Function.class);
-		innerClass.setModifiers(Modifiers.PUBLIC);
-		innerClass.addDefaultConstructor();
-		//innerClass.addM
-		classFile.writeTo(new FileOutputStream("Script.class"));
-//		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-//		ProgramVisitorImpl visitorImpl = new ProgramVisitorImpl(writer);
-//
-//		SignatureWriter sw = new SignatureWriter();
-//		sw.visitParameterType().visitInterface().visitClassType("net/primitive/javascript/core/Scriptable");
-//		sw.visitEnd();
-//		sw.visitReturnType().visitBaseType('V');
-//		//sw.visitEnd();
-//		String sig = sw.toString();
-//		System.out.println(sig);
-//
-//		writer.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL,
-//				"Script", null, "java/lang/Object", null/*
-//														 * new String[]{
-//														 * "net/primitive/javascript/Script"
-//														 * }
-//														 */);
-//		MethodVisitor method = writer.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
-//		method.visitCode();
-//		method.visitVarInsn(Opcodes.ALOAD, 0);
-//		method.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
-//		method.visitInsn(Opcodes.RETURN);
-//		method.visitMaxs(1, 1);
-//		method.visitEnd();
-//		MethodVisitor methodVisitor = writer.visitMethod(Opcodes.ACC_PUBLIC,
-//				"execute", sig, null, null);
-//		methodVisitor.visitCode();
-//		methodVisitor.visitInsn(Opcodes.RETURN);
-//		methodVisitor.visitMaxs(1, 1);
-//		methodVisitor.visitEnd();
-//
-//		writer.visitEnd();
-//
-//		byte[] byteArray = writer.toByteArray();
-//		FileOutputStream w = new FileOutputStream("Script.class");
-//		w.write(byteArray);
-//		w.close();
+		JClass ref = codeModel.ref(Scriptable.class);
+
+		JBlock block = new JBlock(true, true);
+
+		JVar decl = block.decl(ref, "jsVar");//.init(init);
+		//block.invoke("make");
+		// decl.assign();
+	//	block._return(decl);
+
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(stringWriter);
+		JFormatter f = new JFormatter(writer);
+		block.generate(f);
+		writer.flush();
+		String string = stringWriter.toString();
+		System.out.println(string);
+
+		ClassPool cp = new ClassPool();
+		cp.appendSystemPath();
+
+		CtClass returnType = cp.get(Scriptable.class.getName());
+
+		CtClass superclass = cp.get(AbstractScript.class.getName());
+
+		CtClass makeClass = cp.makeClass("Script", superclass);
+
+		CtMethod ctMethod = CtNewMethod.make(CtClass.voidType, "exec",
+				new CtClass[] { returnType }, new CtClass[] {}, string,
+				makeClass);
+
+		makeClass.addMethod(ctMethod);
+
+		makeClass.writeFile();
+
+		Script newInstance = (Script) makeClass.toClass().newInstance();
+		newInstance.exec(null);
 	}
 
 }

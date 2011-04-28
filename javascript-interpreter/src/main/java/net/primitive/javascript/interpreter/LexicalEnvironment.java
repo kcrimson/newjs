@@ -44,9 +44,6 @@ public final class LexicalEnvironment {
 
 		ScopeBindings records = env.getBindings();
 		if (records.hasBinding(name)) {
-			// TODO look at possible ways to cache Reference instances,
-			// otherwise we create Reference every time we call
-			// getIdentifierReference
 			return records.getBinding(name);
 		}
 

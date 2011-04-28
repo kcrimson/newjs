@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.primitive.javascript.interpreter;
+package org.javascript.tests.functional;
 
 import static org.junit.Assert.assertTrue;
 
@@ -28,8 +28,9 @@ import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.natives.StandardObjects;
-import net.primitive.javascript.utils.ResourceList;
+import net.primitive.javascript.interpreter.Interpreter;
 
+import org.javascript.tests.utils.ResourceList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
