@@ -21,8 +21,10 @@ import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.CatchClause;
+import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.TryStatement;
+import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
 public class RuntimeContext {
@@ -103,7 +105,6 @@ public class RuntimeContext {
 		callStack.push(newContext);
 		return newContext;
 	}
-	
 
 	/**
 	 * This method creates new runtime context for script execution
@@ -183,6 +184,20 @@ public class RuntimeContext {
 			}
 		}
 
+		if (CompletionType.Break.equals(completionType)) {
+			if (!WhileStatement.class.equals(current.getStatement().getClass())
+					&& !DoWhileStatement.class.equals(current.getStatement()
+							.getClass())) {
+				callStack.pop();
+				ExecutionContext previous = callStack.peek();
+				previous.breakStatement("");
+				return false;
+			} else {
+				callStack.pop();
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -193,6 +208,5 @@ public class RuntimeContext {
 	public Scriptable getGlobalObject() {
 		return globalObject;
 	}
-
 
 }

@@ -20,6 +20,7 @@ import static net.primitive.javascript.core.Convertions.toBoolean;
 
 import java.util.List;
 
+import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
@@ -27,6 +28,7 @@ import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
 import net.primitive.javascript.core.ast.CatchClause;
+import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
 import net.primitive.javascript.core.ast.ForStatement;
@@ -38,14 +40,17 @@ import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
+import net.primitive.javascript.core.visitors.ExpressionVisitor;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
 	private final RuntimeContext runtimeContext;
+	private final ExpressionVisitorImpl expressionVisitor;
 
 	protected StatementVisitorImpl(RuntimeContext context) {
 		this.runtimeContext = context;
+		this.expressionVisitor = context.getExpressionVisitor();
 	}
 
 	@Override
@@ -63,8 +68,6 @@ public class StatementVisitorImpl implements StatementVisitor {
 					false);
 
 			Expression expression = variableDeclaration.getExpression();
-			ExpressionVisitorImpl expressionVisitor = runtimeContext
-					.getExpressionVisitor();
 			expression.accept(expressionVisitor);
 			Object value = expressionVisitor.getResult();
 
@@ -97,8 +100,6 @@ public class StatementVisitorImpl implements StatementVisitor {
 	@Override
 	public void visitIfStatement(IfStatement ifStatement) {
 		Expression expression = ifStatement.getExpression();
-		ExpressionVisitorImpl expressionVisitor = runtimeContext
-				.getExpressionVisitor();
 		expression.accept(expressionVisitor);
 		boolean expressionResult = toBoolean(Reference
 				.getValue(expressionVisitor.getResult()));
@@ -138,8 +139,6 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Statement[] statements = whileStatement.getStatements();
 		int len = statements != null ? statements.length : 0;
 
-		ExpressionVisitorImpl expressionVisitor = runtimeContext
-				.getExpressionVisitor();
 		boolean continues = true;
 		for (expression.accept(expressionVisitor); continues
 				&& toBoolean(expressionVisitor.getResult()); expression
@@ -162,8 +161,6 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitReturnStatement(ReturnStatement returnStatement) {
-		ExpressionVisitorImpl expressionVisitor = runtimeContext
-				.getExpressionVisitor();
 		Expression expression = returnStatement.getExpression();
 		expression.accept(expressionVisitor);
 		runtimeContext.currentExecutionContext().returnValue(
@@ -175,8 +172,6 @@ public class StatementVisitorImpl implements StatementVisitor {
 		ExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
 		Expression expression = throwStatement.getExpression();
-		ExpressionVisitorImpl expressionVisitor = runtimeContext
-				.getExpressionVisitor();
 		expression.accept(expressionVisitor);
 		Object exceptionObject = expressionVisitor.getResult();
 		executionContext.throwException(exceptionObject);
@@ -208,7 +203,32 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitBreakStatement(BreakStatement breakStatement) {
-		throw new UnsupportedOperationException("visitBreakStatement");
+		ExecutionContext executionContext = runtimeContext
+				.currentExecutionContext();
+		executionContext.breakStatement(breakStatement.getIdentifier());
 	}
 
+	@Override
+	public void visitDoWhileStatement(DoWhileStatement doWhileStatement) {
+		Expression expression = doWhileStatement.getExpression();
+		List<AstNode> astNodes = doWhileStatement.getStatements().getAstNodes();
+
+		boolean iterating = true;
+		for (;;) {
+			if (iterating) {
+				for (AstNode astNode : astNodes) {
+					Statement statement = (Statement) astNode;
+					iterating = executeStatement(statement);
+					if (!iterating) {
+						break;
+					}
+				}
+			}
+			if (!iterating) {
+				break;
+			}
+			expression.accept(expressionVisitor);
+			iterating = Convertions.toBoolean(expressionVisitor.getResult());
+		}
+	}
 }

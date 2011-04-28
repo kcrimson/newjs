@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 Primitive Team <jpalka@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,29 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.primitive.javascript.core.jdk;
 
-import java.lang.reflect.Method;
+var a = 1;
+do {
+	a = a + 1;
+} while (a < 5)
 
-import net.primitive.javascript.core.Callable;
-import net.primitive.javascript.core.Scope;
-import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.ScriptableObject;
-
-public class JSWrappedMethod extends ScriptableObject implements Callable {
-
-	private final Method method;
-
-	public JSWrappedMethod(Method method) {
-		this.method = method;
-	}
-
-	@Override
-	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-		
-		//method.invoke(thisObj, args);
-		
-		return null;
-	}
-
-}
+var assertResult = (a == 5);

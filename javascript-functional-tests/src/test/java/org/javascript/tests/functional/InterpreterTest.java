@@ -70,7 +70,9 @@ public class InterpreterTest {
 		interpreter.interpret(new File(javaScriptFile));
 		ScopeBindings records = interpreter.execute(scope);
 		Object object = records.getBinding("assertResult").getValue();
-		assertTrue(Convertions.toBoolean(object));
+//		System.out.println(scope.get("a"));
+		assertTrue("assert failed in " + javaScriptFile,
+				Convertions.toBoolean(object));
 
 	}
 }

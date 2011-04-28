@@ -115,4 +115,8 @@ public class ExecutionContext {
 
 	}
 
+	public void breakStatement(String identifier) {
+		completion = new Completion(CompletionType.Break, null, null);
+	}
+
 }
