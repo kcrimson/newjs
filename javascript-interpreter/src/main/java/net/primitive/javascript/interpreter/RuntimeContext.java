@@ -189,7 +189,7 @@ public class RuntimeContext {
 					&& !DoWhileStatement.class.equals(current.getStatement()
 							.getClass())) {
 				callStack.pop();
-				ExecutionContext previous = callStack.peek();
+				final ExecutionContext previous = callStack.peek();
 				previous.breakStatement("");
 				return false;
 			} else {

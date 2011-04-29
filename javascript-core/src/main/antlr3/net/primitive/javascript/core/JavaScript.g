@@ -483,17 +483,6 @@ List expressions = new ArrayList();
                                                                        } else
                                                                        	$result = new WrappedExpression($exp1.result, $exp2.result);
                                                                       }
-  //  exp1=assignmentExpression
-  //                           {
-  //                            expressions.add($exp1.result);
-  //                           }
-  //  (LT!* ',' LT!* exp2=assignmentExpression
-  //                                          {
-  //                                           expressions.add($exp2.result);
-  //                                          })*
-  //                                             {
-  //                                              $result = new WrappedExpression(expressions);
-  //                                             }
   ;
 
 expressionNoIn
@@ -518,10 +507,17 @@ assignmentExpression returns [Expression result]
                                                                                                     }
   ;
 
-assignmentExpressionNoIn
+assignmentExpressionNoIn returns [Expression result]
   :
-  conditionalExpressionNoIn
-  | leftHandSideExpression LT!* assignmentOperator LT!* assignmentExpressionNoIn
+  conditionalExpressionNoIn 
+                           {
+                            $result = $conditionalExpressionNoIn.result;
+                           }
+  | leftHandSideExpression LT!* assignmentOperator LT!* rightHandSideExpression=assignmentExpressionNoIn 
+                                                                                                        {
+                                                                                                         $result = new AssignmentExpression($leftHandSideExpression.result,
+                                                                                                         		$assignmentOperator.result, $rightHandSideExpression.result);
+                                                                                                        }
   ;
 
 leftHandSideExpression returns [Expression result]
@@ -678,9 +674,17 @@ conditionalExpression returns [Expression result]
                                                                                                         }
   ;
 
-conditionalExpressionNoIn
+conditionalExpressionNoIn returns [Expression result]
   :
-  logicalORExpressionNoIn (LT!* '?' LT!* assignmentExpressionNoIn LT!* ':' LT!* assignmentExpressionNoIn)?
+  logicalORExpressionNoIn (LT!* '?' LT!* exp1=assignmentExpressionNoIn LT!* ':' LT!* exp2=assignmentExpressionNoIn)? 
+                                                                                                                    {
+                                                                                                                     if ($exp1.result == null && $exp2.result == null) {
+                                                                                                                     	$result = $logicalORExpressionNoIn.result;
+                                                                                                                     } else {
+                                                                                                                     	$result = new ConditionalExpression($logicalORExpressionNoIn.result,
+                                                                                                                     			$exp1.result, $exp2.result);
+                                                                                                                     }
+                                                                                                                    }
   ;
 
 logicalORExpression returns [Expression result]
@@ -695,9 +699,16 @@ logicalORExpression returns [Expression result]
                                           })*
   ;
 
-logicalORExpressionNoIn
+logicalORExpressionNoIn returns [Expression result]
   :
-  logicalANDExpressionNoIn (LT!* '||' LT!* logicalANDExpressionNoIn)*
+  op1=logicalANDExpressionNoIn 
+                              {
+                               $result = $op1.result;
+                              }
+  (LT!* '||' LT!* op2=logicalANDExpressionNoIn 
+                                              {
+                                               $result = new BinaryExpression(Operators.LogicalOR, $result, $op2.result);
+                                              })*
   ;
 
 logicalANDExpression returns [Expression result]
@@ -712,9 +723,16 @@ logicalANDExpression returns [Expression result]
                                          })*
   ;
 
-logicalANDExpressionNoIn
+logicalANDExpressionNoIn returns [Expression result]
   :
-  bitwiseORExpressionNoIn (LT!* '&&' LT!* bitwiseORExpressionNoIn)*
+  op1=bitwiseORExpressionNoIn 
+                         {
+                          $result = $op1.result;
+                         }
+  (LT!* '&&' LT!* op2=bitwiseORExpressionNoIn 
+                                         {
+                                          $result = new BinaryExpression(Operators.LogicalAND, $result, $op2.result);
+                                         })*
   ;
 
 bitwiseORExpression returns [Expression result]
@@ -729,9 +747,16 @@ bitwiseORExpression returns [Expression result]
                                          })*
   ;
 
-bitwiseORExpressionNoIn
+bitwiseORExpressionNoIn returns [Expression result]
   :
-  bitwiseXORExpressionNoIn (LT!* '|' LT!* bitwiseXORExpressionNoIn)*
+  op1=bitwiseXORExpressionNoIn 
+                              {
+                               $result = $op1.result;
+                              }
+  (LT!* '|' LT!* op2=bitwiseXORExpressionNoIn 
+                                             {
+                                              $result = new BinaryExpression(Operators.BitwiseOR, $result, $op2.result);
+                                             })*
   ;
 
 bitwiseXORExpression returns [Expression result]
@@ -746,9 +771,16 @@ bitwiseXORExpression returns [Expression result]
                                          })*
   ;
 
-bitwiseXORExpressionNoIn
+bitwiseXORExpressionNoIn returns [Expression result]
   :
-  bitwiseANDExpressionNoIn (LT!* '^' LT!* bitwiseANDExpressionNoIn)*
+  op1=bitwiseANDExpressionNoIn 
+                              {
+                               $result = $op1.result;
+                              }
+  (LT!* '^' LT!* op2=bitwiseANDExpressionNoIn 
+                                             {
+                                              $result = new BinaryExpression(Operators.BitwiseXOR, $result, $op2.result);
+                                             })*
   ;
 
 bitwiseANDExpression returns [Expression result]
@@ -763,9 +795,16 @@ bitwiseANDExpression returns [Expression result]
                                        })*
   ;
 
-bitwiseANDExpressionNoIn
+bitwiseANDExpressionNoIn returns [Expression result]
   :
-  equalityExpressionNoIn (LT!* '&' LT!* equalityExpressionNoIn)*
+  op1=equalityExpressionNoIn 
+                            {
+                             $result = $op1.result;
+                            }
+  (LT!* '&' LT!* op2=equalityExpressionNoIn 
+                                           {
+                                            $result = new BinaryExpression(Operators.BitwiseAND, $result, $op2.result);
+                                           })*
   ;
 
 equalityExpression returns [Expression result]
@@ -804,18 +843,39 @@ BinaryOperator operator = null;
   )*
   ;
 
-equalityExpressionNoIn
+equalityExpressionNoIn returns [Expression result]
+@init {
+BinaryOperator operator = null;
+}
   :
-  relationalExpressionNoIn
+  op1=relationalExpressionNoIn 
+                              {
+                               $result = $op1.result;
+                              }
   (
     LT!*
     (
-      '=='
-      | '!='
-      | '==='
-      | '!=='
+      '==' 
+          {
+           operator = Operators.Equals;
+          }
+      | '!=' 
+            {
+             operator = Operators.DoesNotEquals;
+            }
+      | '===' 
+             {
+              operator = Operators.StrictEquals;
+             }
+      | '!==' 
+             {
+              operator = Operators.StrictDoesNotEquals;
+             }
     )
-    LT!* relationalExpressionNoIn
+    LT!* op2=relationalExpressionNoIn 
+                                     {
+                                      $result = new BinaryExpression(operator, $result, $op2.result);
+                                     }
   )*
   ;
 
@@ -863,19 +923,43 @@ BinaryOperator operator = null;
   )*
   ;
 
-relationalExpressionNoIn
+relationalExpressionNoIn returns [Expression result]
+@init {
+BinaryOperator operator = null;
+}
   :
-  shiftExpression
+  op1=shiftExpression 
+                     {
+                      $result = $op1.result;
+                     }
   (
     LT!*
     (
-      '<'
-      | '>'
-      | '<='
-      | '>='
-      | 'instanceof'
+      '<' 
+         {
+          operator = Operators.LessThan;
+         }
+      | '>' 
+           {
+            operator = Operators.GreaterThan;
+           }
+      | '<=' 
+            {
+             operator = Operators.LessThanOrEqual;
+            }
+      | '>=' 
+            {
+             operator = Operators.GreaterThanOrEual;
+            }
+      | 'instanceof' 
+                    {
+                     operator = Operators.InstanceOf;
+                    }
     )
-    LT!* shiftExpression
+    LT!* op2=shiftExpression 
+                            {
+                             $result = new BinaryExpression(operator, $result, $op2.result);
+                            }
   )*
   ;
 

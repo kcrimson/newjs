@@ -20,7 +20,7 @@ import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scriptable;
 
-class ObjectReference extends Reference {
+public class ObjectReference extends Reference {
 
 	private final Object base;
 

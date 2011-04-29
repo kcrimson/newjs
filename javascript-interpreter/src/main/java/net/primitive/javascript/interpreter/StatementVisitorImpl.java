@@ -40,7 +40,6 @@ import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementVisitorImpl implements StatementVisitor {
