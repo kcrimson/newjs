@@ -160,6 +160,15 @@ public class Operators {
 			return "object";
 		}
 	};
+	
+	public static final UnaryOperator PostfixIncrement = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
 
 	private Operators() {
 	}

@@ -155,7 +155,40 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitForStatement(ForStatement forStatement) {
-		throw new UnsupportedOperationException("visitForStatement");
+		AstNode initializeExpression = forStatement.getInitializeExpression();
+
+		if (initializeExpression != null
+				&& initializeExpression instanceof Statement) {
+			((Statement) initializeExpression).accept(this);
+		} else if (initializeExpression instanceof AstNodeList) {
+			List<AstNode> astNodes = ((AstNodeList)initializeExpression).getAstNodes();
+			for(AstNode astNode:astNodes){
+				executeStatement((Statement)astNode);
+			}
+		}
+
+		Expression testExpression = forStatement.getTestExpression();
+		Expression incrementExpression = forStatement.getIncrementExpression();
+		List<AstNode> astNodes = ((AstNodeList) forStatement.getStatements())
+				.getAstNodes();
+		for (;;) {
+			if (testExpression != null) {
+				testExpression.accept(expressionVisitor);
+				if (!Convertions.toBoolean(expressionVisitor.getResult())) {
+					return;
+				}
+			}
+
+			for (AstNode astNode : astNodes) {
+				if (!executeStatement((Statement) astNode)) {
+					return;
+				}
+			}
+
+			if (incrementExpression != null) {
+				incrementExpression.accept(expressionVisitor);
+			}
+		}
 	}
 
 	@Override

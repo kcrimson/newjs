@@ -20,20 +20,21 @@ import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class ForStatement extends Statement {
 
-	@Getter private final Statement initializeStatement;
-	@Getter private final Expression incrementExpression;
-	@Getter private final Expression testExpression;
-	@Getter private final AstNodeList statement;
+	@Getter
+	private final AstNode initializeExpression;
+	@Getter
+	private final Expression incrementExpression;
+	@Getter
+	private final Expression testExpression;
+	@Getter
+	private final AstNode statements;
 
-	public ForStatement(Statement initializeStatement,
-			Expression incrementExpression, Expression testExpression,
-			AstNode statement) {
-		this.initializeStatement = initializeStatement;
-		initializeStatement.setParentNode(this);
-		this.incrementExpression = incrementExpression;
-		this.testExpression = testExpression;
-		this.statement = AstNodeList.wrapAstNode(statement);
-		statement.setParentNode(this);
+	public ForStatement(AstNode initializeExpression, Expression incrementExpression,
+			Expression testExpression, AstNode statements) {
+				this.initializeExpression = initializeExpression;
+				this.incrementExpression = incrementExpression;
+				this.testExpression = testExpression;
+				this.statements = statements;
 	}
 
 	@Override

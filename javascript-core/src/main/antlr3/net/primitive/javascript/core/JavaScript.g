@@ -204,9 +204,20 @@ variableDeclarationList returns [AstNodeList result]
                                        })*
   ;
 
-variableDeclarationListNoIn
+variableDeclarationListNoIn returns [AstNodeList result]
   :
-  variableDeclarationNoIn (LT!* ',' LT!* variableDeclarationNoIn)*
+  
+  {
+   $result = new AstNodeList();
+  }
+  v1=variableDeclarationNoIn 
+                            {
+                             $result.addAstNode($v1.result);
+                            }
+  (LT!* ',' LT!* v2=variableDeclarationNoIn 
+                                           {
+                                            $result.addAstNode($v2.result);
+                                           })*
   ;
 
 variableDeclaration returns [VariableDeclaration result]
@@ -221,9 +232,16 @@ variableDeclaration returns [VariableDeclaration result]
                               }
   ;
 
-variableDeclarationNoIn
+variableDeclarationNoIn returns [VariableDeclaration result]
   :
-  Identifier LT!* initialiserNoIn?
+  Identifier LT!* initialiserNoIn? 
+                                  {
+                                   Expression expr = $initialiserNoIn.result;
+                                   if (expr == null) {
+                                   	expr = new Literal(Undefined.Value);
+                                   }
+                                   $result = new VariableDeclaration($Identifier.text, expr);
+                                  }
   ;
 
 initialiser returns [Expression result]
@@ -234,9 +252,12 @@ initialiser returns [Expression result]
                                }
   ;
 
-initialiserNoIn
+initialiserNoIn returns [Expression result]
   :
-  '=' LT!* assignmentExpressionNoIn
+  '=' LT!* assignmentExpressionNoIn 
+                                   {
+                                    $result = $assignmentExpressionNoIn.result;
+                                   }
   ;
 
 emptyStatement
@@ -313,10 +334,16 @@ forStatement returns [Statement result]
                                                                                                                                               }
   ;
 
-forStatementInitialiserPart returns [Statement result]
+forStatementInitialiserPart returns [AstNode result]
   :
-  expressionNoIn
-  | 'var' LT!* variableDeclarationListNoIn
+  expressionNoIn 
+                {
+                 $result = new ExpressionStatement($expressionNoIn.result);
+                }
+  | 'var' LT!* variableDeclarationListNoIn 
+                                          {
+                                           $result = $variableDeclarationListNoIn.result;
+                                          }
   ;
 
 forInStatement
@@ -485,9 +512,12 @@ List expressions = new ArrayList();
                                                                       }
   ;
 
-expressionNoIn
+expressionNoIn returns [Expression result]
+@init {
+List expressions = new ArrayList();
+}
   :
-  assignmentExpressionNoIn (LT!* ',' LT!* assignmentExpressionNoIn)*
+  exp1=assignmentExpressionNoIn (LT!* ',' LT!* exp2=assignmentExpressionNoIn)*
   ;
 /*
  Chapter 11.3 of ECMA-262
@@ -726,13 +756,13 @@ logicalANDExpression returns [Expression result]
 logicalANDExpressionNoIn returns [Expression result]
   :
   op1=bitwiseORExpressionNoIn 
-                         {
-                          $result = $op1.result;
-                         }
+                             {
+                              $result = $op1.result;
+                             }
   (LT!* '&&' LT!* op2=bitwiseORExpressionNoIn 
-                                         {
-                                          $result = new BinaryExpression(Operators.LogicalAND, $result, $op2.result);
-                                         })*
+                                             {
+                                              $result = new BinaryExpression(Operators.LogicalAND, $result, $op2.result);
+                                             })*
   ;
 
 bitwiseORExpression returns [Expression result]
@@ -1095,7 +1125,10 @@ postfixExpression returns [Expression result]
                          $result = $leftHandSideExpression.result;
                         }
   (
-    '++'
+    '++' 
+        {
+         $result = new UnaryExpression(Operators.PostfixIncrement, $result);
+        }
     | '--'
   )?
   ;
