@@ -6,7 +6,7 @@ var Module = function() {
   }
 
   function run() {
-    return this.message == "hello, world";
+    return message == "hello, world!";
   }
 
   return {
@@ -16,4 +16,5 @@ var Module = function() {
 }();
 
 Module.init();
-assertResult = Module.run();
+var assertResult = Module.run();
+
