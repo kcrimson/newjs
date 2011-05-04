@@ -29,6 +29,7 @@ import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
 
 import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
@@ -61,6 +62,19 @@ public class Interpreter {
 		exitContext();
 
 		return currentContext.getVariables();
+	}
+
+	public void interpret(String script) throws IOException,
+			RecognitionException {
+		JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(
+				script));
+
+		CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+
+		JavaScriptParser javaScriptParser = new JavaScriptParser(
+				commonTokenStream);
+		program = javaScriptParser.program().result;
+
 	}
 
 }

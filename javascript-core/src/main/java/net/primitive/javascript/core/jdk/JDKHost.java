@@ -28,13 +28,14 @@ public class JDKHost {
 	public static Scriptable wrapJavaObject(Object object) {
 		Method[] methods = object.getClass().getMethods();
 
-
 		Scriptable jsObject = new ScriptableObject();
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(JSFunction.class)) {
-			    JSWrappedMethod jsFunc = new JSWrappedMethod(object,method);
-			    PropertyDescriptor ownProperty = new PropertyDescriptor(jsObject);
-			    jsObject.defineOwnProperty(method.getName(),ownProperty,false);
+				JSWrappedMethod jsFunc = new JSWrappedMethod(object, method);
+				PropertyDescriptor ownProperty = new PropertyDescriptor(
+						jsObject);
+				ownProperty.setValue(jsFunc);
+				jsObject.defineOwnProperty(method.getName(), ownProperty, false);
 			}
 		}
 

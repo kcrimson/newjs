@@ -18,6 +18,8 @@ package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.interpreter.RuntimeContext.currentContext;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.primitive.javascript.core.Function;
@@ -116,6 +118,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	/**
 	 * @return the parameterList
 	 */
+	@Override
 	public List<String> getParameterList() {
 		return parameterList;
 	}
@@ -151,6 +154,19 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 			throw new TypeErrorException();
 		}
 		return false;
+	}
+
+	@Override
+	public Object[] bindParameters(Object[] actualParameters) {
+		List<Object> values = new ArrayList<Object>(
+				Arrays.asList(actualParameters));
+		if (actualParameters.length < parameterList.size()) {
+			int diff = parameterList.size() - actualParameters.length;
+			for (int i = 0; i < diff; i++) {
+				values.add(Undefined.Value);
+			}
+		}
+		return values.toArray(new Object[] {});
 	}
 
 }

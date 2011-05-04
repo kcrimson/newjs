@@ -16,8 +16,6 @@
 package net.primitive.javascript.core.jdk;
 
 import net.primitive.javascript.core.annotations.JSFunction;
-import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.natives.StandardObjects;
 
 public class Console {
 
@@ -26,15 +24,4 @@ public class Console {
 		System.out.println(mesg);
 	}
 
-
-    public static void main(String[] argv){
-	Scriptable stdObjs = StandardObjects.init();
-
-	Console console = new Console();
-	
-	stdObjs.put("console",JDKHost.wrapJavaObject(console));
-
-	System.out.println(stdObjs);
-
-    }
 }

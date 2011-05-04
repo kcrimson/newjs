@@ -85,25 +85,25 @@ public class BenchmarkTestDriver {
 		}
 		System.out.println("NewJS times: "
 				+ (System.currentTimeMillis() - time));
-		System.gc();
-		Context context = Context.enter();
-		// , "", 0, null);
-		Script script = context.compileReader(new FileReader(testScript), "",
-				0, null);
-		time = System.currentTimeMillis();
-		org.mozilla.javascript.ScriptableObject standardObjects = context
-				.initStandardObjects();
-		for (int i = 0; i < repCount; i++) {
-			// context.evaluateReader(standardObjects, new
-			// FileReader(testScript), "", 0, null);
-			script.exec(context, standardObjects);
-		}
-		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
+//		System.gc();
+//		Context context = Context.enter();
+//		// , "", 0, null);
+//		Script script = context.compileReader(new FileReader(testScript), "",
+//				0, null);
+//		time = System.currentTimeMillis();
+//		org.mozilla.javascript.ScriptableObject standardObjects = context
+//				.initStandardObjects();
+//		for (int i = 0; i < repCount; i++) {
+//			// context.evaluateReader(standardObjects, new
+//			// FileReader(testScript), "", 0, null);
+//			script.exec(context, standardObjects);
+//		}
+//		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"src/test/resources/if.js");
+				"../javascript-functional-tests/src/main/resources/while.js");
 		testDriver.run_benchmark();
 
 	}

@@ -27,26 +27,38 @@ import net.primitive.javascript.core.Convertions;
 public class JSWrappedMethod extends ScriptableObject implements Callable {
 
 	private final Method method;
-    private final Object targetObj;
+	private final Object targetObj;
 
-
-    public JSWrappedMethod(Object targetObj,Method method) {
+	public JSWrappedMethod(Object targetObj, Method method) {
 		this.method = method;
 		this.targetObj = targetObj;
 	}
 
 	@Override
 	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-	    //take all incoming arguments, convert them to Java strings and concatenate
-	    StringBuffer buff = new StringBuffer();
-	    for(Object arg:args){
-		buff.append(Convertions.toString(arg));
-	    }
-	    try{
-	    method.invoke(thisObj, new Object[]{buff.toString()});
-	    } catch(IllegalAccessException e){
-	    } catch(InvocationTargetException e){
-	    }
+		// take all incoming arguments, convert them to Java strings and
+		// concatenate
+		try {
+			method.invoke(targetObj, args);
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
+		return null;
+	}
+
+	@Override
+	public Object[] bindParameters(Object[] actualParameters) {
+		StringBuffer buff = new StringBuffer();
+		for (Object arg : actualParameters) {
+			buff.append(Convertions.toString(arg));
+		}
+
+		return new Object[] { buff.toString() };
+	}
+
+	@Override
+	public Scope getScope() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

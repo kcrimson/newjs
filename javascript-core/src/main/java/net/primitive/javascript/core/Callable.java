@@ -33,4 +33,13 @@ public interface Callable {
 	 * @return the result of the call
 	 */
 	public Object call(Scope scope, Scriptable thisObj, Object[] args);
+
+	/**
+	 * 
+	 * @param actualParameters
+	 * @return
+	 */
+	Object[] bindParameters(Object[] actualParameters);
+
+	Scope getScope();
 }

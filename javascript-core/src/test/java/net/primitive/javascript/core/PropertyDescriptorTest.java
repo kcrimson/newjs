@@ -52,6 +52,18 @@ public class PropertyDescriptorTest {
 			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
 				return propertyHolder.value;
 			}
+
+			@Override
+			public Object[] bindParameters(Object[] actualParameters) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Scope getScope() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 
 		Callable setter = new Callable() {
@@ -60,6 +72,18 @@ public class PropertyDescriptorTest {
 			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
 				propertyHolder.value = args[0];
 				propertyHolder.setterInvoked = true;
+				return null;
+			}
+
+			@Override
+			public Object[] bindParameters(Object[] actualParameters) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Scope getScope() {
+				// TODO Auto-generated method stub
 				return null;
 			}
 		};

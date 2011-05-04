@@ -77,7 +77,11 @@ public class ObjectEnvironmentRecords implements ScopeBindings {
 
 	@Override
 	public Reference getBinding(String name) {
-		return bindings.get(name);
+		Reference reference = bindings.get(name);
+		if (reference == null) {
+			reference = createMutableBinding(name, false);
+		}
+		return reference;
 	}
 
 }

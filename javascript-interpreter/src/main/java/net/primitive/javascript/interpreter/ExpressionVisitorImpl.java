@@ -19,6 +19,7 @@ package net.primitive.javascript.interpreter;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Constructor;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Function;
@@ -186,19 +187,13 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		@SuppressWarnings("unchecked")
 		List<Object> values = (List<Object>) result;
 
-		List<String> parameterList = ((JSNativeFunction) func)
-				.getParameterList();
+		Callable callable = (Callable) func;
 
-		if (values.size() < parameterList.size()) {
-			int diff = parameterList.size() - values.size();
-			for (int i = 0; i < diff; i++) {
-				values.add(Undefined.Value);
-			}
-		}
+		Object[] vals = callable
+				.bindParameters(values.toArray(new Object[] {}));
 
-		Function callable = (Function) func;
 		result = callable.call(callable.getScope(), (Scriptable) thisValue,
-				values.toArray(new Object[] {}));
+				vals);
 
 	}
 

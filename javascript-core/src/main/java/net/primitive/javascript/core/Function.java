@@ -17,6 +17,8 @@
 
 package net.primitive.javascript.core;
 
+import java.util.List;
+
 /**
  * This is interface that all functions in JavaScript must implement. The
  * interface provides for calling functions and constructors.
@@ -27,8 +29,8 @@ package net.primitive.javascript.core;
 
 public interface Function extends Scriptable, Callable, Constructor {
 
-	Scope getScope();
-
 	Object hasInstance(Object lvar);
+
+	List<String> getParameterList();
 
 }
