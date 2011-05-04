@@ -318,7 +318,13 @@ public class Convertions {
 	}
 
 	public static String toString(Object val) {
-		return val.toString();
+	    if(val == Undefined.Value){
+		return "undefined";
+	    }
+	    if( val == null){
+		return "null";
+	    }
+	    return val.toString();
 	}
 
 }

@@ -18,6 +18,8 @@ package net.primitive.javascript.core.jdk;
 import java.lang.reflect.Method;
 
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.annotations.JSFunction;
 
 public class JDKHost {
@@ -26,12 +28,16 @@ public class JDKHost {
 	public static Scriptable wrapJavaObject(Object object) {
 		Method[] methods = object.getClass().getMethods();
 
+
+		Scriptable jsObject = new ScriptableObject();
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(JSFunction.class)) {
-				new JSWrappedMethod(method);
+			    JSWrappedMethod jsFunc = new JSWrappedMethod(object,method);
+			    PropertyDescriptor ownProperty = new PropertyDescriptor(jsObject);
+			    jsObject.defineOwnProperty(method.getName(),ownProperty,false);
 			}
 		}
 
-		return null;
+		return jsObject;
 	}
 }

@@ -37,7 +37,7 @@ public class StandardObjects {
 
 		standardObjects.defineOwnProperty("Object", descriptor, true);
 
-		return standardObjects;
+				return standardObjects;
 	}
 
 }

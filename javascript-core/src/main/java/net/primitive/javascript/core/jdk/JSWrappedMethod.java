@@ -16,25 +16,37 @@
 package net.primitive.javascript.core.jdk;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.Convertions;
 
 public class JSWrappedMethod extends ScriptableObject implements Callable {
 
 	private final Method method;
+    private final Object targetObj;
 
-	public JSWrappedMethod(Method method) {
+
+    public JSWrappedMethod(Object targetObj,Method method) {
 		this.method = method;
+		this.targetObj = targetObj;
 	}
 
 	@Override
 	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-		
-		//method.invoke(thisObj, args);
-		
+	    //take all incoming arguments, convert them to Java strings and concatenate
+	    StringBuffer buff = new StringBuffer();
+	    for(Object arg:args){
+		buff.append(Convertions.toString(arg));
+	    }
+	    try{
+	    method.invoke(thisObj, new Object[]{buff.toString()});
+	    } catch(IllegalAccessException e){
+	    } catch(InvocationTargetException e){
+	    }
 		return null;
 	}
 
