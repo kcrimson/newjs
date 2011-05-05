@@ -1,5 +1,6 @@
 package org.javascript.tests.functional;
 
+import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.jdk.Console;
 import net.primitive.javascript.core.jdk.JDKHost;
@@ -20,9 +21,9 @@ public class ConsoleTest {
 
 		Interpreter interpreter = new Interpreter();
 
-		interpreter.interpret("console.log(\"Hello\");");
+		Script script = interpreter.interpret("console.log(\"Hello\");");
 
-		interpreter.execute(stdObjs);
+		script.execute(stdObjs);
 
 	}
 

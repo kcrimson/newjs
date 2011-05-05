@@ -71,7 +71,8 @@ public class BenchmarkTestDriver {
 
 		Interpreter interpreter = new Interpreter();
 		File testScript = new File(javaScriptFile);
-		interpreter.interpret(testScript);
+		net.primitive.javascript.core.Script script2 = interpreter
+				.interpret(testScript);
 
 		System.out
 				.println("Running benchmark test for " + testScript.getPath());
@@ -81,7 +82,7 @@ public class BenchmarkTestDriver {
 
 			net.primitive.javascript.core.ScriptableObject scriptableObject = new net.primitive.javascript.core.ScriptableObject();
 
-			interpreter.execute(scriptableObject);
+			script2.execute(scriptableObject);
 		}
 		System.out.println("NewJS times: "
 				+ (System.currentTimeMillis() - time));

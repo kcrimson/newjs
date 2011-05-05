@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import net.primitive.javascript.core.JavaScriptLexer;
 import net.primitive.javascript.core.JavaScriptParser;
-import net.primitive.javascript.core.ScopeBindings;
+import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
 
@@ -35,12 +35,10 @@ import org.antlr.runtime.RecognitionException;
 
 public class Interpreter {
 
-	private Program program;
-
 	public Interpreter() {
 	}
 
-	public void interpret(File file) throws IOException, RecognitionException {
+	public Script interpret(File file) throws IOException, RecognitionException {
 		JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRFileStream(
 				file.getAbsolutePath()));
 
@@ -48,23 +46,27 @@ public class Interpreter {
 
 		JavaScriptParser javaScriptParser = new JavaScriptParser(
 				commonTokenStream);
-		program = javaScriptParser.program().result;
+		final Program program = javaScriptParser.program().result;
+
+		return new Script() {
+
+			@Override
+			public void execute(Scriptable globalObject) {
+				RuntimeContext currentContext = enterContext(globalObject);
+
+				ProgramVisitorImpl visitor = new ProgramVisitorImpl(
+						currentContext);
+
+				program.accept(visitor);
+
+				exitContext();
+
+			}
+		};
 
 	}
 
-	public ScopeBindings execute(Scriptable globalObject) {
-		RuntimeContext currentContext = enterContext(globalObject);
-
-		ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext);
-
-		program.accept(visitor);
-
-		exitContext();
-
-		return currentContext.getVariables();
-	}
-
-	public void interpret(String script) throws IOException,
+	public Script interpret(String script) throws IOException,
 			RecognitionException {
 		JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(
 				script));
@@ -73,7 +75,23 @@ public class Interpreter {
 
 		JavaScriptParser javaScriptParser = new JavaScriptParser(
 				commonTokenStream);
-		program = javaScriptParser.program().result;
+		final Program program = javaScriptParser.program().result;
+
+		return new Script() {
+
+			@Override
+			public void execute(Scriptable globalObject) {
+				RuntimeContext currentContext = enterContext(globalObject);
+
+				ProgramVisitorImpl visitor = new ProgramVisitorImpl(
+						currentContext);
+
+				program.accept(visitor);
+
+				exitContext();
+
+			}
+		};
 
 	}
 

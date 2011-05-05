@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.primitive.javascript.core.Convertions;
-import net.primitive.javascript.core.ScopeBindings;
+import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.jdk.Console;
 import net.primitive.javascript.core.natives.StandardObjects;
@@ -70,9 +70,9 @@ public class InterpreterTest {
 
 		Interpreter interpreter = new Interpreter();
 
-		interpreter.interpret(new File(javaScriptFile));
-		ScopeBindings records = interpreter.execute(scope);
-		Object object = records.getBinding("assertResult").getValue();
+		Script script = interpreter.interpret(new File(javaScriptFile));
+		script.execute(scope);
+		Object object = scope.get("assertResult");
 		assertTrue("assert failed in " + javaScriptFile,
 				Convertions.toBoolean(object));
 
