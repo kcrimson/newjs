@@ -76,7 +76,7 @@ public class BenchmarkTestDriver {
 		System.out
 				.println("Running benchmark test for " + testScript.getPath());
 
-		int repCount = 3000000;
+		int repCount = 30000;
 		for (int i = 0; i < repCount; i++) {
 
 			net.primitive.javascript.core.ScriptableObject scriptableObject = new net.primitive.javascript.core.ScriptableObject();
@@ -85,20 +85,20 @@ public class BenchmarkTestDriver {
 		}
 		System.out.println("NewJS times: "
 				+ (System.currentTimeMillis() - time));
-//		System.gc();
-//		Context context = Context.enter();
-//		// , "", 0, null);
-//		Script script = context.compileReader(new FileReader(testScript), "",
-//				0, null);
-//		time = System.currentTimeMillis();
-//		org.mozilla.javascript.ScriptableObject standardObjects = context
-//				.initStandardObjects();
-//		for (int i = 0; i < repCount; i++) {
-//			// context.evaluateReader(standardObjects, new
-//			// FileReader(testScript), "", 0, null);
-//			script.exec(context, standardObjects);
-//		}
-//		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
+		System.gc();
+		Context context = Context.enter();
+		// , "", 0, null);
+		Script script = context.compileReader(new FileReader(testScript), "",
+				0, null);
+		time = System.currentTimeMillis();
+		org.mozilla.javascript.ScriptableObject standardObjects = context
+				.initStandardObjects();
+		for (int i = 0; i < repCount; i++) {
+			// context.evaluateReader(standardObjects, new
+			// FileReader(testScript), "", 0, null);
+			script.exec(context, standardObjects);
+		}
+		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
 	public static void main(String[] argv) throws Exception {

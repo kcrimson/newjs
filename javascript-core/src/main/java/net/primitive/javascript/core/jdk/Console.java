@@ -15,6 +15,7 @@
  */
 package net.primitive.javascript.core.jdk;
 
+import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.annotations.JSFunction;
 
 public class Console {
@@ -22,6 +23,13 @@ public class Console {
 	@JSFunction
 	public void log(String mesg) {
 		System.out.println(mesg);
+	}
+
+	public static void init(Scriptable scriptable) {
+		Console console = new Console();
+
+		scriptable.put("console", JDKHost.wrapJavaObject(console));
+
 	}
 
 }

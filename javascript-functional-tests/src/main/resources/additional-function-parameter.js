@@ -15,6 +15,7 @@
  */
 
 function test(a,b){
+	console.log("a=1")
 	return b;
 }
 
