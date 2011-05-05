@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-function test(a, b) {
-	return b;
+function Person() {
+	this.name = 'Name';
 }
 
-var assertResult = typeof test(1) == 'undefined';
+var p = new Person();
+
+var assertResult = (p.name == 'Name');

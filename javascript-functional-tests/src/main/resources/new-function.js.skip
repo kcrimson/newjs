@@ -1,8 +1,0 @@
-function Person() {
-	this.name = 'Name';
-}
-
-var p = new Person();
-
-var assertResult = (typeof p == 'object') && (p.name == 'Name')
-		&& (p instanceof Person);
