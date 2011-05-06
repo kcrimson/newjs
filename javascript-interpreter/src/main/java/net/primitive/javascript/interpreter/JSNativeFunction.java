@@ -46,6 +46,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		this.functionName = functionName;
 		this.parameterList = parameterList;
 		this.functionBody = functionBody;
+		setPrototype(new ScriptableObject());
 	}
 
 	@Override
@@ -167,6 +168,19 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 			}
 		}
 		return values.toArray(new Object[] {});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.primitive.javascript.core.ScriptableObject#get(java.lang.String)
+	 */
+	@Override
+	public Object get(String propertyName) {
+		if ("prototype".equals(propertyName)) {
+			return getPrototype();
+		}
+		return super.get(propertyName);
 	}
 
 }
