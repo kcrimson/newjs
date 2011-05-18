@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.javascript.tests.functional;
+package net.primitive.javascript.tests.functional;
 
 import static org.junit.Assert.assertTrue;
 
@@ -30,8 +30,8 @@ import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.jdk.Console;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.Interpreter;
+import net.primitive.javascript.tests.utils.ResourceList;
 
-import org.javascript.tests.utils.ResourceList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

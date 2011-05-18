@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.javascript.tests.utils;
+package net.primitive.javascript.tests.utils;
 
 import java.io.File;
 import java.io.IOException;

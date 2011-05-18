@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.javascript.tests.performance;
+package net.primitive.javascript.tests.performance;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.primitive.javascript.interpreter.Interpreter;
+import net.primitive.javascript.tests.utils.ResourceList;
 
-import org.javascript.tests.utils.ResourceList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

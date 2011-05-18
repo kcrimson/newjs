@@ -1,4 +1,4 @@
-package org.javascript.tests.functional;
+package net.primitive.javascript.tests.functional;
 
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
