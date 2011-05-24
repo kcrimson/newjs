@@ -1,3 +1,5 @@
+var b = 1;
+
 function foo() {
   var a = b = 0;
 }
@@ -5,6 +7,4 @@ function foo() {
 foo();
 
 var assertResult = b == 0;
-
-print(assertResult);
 

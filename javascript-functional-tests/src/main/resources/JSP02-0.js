@@ -1,3 +1,5 @@
+var result = 0;
+
 function sum(x, y) {
     result = x + y;
     return result;
