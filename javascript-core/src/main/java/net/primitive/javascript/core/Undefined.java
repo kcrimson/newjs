@@ -15,11 +15,90 @@
  */
 package net.primitive.javascript.core;
 
-public class Undefined {
+public class Undefined implements Scriptable{
 
 	public static final Undefined Value = new Undefined();
 
 	private Undefined() {
+	}
+
+	@Override
+	public Scriptable getPrototype() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setPrototype(Scriptable prototype) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getClassname() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isExtensible() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean hasProperty(String propertyName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object get(String propertyName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PropertyDescriptor getOwnProperty(String propertyName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PropertyDescriptor getProperty(String propertyName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean canPut(String propertyName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void put(String propertyName, Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean defineOwnProperty(String propertyName,
+			PropertyDescriptor propertyDescriptor, boolean failureHandling) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean delete(String propertyName, boolean failureHandling) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object getDefaultValue(Class<?> hint) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
