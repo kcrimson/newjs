@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
@@ -34,20 +36,11 @@ import net.primitive.javascript.tests.utils.ResourceList;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+@RunWith(JUnitParamsRunner.class)
 public class InterpreterTest {
 
-	private String javaScriptFile;
-
-	public InterpreterTest(String javaScriptFile) {
-		this.javaScriptFile = javaScriptFile;
-	}
-
-	@Parameters
-	public static List<Object[]> getParameters() {
+	protected Object[] getParameters() {
 		Collection<String> scripts = ResourceList.getResources(Pattern
 				.compile(".*\\.js"));
 		List<Object[]> parameters = new ArrayList<Object[]>();
@@ -56,13 +49,12 @@ public class InterpreterTest {
 			parameters.add(new Object[] { script });
 		}
 
-		return parameters;
+		return parameters.toArray(new Object[] {});
 	}
 
 	@Test
-	public void drive_javascript_test() throws Exception {
-
-		System.out.println(javaScriptFile);
+	@Parameters(method = "getParameters")
+	public void drive_javascript_test(String javaScriptFile) throws Exception {
 
 		Scriptable scope = StandardObjects.init();
 
