@@ -146,8 +146,7 @@ public class Operators {
 				} else if (ref.isPropertyReference()) {
 					Object base = ref.getBase();
 					Scriptable object2 = toObject(base);
-					return object2.delete(
-							ref.getReferencedName(), false);
+					return object2.delete(ref.getReferencedName(), false);
 				}
 			}
 			return true;
@@ -160,9 +159,9 @@ public class Operators {
 
 		@Override
 		public Object operator(Object object) {
-			
+
 			Object value = getValue(object);
-			
+
 			if (Undefined.Value == value) {
 				return Types.Undefined;
 			}
@@ -203,6 +202,38 @@ public class Operators {
 			double oldValue = toNumber(getValue(object));
 			putValue(object, oldValue + 1);
 			return oldValue;
+		}
+	};
+
+	public static final UnaryOperator PostfixDecrement = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			double oldValue = toNumber(getValue(object));
+			putValue(object, oldValue - 1);
+			return oldValue;
+		}
+	};
+
+	public static final UnaryOperator PrefixDecrement = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			double oldValue = toNumber(getValue(object));
+			double newValue = oldValue - 1;
+			putValue(object, newValue);
+			return newValue;
+		}
+	};
+
+	public static final UnaryOperator PrefixIncrement = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			double oldValue = toNumber(getValue(object));
+			double newValue = oldValue + 1;
+			putValue(object, newValue);
+			return newValue;
 		}
 	};
 

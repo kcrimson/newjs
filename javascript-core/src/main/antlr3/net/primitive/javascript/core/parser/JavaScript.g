@@ -15,7 +15,6 @@ package net.primitive.javascript.core.parser;
 
 import net.primitive.javascript.core.ast.*;
 import net.primitive.javascript.core.*;
-
 }
 
 @lexer::header {
@@ -1107,12 +1106,21 @@ UnaryOperator operator = null;
               {
                operator = Operators.TypeOf;
               }
-    | '++'
-    | '--'
+    | '++' 
+          {
+           operator = Operators.PrefixIncrement;
+          }
+    | '--' 
+          {
+           operator = Operators.PrefixDecrement;
+          }
     | '+'
     | '-'
     | '~'
-    | '!' {operator = Operators.Not;}
+    | '!' 
+         {
+          operator = Operators.Not;
+         }
   )
   exp=unaryExpression 
                      {
@@ -1131,7 +1139,10 @@ postfixExpression returns [Expression result]
         {
          $result = new UnaryExpression(Operators.PostfixIncrement, $result);
         }
-    | '--'
+    | '--' 
+          {
+           $result = new UnaryExpression(Operators.PostfixDecrement, $result);
+          }
   )?
   ;
 
