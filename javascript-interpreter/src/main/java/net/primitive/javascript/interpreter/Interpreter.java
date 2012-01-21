@@ -22,11 +22,11 @@ import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
 import java.io.File;
 import java.io.IOException;
 
-import net.primitive.javascript.core.JavaScriptLexer;
-import net.primitive.javascript.core.JavaScriptParser;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
+import net.primitive.javascript.core.parser.JavaScriptLexer;
+import net.primitive.javascript.core.parser.JavaScriptParser;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.ANTLRStringStream;

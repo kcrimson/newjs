@@ -36,5 +36,10 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>me.qmx.jitescript</groupId>
+			<artifactId>jitescript</artifactId>
+			<version>0.2.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

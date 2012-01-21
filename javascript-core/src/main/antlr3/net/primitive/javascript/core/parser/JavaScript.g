@@ -11,13 +11,15 @@ options {
 }
 
 @header {
-package net.primitive.javascript.core;
+package net.primitive.javascript.core.parser;
 
 import net.primitive.javascript.core.ast.*;
+import net.primitive.javascript.core.*;
+
 }
 
 @lexer::header {
-package net.primitive.javascript.core;
+package net.primitive.javascript.core.parser;
 }
 
 program returns [Program result]

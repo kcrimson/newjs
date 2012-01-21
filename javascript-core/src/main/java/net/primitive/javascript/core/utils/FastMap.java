@@ -191,7 +191,7 @@ public class FastMap<K, V> implements Map<K, V> {
 
 		long timeMillis = System.currentTimeMillis();
 		Map<String, String> map;
-		int rep = 1;
+		int rep = 1000000;
 		for (int j = 0; j < rep; j++) {
 			map = new FastMap<String, String>();
 			map.put("01", "zero");
@@ -217,7 +217,7 @@ public class FastMap<K, V> implements Map<K, V> {
 			map.put("10", "ten");
 			map.put("101", "ten");
 			for (int i = 0; i < rep; i++) {
-				System.out.println(map.containsKey("10"));
+				map.containsKey("10");
 			}
 		}
 		System.out.println(System.currentTimeMillis() - timeMillis);
@@ -248,7 +248,7 @@ public class FastMap<K, V> implements Map<K, V> {
 			map.put("10", "ten");
 			map.put("101", "ten");
 			for (int i = 0; i < rep; i++) {
-				System.out.println(map.containsKey("10"));
+				map.containsKey("10");
 			}
 		}
 		System.out.println(System.currentTimeMillis() - timeMillis);

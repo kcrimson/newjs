@@ -26,12 +26,14 @@ import java.util.regex.Pattern;
 import net.primitive.javascript.interpreter.Interpreter;
 import net.primitive.javascript.tests.utils.ResourceList;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * Test driver program for the ANTLR3 Maven Architype demo
@@ -78,12 +80,15 @@ public class BenchmarkTestDriver {
 				.println("Running benchmark test for " + testScript.getPath());
 
 		int repCount = 30000;
+		net.primitive.javascript.core.ScriptableObject scriptableObject = null;
 		for (int i = 0; i < repCount; i++) {
 
-			net.primitive.javascript.core.ScriptableObject scriptableObject = new net.primitive.javascript.core.ScriptableObject();
+			scriptableObject = new net.primitive.javascript.core.ScriptableObject();
 
 			script2.execute(scriptableObject);
+			
 		}
+		System.out.println(scriptableObject.get("assertResult"));
 		System.out.println("NewJS times: "
 				+ (System.currentTimeMillis() - time));
 		System.gc();
@@ -91,14 +96,17 @@ public class BenchmarkTestDriver {
 		// , "", 0, null);
 		Script script = context.compileReader(new FileReader(testScript), "",
 				0, null);
+		
 		time = System.currentTimeMillis();
-		org.mozilla.javascript.ScriptableObject standardObjects = context
-				.initStandardObjects();
+		org.mozilla.javascript.ScriptableObject standardObjects = null;
 		for (int i = 0; i < repCount; i++) {
 			// context.evaluateReader(standardObjects, new
 			// FileReader(testScript), "", 0, null);
+			standardObjects = context
+					.initStandardObjects();	
 			script.exec(context, standardObjects);
 		}
+		System.out.println(ScriptableObject.getProperty(standardObjects, "assertResult"));
 		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
