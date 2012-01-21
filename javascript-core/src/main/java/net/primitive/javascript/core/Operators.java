@@ -15,8 +15,10 @@
  */
 package net.primitive.javascript.core;
 
+import static net.primitive.javascript.core.Convertions.toBoolean;
 import static net.primitive.javascript.core.Convertions.toNumber;
 import static net.primitive.javascript.core.Convertions.toPrimitive;
+import static net.primitive.javascript.core.Reference.getValue;
 
 import net.primitive.javascript.core.ast.AssignmentOperator;
 
@@ -129,7 +131,25 @@ public class Operators {
 		}
 	};
 	public static final BinaryOperator Divide = null;
-	public static final UnaryOperator Delete = null;
+
+	public static final UnaryOperator Delete = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			if (object instanceof Reference) {
+				Reference ref = (Reference) object;
+				if (ref.isUnresolvableReference()) {
+					// TODO throw SyntaxError
+					return false;
+				} else if (ref.isPropertyReference()) {
+					return Convertions.toObject(ref.getBase()).delete(
+							ref.getReferencedName(), false);
+				}
+			}
+			return true;
+		}
+	};
+
 	public static final AssignmentOperator Assign = null;
 
 	public static final UnaryOperator TypeOf = new UnaryOperator() {
@@ -160,7 +180,15 @@ public class Operators {
 			return "object";
 		}
 	};
-	
+
+	public static final UnaryOperator Not = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			return !toBoolean(getValue(object));
+		}
+	};
+
 	public static final UnaryOperator PostfixIncrement = new UnaryOperator() {
 
 		@Override

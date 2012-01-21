@@ -1112,7 +1112,7 @@ UnaryOperator operator = null;
     | '+'
     | '-'
     | '~'
-    | '!'
+    | '!' {operator = Operators.Not;}
   )
   exp=unaryExpression 
                      {

@@ -22,6 +22,7 @@ import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
+import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
@@ -185,20 +186,26 @@ public class RuntimeContext {
 		}
 
 		if (CompletionType.Break.equals(completionType)) {
-			if (!WhileStatement.class.equals(current.getStatement().getClass())
-					&& !DoWhileStatement.class.equals(current.getStatement()
-							.getClass())) {
+			Statement currentStatement = current.getStatement();
+			if (isIterationStatement(currentStatement)) {
+				callStack.pop();
+				return true;
+			} else {
 				callStack.pop();
 				final ExecutionContext previous = callStack.peek();
 				previous.breakStatement("");
 				return false;
-			} else {
-				callStack.pop();
-				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private static boolean isIterationStatement(Statement currentStatement) {
+		Class<? extends Statement> clazz = currentStatement.getClass();
+		return WhileStatement.class.equals(clazz)
+				|| DoWhileStatement.class.equals(clazz)
+				|| ForStatement.class.equals(clazz);
 	}
 
 	public ScopeBindings getVariables() {

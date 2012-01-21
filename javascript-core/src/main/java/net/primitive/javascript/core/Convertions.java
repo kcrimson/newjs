@@ -24,7 +24,7 @@ public class Convertions {
 	private Convertions() {
 	}
 
-	public static Object toObject(Object object) {
+	public static Scriptable toObject(Object object) {
 		if (object == null || object == Undefined.Value) {
 			throw new TypeErrorException();
 		}
@@ -37,7 +37,7 @@ public class Convertions {
 		if (object instanceof String) {
 			return new JSString((String) object);
 		}
-		return object;
+		return (Scriptable) object;
 	}
 
 	// TODO ale gowno, co zrobic kiedy mamy javowy typ

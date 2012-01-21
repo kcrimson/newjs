@@ -1,6 +1,9 @@
 var a = 1;
-for ( var i = 0; i < 5; i++) {
+for (;;) {
 	a = a + 1;
+	if(a == 5){
+		break;
+	}
 }
 
 var assertResult = (a == 5);
