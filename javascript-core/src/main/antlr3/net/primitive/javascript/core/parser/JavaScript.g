@@ -347,12 +347,16 @@ forStatementInitialiserPart returns [AstNode result]
                                           }
   ;
 
-forInStatement
+forInStatement returns [Statement result]
   :
-  'for' LT!* '(' LT!* forInStatementInitialiserPart LT!* 'in' LT!* expression LT!* ')' LT!* statement
+  'for' LT!* '(' LT!* forInStatementInitialiserPart LT!* 'in' LT!* expression LT!* ')' LT!* statement 
+                                                                                                     {
+                                                                                                      $result = new ForInStatement($forInStatementInitialiserPart.result,
+                                                                                                      		$expression.result, $statement.result);
+                                                                                                     }
   ;
 
-forInStatementInitialiserPart
+forInStatementInitialiserPart returns [Expression result]
   :
   leftHandSideExpression
   | 'var' LT!* variableDeclarationNoIn

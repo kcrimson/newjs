@@ -19,6 +19,7 @@ import net.primitive.javascript.core.ast.BreakStatement;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.ExpressionStatement;
+import net.primitive.javascript.core.ast.ForInStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
@@ -53,5 +54,7 @@ public interface StatementVisitor {
 	void visitBreakStatement(BreakStatement breakStatement);
 
 	void visitDoWhileStatement(DoWhileStatement doWhileStatement);
+
+	void visitForInStatement(ForInStatement forInStatement);
 
 }
