@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var a = { "key" : "value"};
+var a = { key : "value"};
 
 var assertResult = delete a.key;
 

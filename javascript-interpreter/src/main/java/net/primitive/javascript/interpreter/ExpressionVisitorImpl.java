@@ -120,7 +120,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		unaryExpression.getOperand().accept(this);
 
 		result = unaryExpression.getOperator().operator(
-				Reference.getValue(result));
+				result);
 	}
 
 	@Override

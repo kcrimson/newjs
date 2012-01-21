@@ -120,7 +120,10 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public boolean delete(String propertyName, boolean failureHandling) {
-		return false;
+		
+		PropertyDescriptor propertyDescriptor = associatedProperties.remove(propertyName);
+		
+		return propertyDescriptor!=null;
 	}
 
 	@Override

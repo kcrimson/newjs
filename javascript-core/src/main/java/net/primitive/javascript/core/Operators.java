@@ -17,8 +17,10 @@ package net.primitive.javascript.core;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
 import static net.primitive.javascript.core.Convertions.toNumber;
+import static net.primitive.javascript.core.Convertions.toObject;
 import static net.primitive.javascript.core.Convertions.toPrimitive;
 import static net.primitive.javascript.core.Reference.getValue;
+import static net.primitive.javascript.core.Reference.putValue;
 
 import net.primitive.javascript.core.ast.AssignmentOperator;
 
@@ -142,7 +144,9 @@ public class Operators {
 					// TODO throw SyntaxError
 					return false;
 				} else if (ref.isPropertyReference()) {
-					return Convertions.toObject(ref.getBase()).delete(
+					Object base = ref.getBase();
+					Scriptable object2 = toObject(base);
+					return object2.delete(
 							ref.getReferencedName(), false);
 				}
 			}
@@ -156,25 +160,28 @@ public class Operators {
 
 		@Override
 		public Object operator(Object object) {
-			if (Undefined.Value == object) {
+			
+			Object value = getValue(object);
+			
+			if (Undefined.Value == value) {
 				return Types.Undefined;
 			}
-			if (object == null) {
+			if (value == null) {
 				return Types.Object;
 			}
-			if (object instanceof Boolean) {
+			if (value instanceof Boolean) {
 				return Types.Boolean;
 			}
-			if (object instanceof Number) {
+			if (value instanceof Number) {
 				return Types.Number;
 			}
-			if (object instanceof String) {
+			if (value instanceof String) {
 				return Types.String;
 			}
-			if ((object instanceof Scriptable) && !(object instanceof Function)) {
+			if ((value instanceof Scriptable) && !(value instanceof Function)) {
 				return Types.Object;
 			}
-			if (object instanceof Function) {
+			if (value instanceof Function) {
 				return Types.Function;
 			}
 			return "object";
@@ -193,8 +200,9 @@ public class Operators {
 
 		@Override
 		public Object operator(Object object) {
-			// TODO Auto-generated method stub
-			return null;
+			double oldValue = toNumber(getValue(object));
+			putValue(object, oldValue + 1);
+			return oldValue;
 		}
 	};
 
