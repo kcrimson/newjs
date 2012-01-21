@@ -55,7 +55,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclaration variableDeclaration) {
-		ExecutionContext executionContext = runtimeContext
+		StatementExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
 		Scope env = executionContext.getVariableEnvironment();
 		ScopeBindings envrec = env.getBindings();
@@ -78,7 +78,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitFunctionDeclaration(FunctionDeclaration functionDeclaration) {
-		ExecutionContext executionContext = runtimeContext
+		StatementExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
 		Scope varenv = executionContext.getVariableEnvironment();
 		String functionName = functionDeclaration.getFunctionName();
@@ -202,7 +202,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitThrowStatement(ThrowStatement throwStatement) {
-		ExecutionContext executionContext = runtimeContext
+		StatementExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
 		Expression expression = throwStatement.getExpression();
 		expression.accept(expressionVisitor);
@@ -236,7 +236,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitBreakStatement(BreakStatement breakStatement) {
-		ExecutionContext executionContext = runtimeContext
+		StatementExecutionContext executionContext = runtimeContext
 				.currentExecutionContext();
 		executionContext.breakStatement(breakStatement.getIdentifier());
 	}

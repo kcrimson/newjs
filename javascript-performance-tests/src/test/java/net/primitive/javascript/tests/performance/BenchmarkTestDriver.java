@@ -112,7 +112,7 @@ public class BenchmarkTestDriver {
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"../javascript-functional-tests/src/main/resources/nested-functions.js");
+				"../javascript-functional-tests/src/main/resources/nested-object-literal.js");
 		testDriver.run_benchmark();
 
 	}

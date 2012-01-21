@@ -16,6 +16,7 @@
 
 package net.primitive.javascript.interpreter;
 
+import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
@@ -32,7 +33,7 @@ public class RuntimeContext {
 
 	private static final ThreadLocal<RuntimeContext> CONTEXT_LOCAL = new ThreadLocal<RuntimeContext>();
 
-	private final FastStack<ExecutionContext> callStack = new FastStack<ExecutionContext>();
+	private final FastStack<StatementExecutionContext> callStack = new FastStack<StatementExecutionContext>();
 
 	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(
 			this);
@@ -50,9 +51,8 @@ public class RuntimeContext {
 
 	private RuntimeContext(final Scriptable globalObject) {
 		this.globalObject = globalObject;
-		this.globalEnvironment = LexicalEnvironment.newObjectEnvironment(
-				globalObject, null);
-		this.lexicalEnvironment = globalEnvironment;// newDeclarativeEnvironment(globalEnvironment);
+		this.globalEnvironment = newObjectEnvironment(globalObject, null);
+		this.lexicalEnvironment = globalEnvironment;
 		this.variableEnvironment = lexicalEnvironment;
 	}
 
@@ -70,7 +70,7 @@ public class RuntimeContext {
 		return statementVisitor;
 	}
 
-	public ExecutionContext enter(Statement statement) {
+	public StatementExecutionContext enter(Statement statement) {
 		Scope varEnv;
 		Scope lexEnv;
 		Scriptable thisObj;
@@ -79,13 +79,13 @@ public class RuntimeContext {
 			lexEnv = lexicalEnvironment;
 			thisObj = globalObject;
 		} else {
-			ExecutionContext currentContext = callStack.peek();
+			StatementExecutionContext currentContext = callStack.peek();
 			lexEnv = currentContext.getLexicalEnvironment();
 			varEnv = currentContext.getVariableEnvironment();
 			thisObj = currentContext.getThisBinding();
 		}
 
-		final ExecutionContext newContext = new ExecutionContext(lexEnv,
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv,
 				varEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
@@ -99,9 +99,9 @@ public class RuntimeContext {
 	 * @param thisObj
 	 * @return
 	 */
-	public ExecutionContext enter(Statement statement, Scope lexEnv,
+	public StatementExecutionContext enter(Statement statement, Scope lexEnv,
 			Scriptable thisObj) {
-		final ExecutionContext newContext = new ExecutionContext(lexEnv,
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv,
 				lexEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
@@ -130,12 +130,12 @@ public class RuntimeContext {
 		CONTEXT_LOCAL.set(null);
 	}
 
-	public ExecutionContext currentExecutionContext() {
+	public StatementExecutionContext currentExecutionContext() {
 		return callStack.peek();
 	}
 
 	public boolean exit() {
-		ExecutionContext current = callStack.peek();
+		StatementExecutionContext current = callStack.peek();
 
 		Completion completion = current.getCompletion();
 		CompletionType completionType = completion.getType();
@@ -145,7 +145,7 @@ public class RuntimeContext {
 			callStack.pop();
 			if (!callStack.isEmpty()) {
 				// rewrite return completion to previous statement on stack
-				ExecutionContext previous = callStack.peek();
+				StatementExecutionContext previous = callStack.peek();
 				previous.getCompletion().setValue(completion.getValue());
 			}
 			return CompletionType.Normal.equals(completionType);
@@ -179,7 +179,7 @@ public class RuntimeContext {
 			} else if (!callStack.isEmpty()) {
 				// fold exception to previous statement
 				callStack.pop();
-				ExecutionContext previous = callStack.peek();
+				StatementExecutionContext previous = callStack.peek();
 				previous.throwException(completion.getValue());
 				return false;
 			}
@@ -192,7 +192,7 @@ public class RuntimeContext {
 				return true;
 			} else {
 				callStack.pop();
-				final ExecutionContext previous = callStack.peek();
+				final StatementExecutionContext previous = callStack.peek();
 				previous.breakStatement("");
 				return false;
 			}

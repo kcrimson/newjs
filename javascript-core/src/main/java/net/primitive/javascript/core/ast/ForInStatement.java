@@ -1,11 +1,22 @@
 package net.primitive.javascript.core.ast;
 
+import lombok.Getter;
 import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class ForInStatement extends Statement {
 
-	public ForInStatement(Expression expression, Expression expression2,
-			AstNode astNode) {
+	@Getter
+	private final Object initializerExpression;
+	@Getter
+	private final Expression expression;
+	@Getter
+	private final AstNode statement;
+
+	public ForInStatement(Object initializerExpression,
+			Expression expression, AstNode statement) {
+		this.initializerExpression = initializerExpression;
+		this.expression = expression;
+		this.statement = statement;
 	}
 
 	@Override

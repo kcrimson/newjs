@@ -16,6 +16,9 @@
 
 package net.primitive.javascript.interpreter;
 
+import static net.primitive.javascript.core.Convertions.toBoolean;
+import static net.primitive.javascript.core.Reference.getValue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,8 +122,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		unaryExpression.getOperand().accept(this);
 
-		result = unaryExpression.getOperator().operator(
-				result);
+		result = unaryExpression.getOperator().operator(result);
 	}
 
 	@Override
@@ -210,7 +212,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitFunctionExpression(FunctionExpression functionExpression) {
 
-		ExecutionContext executionContext = context.currentExecutionContext();
+		StatementExecutionContext executionContext = context
+				.currentExecutionContext();
 		Scope lexenv = executionContext.getLexicalEnvironment();
 
 		result = new JSNativeFunction(lexenv,
@@ -227,7 +230,19 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitConditionalExpression(
 			ConditionalExpression conditionalExpression) {
-		throw new UnsupportedOperationException("visitConditionalExpression");
+
+		conditionalExpression.getOp1().accept(this);
+
+		Object lref = result;
+
+		if (toBoolean(getValue(lref))) {
+			conditionalExpression.getOp2().accept(this);
+			result = getValue(result);
+			return;
+		}
+
+		conditionalExpression.getOp3().accept(this);
+		result = getValue(result);
 	}
 
 	@Override

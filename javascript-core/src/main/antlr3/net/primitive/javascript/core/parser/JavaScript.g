@@ -301,7 +301,10 @@ iterationStatement returns [AstNode result]
                 {
                  $result = $forStatement.result;
                 }
-  | forInStatement
+  | forInStatement 
+                  {
+                   $result = $forInStatement.result;
+                  }
   ;
 
 doWhileStatement returns [Statement result]
@@ -356,10 +359,10 @@ forInStatement returns [Statement result]
                                                                                                      }
   ;
 
-forInStatementInitialiserPart returns [Expression result]
+forInStatementInitialiserPart returns [Object result]
   :
-  leftHandSideExpression
-  | 'var' LT!* variableDeclarationNoIn
+  leftHandSideExpression {$result = $leftHandSideExpression.result;}
+  | 'var' LT!* variableDeclarationNoIn {$result = $variableDeclarationNoIn.result;}
   ;
 
 continueStatement returns [Statement result]

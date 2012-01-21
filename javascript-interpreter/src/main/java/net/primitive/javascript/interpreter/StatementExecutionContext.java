@@ -24,19 +24,25 @@ import net.primitive.javascript.core.ast.Statement;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class ExecutionContext {
+/**
+ * Represents a statement execution frame
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
+public class StatementExecutionContext {
 
-	private Scope lexicalEnvironment;
+	private final Statement statement;
 
 	private final Scope variableEnvironment;
 
 	private final Scriptable thisBinding;
 
-	private final Statement statement;
+	private final Completion completion;
 
-	private Completion completion;
+	private Scope lexicalEnvironment;
 
-	protected ExecutionContext(Scope lexicalEnvironment,
+	protected StatementExecutionContext(Scope lexicalEnvironment,
 			Scope variableEnvironment, Scriptable thisBinding,
 			Statement statement) {
 		super();
@@ -81,16 +87,33 @@ public class ExecutionContext {
 		statement.accept(visitor);
 	}
 
-	public Completion getCompletion() {
-		return completion;
-	}
-
 	public void returnValue(Object value) {
-		completion = new Completion(CompletionType.Return, value, null);
+		completion.setType(CompletionType.Return);
+		completion.setValue(value);
+		completion.setTarget(null);
 	}
 
 	public void throwException(Object exceptionObject) {
-		completion = new Completion(CompletionType.Throw, exceptionObject, null);
+		completion.setType(CompletionType.Throw);
+		completion.setValue(exceptionObject);
+		completion.setTarget(null);
+	}
+
+	public void normalCompletion() {
+		completion.setType(CompletionType.Normal);
+		completion.setValue(null);
+		completion.setTarget(null);
+
+	}
+
+	public void breakStatement(String identifier) {
+		completion.setType(CompletionType.Break);
+		completion.setValue(null);
+		completion.setTarget(null);
+	}
+
+	public Completion getCompletion() {
+		return completion;
 	}
 
 	public Statement getStatement() {
@@ -108,15 +131,6 @@ public class ExecutionContext {
 				ToStringStyle.SIMPLE_STYLE).append("statement", statement)
 				.append("completion", completion);
 		return stringBuilder.toString();
-	}
-
-	public void normalCompletion() {
-		completion = new Completion(CompletionType.Normal, null, null);
-
-	}
-
-	public void breakStatement(String identifier) {
-		completion = new Completion(CompletionType.Break, null, null);
 	}
 
 }

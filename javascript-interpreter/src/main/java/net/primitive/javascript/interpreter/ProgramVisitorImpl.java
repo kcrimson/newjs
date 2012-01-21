@@ -39,7 +39,7 @@ public class ProgramVisitorImpl implements ProgramVisitor {
 		StatementVisitorImpl visitor = context.getStatementVisitor();
 
 		while (true) {
-			ExecutionContext executionContext = context
+			StatementExecutionContext executionContext = context
 					.currentExecutionContext();
 			if (executionContext == null && iterator.hasNext()) {
 				context.enter((Statement) iterator.next());

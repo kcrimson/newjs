@@ -23,13 +23,13 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Completion {
 
-	private final CompletionType type;
+	private CompletionType type;
 
 	private Object value;
 
-	private final AstNode target;
+	private AstNode target;
 
-	public Completion(CompletionType type, Object value, AstNode target) {
+	protected Completion(CompletionType type, Object value, AstNode target) {
 		super();
 		this.type = type;
 		this.value = value;
@@ -59,6 +59,16 @@ public class Completion {
 
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+	
+	
+	public void setType(CompletionType type) {
+		this.type = type;
+	}
+
+	public void setTarget(AstNode target) {
+		this.target = target;
 	}
 
 	/*
