@@ -1,5 +1,7 @@
 package net.primitive.javascript.interpreter;
 
+import net.primitive.javascript.core.parser.JavaScriptParser;
+
 
 public class Main {
 	

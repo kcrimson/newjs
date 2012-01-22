@@ -24,16 +24,21 @@ public class ScriptableObject implements Scriptable {
 
 	private boolean extensible = true;
 
-	private Scriptable prototype;
-
 	@Override
 	public Scriptable getPrototype() {
-		return prototype;
+		PropertyDescriptor propertyDescriptor = associatedProperties
+				.get("prototype");
+		if (propertyDescriptor != null) {
+			return (Scriptable) propertyDescriptor.getValue();
+		}
+		return null;
 	}
 
 	@Override
 	public void setPrototype(Scriptable prototype) {
-		this.prototype = prototype;
+		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this);
+		propertyDescriptor.setValue(prototype);
+		defineOwnProperty("prototype", propertyDescriptor, false);
 	}
 
 	@Override
@@ -72,6 +77,7 @@ public class ScriptableObject implements Scriptable {
 			return prop;
 		}
 
+		Scriptable prototype = getPrototype();
 		if (prototype != null) {
 			return prototype.getProperty(propertyName);
 		}

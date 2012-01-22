@@ -19,6 +19,11 @@ import net.primitive.javascript.core.natives.JSBoolean;
 import net.primitive.javascript.core.natives.JSNumber;
 import net.primitive.javascript.core.natives.JSString;
 
+/**
+ * 
+ * @author jpalka@gmail.com
+ *
+ */
 public class Convertions {
 
 	private Convertions() {

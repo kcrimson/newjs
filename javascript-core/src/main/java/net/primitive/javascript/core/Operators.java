@@ -24,6 +24,11 @@ import static net.primitive.javascript.core.Reference.putValue;
 
 import net.primitive.javascript.core.ast.AssignmentOperator;
 
+/**
+ * Set of static code which implements all operators available in ECMAScript.
+ * @author jpalka@gmail.com
+ *
+ */
 public class Operators {
 	public static final BinaryOperator Equals = new BinaryOperator() {
 
