@@ -52,16 +52,18 @@ public class ResourceList {
 
 	private static Collection<String> getResources(String element,
 			Pattern pattern) {
+
 		ArrayList<String> retval = new ArrayList<String>();
 		File file = new File(element);
 		if (file.isDirectory()) {
 			retval.addAll(getResourcesFromDirectory(file, pattern));
 		} else {
-			retval.addAll(getResourcesFromJarFile(file, pattern));
+			// retval.addAll(getResourcesFromJarFile(file, pattern));
 		}
 		return retval;
 	}
 
+	//TODO file path from JARs is not absolute, fix it
 	private static Collection<String> getResourcesFromJarFile(File file,
 			Pattern pattern) {
 		ArrayList<String> retval = new ArrayList<String>();

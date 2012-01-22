@@ -20,10 +20,17 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.primitive.javascript</groupId>
-			<artifactId>javascript-functional-tests</artifactId>
+			<artifactId>javascript-interpreter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.primitive.javascript</groupId>
+			<artifactId>javascript-functional-tests</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>rhino</groupId>

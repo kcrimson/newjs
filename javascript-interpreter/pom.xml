@@ -23,7 +23,43 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.primitive.javascript</groupId>
+			<artifactId>javascript-functional-tests</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>unjar-functional-tests</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+							<artifactItems>
+								<artifactItem>
+								<groupId>net.primitive.javascript</groupId>
+								<artifactId>javascript-functional-tests</artifactId>
+								<version>${project.version}</version>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<pluginRepositories>
 		<pluginRepository>

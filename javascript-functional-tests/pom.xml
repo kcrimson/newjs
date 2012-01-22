@@ -13,20 +13,4 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <dependencies>
-  	<dependency>
-  		<groupId>net.primitive.javascript</groupId>
-  		<artifactId>javascript-compiler</artifactId>
-  		<version>${project.version}</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.primitive.javascript</groupId>
-  		<artifactId>javascript-interpreter</artifactId>
-  		<version>${project.version}</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  </dependencies>
 </project>
