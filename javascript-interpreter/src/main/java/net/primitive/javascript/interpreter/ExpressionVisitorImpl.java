@@ -37,6 +37,7 @@ import net.primitive.javascript.core.ast.Arguments;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
+import net.primitive.javascript.core.ast.CompoundAssignment;
 import net.primitive.javascript.core.ast.ConditionalExpression;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.FunctionExpression;
@@ -101,7 +102,6 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Object value = Reference.getValue(result);
 		assignmentExpression.getLeftHandSideExpression().accept(this);
 		Reference.putValue(result, value);
-
 	}
 
 	/*
@@ -113,8 +113,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	 */
 	@Override
 	public void visitLeftHandSideExpression(Expression leftHandSideExpression) {
-		ExpressionVisitor visitor = context.getExpressionVisitor();
-		leftHandSideExpression.accept(visitor);
+		leftHandSideExpression.accept(this);
 	}
 
 	@Override
@@ -266,6 +265,24 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 			values.add(result);
 		}
 		result = values;
+	}
+
+	@Override
+	public void visitCompoundAssignment(CompoundAssignment compoundAssignment) {
+		compoundAssignment.getLeftExpression().accept(this);
+		Object lref = result;
+		Object lval = getValue(lref);
+
+		compoundAssignment.getRightExpression().accept(this);
+		Object rref = result;
+		Object rval = getValue(rref);
+
+		Object r = compoundAssignment.getOperator().operator(lval, rval);
+
+		Reference.putValue(lref, r);
+
+		result = r;
+
 	}
 
 }

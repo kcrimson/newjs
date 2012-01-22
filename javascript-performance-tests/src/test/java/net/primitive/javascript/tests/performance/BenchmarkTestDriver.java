@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import net.primitive.javascript.interpreter.Interpreter;
 import net.primitive.javascript.tests.utils.ResourceList;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -68,7 +67,7 @@ public class BenchmarkTestDriver {
 	@Test
 	public void run_benchmark() throws Exception {
 
-		 System.gc();
+		System.gc();
 		long time = System.currentTimeMillis();
 
 		Interpreter interpreter = new Interpreter();
@@ -86,7 +85,7 @@ public class BenchmarkTestDriver {
 			scriptableObject = new net.primitive.javascript.core.ScriptableObject();
 
 			script2.execute(scriptableObject);
-			
+
 		}
 		System.out.println(scriptableObject.get("assertResult"));
 		System.out.println("NewJS times: "
@@ -96,23 +95,23 @@ public class BenchmarkTestDriver {
 		// , "", 0, null);
 		Script script = context.compileReader(new FileReader(testScript), "",
 				0, null);
-		
+
 		time = System.currentTimeMillis();
 		org.mozilla.javascript.ScriptableObject standardObjects = null;
 		for (int i = 0; i < repCount; i++) {
 			// context.evaluateReader(standardObjects, new
 			// FileReader(testScript), "", 0, null);
-			standardObjects = context
-					.initStandardObjects();	
+			standardObjects = context.initStandardObjects();
 			script.exec(context, standardObjects);
 		}
-		System.out.println(ScriptableObject.getProperty(standardObjects, "assertResult"));
+		System.out.println(ScriptableObject.getProperty(standardObjects,
+				"assertResult"));
 		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"../javascript-functional-tests/src/main/resources/nested-object-literal.js");
+				"../javascript-functional-tests/src/main/resources/conditional.js");
 		testDriver.run_benchmark();
 
 	}

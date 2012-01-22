@@ -19,6 +19,7 @@ import net.primitive.javascript.core.ast.Arguments;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
+import net.primitive.javascript.core.ast.CompoundAssignment;
 import net.primitive.javascript.core.ast.ConditionalExpression;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.FunctionExpression;
@@ -62,5 +63,7 @@ public interface ExpressionVisitor {
 	void visitNewExpression(NewExpression newExpression);
 
 	void visitArguments(Arguments arguments);
+
+	void visitCompoundAssignment(CompoundAssignment compoundAssignment);
 
 }

@@ -16,13 +16,18 @@
 
 package net.primitive.javascript.interpreter;
 
+import static net.primitive.javascript.core.Reference.getValue;
+import static net.primitive.javascript.interpreter.LexicalEnvironment.newDeclarativeEnvironment;
 import static net.primitive.javascript.interpreter.RuntimeContext.currentContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Function;
+import net.primitive.javascript.core.JSObject;
+import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
@@ -57,12 +62,13 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		RuntimeContext currentContext = currentContext();
 		StatementVisitorImpl visitor = currentContext.getStatementVisitor();
 		// new lexical env
-		Scope newDeclEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
+		Scope newDeclEnv = newDeclarativeEnvironment(scope);
 
 		for (int i = 0; i < parameterList.size(); i++) {
 			Reference mutableBinding = newDeclEnv.getBindings()
 					.createMutableBinding(parameterList.get(i), false);
-			mutableBinding.setValue(Reference.getValue(args[i]));
+			Object value = getValue(args[i]);
+			mutableBinding.setValue(value);
 		}
 
 		for (AstNode astNode : functionBody.getAstNodes()) {
