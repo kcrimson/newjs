@@ -24,10 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Function;
-import net.primitive.javascript.core.JSObject;
-import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;

@@ -91,27 +91,27 @@ public class BenchmarkTestDriver {
 		System.out.println("NewJS times: "
 				+ (System.currentTimeMillis() - time));
 		System.gc();
-		Context context = Context.enter();
-		// , "", 0, null);
-		Script script = context.compileReader(new FileReader(testScript), "",
-				0, null);
-
-		time = System.currentTimeMillis();
-		org.mozilla.javascript.ScriptableObject standardObjects = null;
-		for (int i = 0; i < repCount; i++) {
-			// context.evaluateReader(standardObjects, new
-			// FileReader(testScript), "", 0, null);
-			standardObjects = context.initStandardObjects();
-			script.exec(context, standardObjects);
-		}
-		System.out.println(ScriptableObject.getProperty(standardObjects,
-				"assertResult"));
-		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
+//		Context context = Context.enter();
+//		// , "", 0, null);
+//		Script script = context.compileReader(new FileReader(testScript), "",
+//				0, null);
+//
+//		time = System.currentTimeMillis();
+//		org.mozilla.javascript.ScriptableObject standardObjects = null;
+//		for (int i = 0; i < repCount; i++) {
+//			// context.evaluateReader(standardObjects, new
+//			// FileReader(testScript), "", 0, null);
+//			standardObjects = context.initStandardObjects();
+//			script.exec(context, standardObjects);
+//		}
+//		System.out.println(ScriptableObject.getProperty(standardObjects,
+//				"assertResult"));
+//		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
 	}
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"../javascript-functional-tests/src/main/resources/conditional.js");
+				"../javascript-functional-tests/src/main/resources/read-prototype-properties.js");
 		testDriver.run_benchmark();
 
 	}

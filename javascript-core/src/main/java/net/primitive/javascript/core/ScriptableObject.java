@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class ScriptableObject implements Scriptable {
 
+	private static final String PROTOTYPE = "prototype";
+
 	private final Map<String, PropertyDescriptor> associatedProperties = new HashMap<String, PropertyDescriptor>();
 
 	private boolean extensible = true;
@@ -27,7 +29,7 @@ public class ScriptableObject implements Scriptable {
 	@Override
 	public Scriptable getPrototype() {
 		PropertyDescriptor propertyDescriptor = associatedProperties
-				.get("prototype");
+				.get(PROTOTYPE);
 		if (propertyDescriptor != null) {
 			return (Scriptable) propertyDescriptor.getValue();
 		}
@@ -38,7 +40,7 @@ public class ScriptableObject implements Scriptable {
 	public void setPrototype(Scriptable prototype) {
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this);
 		propertyDescriptor.setValue(prototype);
-		defineOwnProperty("prototype", propertyDescriptor, false);
+		defineOwnProperty(PROTOTYPE, propertyDescriptor, false);
 	}
 
 	@Override
