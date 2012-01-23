@@ -9,13 +9,14 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>javascript-repl</artifactId>
-	<name>javascript-repl</name>
+	<artifactId>javascript-cli</artifactId>
+	<packaging>pom</packaging>
+	<name>javascript-cli</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>net.primitive.javascript</groupId>
-			<artifactId>javascript-interpreter</artifactId>
+			<artifactId>javascript-repl</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
@@ -30,7 +31,9 @@
 				<executions>
 					<execution>
 						<id>assemble-app</id>
-						<goals><goal>assemble</goal></goals>
+						<goals>
+							<goal>assemble</goal>
+						</goals>
 						<phase>package</phase>
 					</execution>
 				</executions>
@@ -44,7 +47,26 @@
 					<repositoryLayout>flat</repositoryLayout>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.2</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>
