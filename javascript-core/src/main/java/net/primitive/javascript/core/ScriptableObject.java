@@ -16,6 +16,7 @@
 package net.primitive.javascript.core;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ScriptableObject implements Scriptable {
@@ -170,5 +171,12 @@ public class ScriptableObject implements Scriptable {
 	public void setExtensible(boolean b) {
 		extensible = b;
 	}
+
+	@Override
+	public Iterator<Map.Entry<String,PropertyDescriptor>> iterator() {
+		return associatedProperties.entrySet().iterator();
+	}
+	
+	
 
 }

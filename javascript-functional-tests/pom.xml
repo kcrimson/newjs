@@ -10,7 +10,4 @@
   </parent>
   <artifactId>javascript-functional-tests</artifactId>
   <name>javascript-functional-tests</name>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 </project>

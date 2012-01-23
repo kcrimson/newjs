@@ -18,6 +18,7 @@ package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.primitive.javascript.core.Convertions;
@@ -162,16 +163,22 @@ public class StatementVisitorImpl implements StatementVisitor {
 				&& initializeExpression instanceof Statement) {
 			((Statement) initializeExpression).accept(this);
 		} else if (initializeExpression instanceof AstNodeList) {
-			List<AstNode> astNodes = ((AstNodeList)initializeExpression).getAstNodes();
-			for(AstNode astNode:astNodes){
-				executeStatement((Statement)astNode);
+			List<AstNode> astNodes = ((AstNodeList) initializeExpression)
+					.getAstNodes();
+			for (AstNode astNode : astNodes) {
+				executeStatement((Statement) astNode);
 			}
 		}
 
 		Expression testExpression = forStatement.getTestExpression();
 		Expression incrementExpression = forStatement.getIncrementExpression();
-		List<AstNode> astNodes = ((AstNodeList) forStatement.getStatements())
-				.getAstNodes();
+		AstNodeList statements = (AstNodeList) forStatement.getStatements();
+
+		List<AstNode> astNodes = Collections.emptyList();
+		if (statements != null) {
+			astNodes = statements.getAstNodes();
+		}
+
 		for (;;) {
 			if (testExpression != null) {
 				testExpression.accept(expressionVisitor);

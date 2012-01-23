@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>javascript</artifactId>
+		<groupId>net.primitive.javascript</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>javascript-repl</artifactId>
+	<name>javascript-repl</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.primitive.javascript</groupId>
+			<artifactId>javascript-interpreter</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.1.1</version>
+				<executions>
+					<execution>
+						<id>assemble-app</id>
+						<goals><goal>assemble</goal></goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<programs>
+						<program>
+							<mainClass>net.primitive.javascript.interpreter.Main</mainClass>
+							<name>js</name>
+						</program>
+					</programs>
+					<repositoryLayout>flat</repositoryLayout>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

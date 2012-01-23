@@ -15,6 +15,8 @@
  */
 package net.primitive.javascript.core;
 
+import java.util.Map;
+
 /**
  * This interface defines JavaScript object internal properties, according to
  * ECMA-262 8.6.2. This interface has to be implemented by all native and host
@@ -23,7 +25,7 @@ package net.primitive.javascript.core;
  * @author kcrimson@bitbucket.org
  */
 
-public interface Scriptable {
+public interface Scriptable extends Iterable<Map.Entry<String,PropertyDescriptor>>{
 
 	Scriptable getPrototype();
 

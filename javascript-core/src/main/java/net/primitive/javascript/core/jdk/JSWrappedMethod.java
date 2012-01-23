@@ -15,10 +15,13 @@
  */
 package net.primitive.javascript.core.jdk;
 
+import static net.primitive.javascript.core.Reference.getValue;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
 import net.primitive.javascript.core.Callable;
+import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
@@ -50,7 +53,7 @@ public class JSWrappedMethod extends ScriptableObject implements Callable {
 	public Object[] bindParameters(Object[] actualParameters) {
 		StringBuffer buff = new StringBuffer();
 		for (Object arg : actualParameters) {
-			buff.append(Convertions.toString(arg));
+			buff.append(Convertions.toString(getValue(arg)));
 		}
 
 		return new Object[] { buff.toString() };

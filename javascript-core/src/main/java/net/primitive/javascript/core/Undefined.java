@@ -15,6 +15,9 @@
  */
 package net.primitive.javascript.core;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 public class Undefined implements Scriptable{
 
 	public static final Undefined Value = new Undefined();
@@ -97,6 +100,12 @@ public class Undefined implements Scriptable{
 
 	@Override
 	public Object getDefaultValue(Class<?> hint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterator<Entry<String, PropertyDescriptor>> iterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}

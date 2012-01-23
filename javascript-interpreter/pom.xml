@@ -9,12 +9,10 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
+
 	<artifactId>javascript-interpreter</artifactId>
 	<name>javascript-interpreter</name>
-	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>net.primitive.javascript</groupId>
@@ -24,6 +22,11 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>net.sf.jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>2.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>net.primitive.javascript</groupId>
 			<artifactId>javascript-functional-tests</artifactId>
 			<version>${project.version}</version>
@@ -31,7 +34,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -49,9 +52,9 @@
 							<outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
 							<artifactItems>
 								<artifactItem>
-								<groupId>net.primitive.javascript</groupId>
-								<artifactId>javascript-functional-tests</artifactId>
-								<version>${project.version}</version>
+									<groupId>net.primitive.javascript</groupId>
+									<artifactId>javascript-functional-tests</artifactId>
+									<version>${project.version}</version>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
