@@ -25,9 +25,10 @@ public class Main {
 		Terminal terminal = TerminalFactory.create();
 		terminal.init();
 
-		ConsoleReader consoleReader = new ConsoleReader("newjs shell",
-				System.in, System.out, terminal);
-		consoleReader.setPrompt("js>");
+		ConsoleReader consoleReader = new ConsoleReader("newjs shell", System.in, System.out, terminal);
+		consoleReader.setPrompt("js> ");
+
+		consoleReader.println("ECMAScript 5 \"strict mode\". Use /? for mode details");
 
 		String line;
 		Scriptable globalObject = new JSObject();
@@ -37,8 +38,7 @@ public class Main {
 
 			if ("/global".equals(line)) {
 				for (Map.Entry<String, PropertyDescriptor> property : globalObject) {
-					consoleReader.println(property.getKey() + "=>"
-							+ property.getValue());
+					consoleReader.println(property.getKey() + "=>" + property.getValue());
 				}
 				continue;
 			}
@@ -55,13 +55,11 @@ public class Main {
 				continue;
 			}
 
-			JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(
-					line));
+			JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(line));
 
 			CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 
-			JavaScriptParser javaScriptParser = new JavaScriptParser(
-					commonTokenStream);
+			JavaScriptParser javaScriptParser = new JavaScriptParser(commonTokenStream);
 			final Program program = javaScriptParser.program().result;
 
 			ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext);
