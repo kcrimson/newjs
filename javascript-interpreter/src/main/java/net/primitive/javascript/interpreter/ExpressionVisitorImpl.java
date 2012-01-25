@@ -273,12 +273,21 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 	@Override
 	public void visitArrayLiteral(ArrayLiteral arrayLiteral) {
-		
-		
-		result = new JSArray();
 
-		//List<Expression> values= arrayLiteral.getValues();
-		
+		Scriptable array = context.newArray();
+		array.put("length", 0);
+
+		List values = arrayLiteral.getValues();
+		ArrayList<Object> eval = new ArrayList<Object>();
+		for (Object obj : values) {
+			((Expression) obj).accept(this);
+			eval.add(result);
+		}
+
+		((JSArray) array.getPrototype()).push(null, array, eval.toArray(new Object[eval.size()]));
+
+		result = array;
+
 	}
 
 }

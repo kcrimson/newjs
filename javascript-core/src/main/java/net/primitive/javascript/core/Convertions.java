@@ -22,7 +22,7 @@ import net.primitive.javascript.core.natives.JSString;
 /**
  * 
  * @author jpalka@gmail.com
- *
+ * 
  */
 public final class Convertions {
 
@@ -47,9 +47,7 @@ public final class Convertions {
 
 	// TODO ale gowno, co zrobic kiedy mamy javowy typ
 	public static Object toPrimitive(Object object) {
-		if (object == null || Undefined.Value == object
-				|| object instanceof String || object instanceof Boolean
-				|| object instanceof Number) {
+		if (object == null || Undefined.Value == object || object instanceof String || object instanceof Boolean || object instanceof Number) {
 			return object;
 		}
 		if (object instanceof Scriptable) {
@@ -154,8 +152,7 @@ public final class Convertions {
 			if (startChar == '+' || startChar == '-')
 				start++;
 			if (start + 7 == end && s.regionMatches(start, "Infinity", 0, 8))
-				return startChar == '-' ? Double.NEGATIVE_INFINITY
-						: Double.POSITIVE_INFINITY;
+				return startChar == '-' ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 			return Double.NaN;
 		}
 		// A non-hexadecimal, non-infinity number:
@@ -210,13 +207,11 @@ public final class Convertions {
 				 * may be inaccurate. Call Java to get the correct answer.
 				 */
 				try {
-					return Double.valueOf(s.substring(start, end))
-							.doubleValue();
+					return Double.valueOf(s.substring(start, end)).doubleValue();
 				} catch (NumberFormatException nfe) {
 					return Double.NaN;
 				}
-			} else if (radix == 2 || radix == 4 || radix == 8 || radix == 16
-					|| radix == 32) {
+			} else if (radix == 2 || radix == 4 || radix == 8 || radix == 16 || radix == 32) {
 				/*
 				 * The number may also be inaccurate for one of these bases.
 				 * This happens if the addition in value*radix + digit causes a
@@ -323,13 +318,17 @@ public final class Convertions {
 	}
 
 	public static String toString(Object val) {
-	    if(val == Undefined.Value){
-		return "undefined";
-	    }
-	    if( val == null){
-		return "null";
-	    }
-	    return val.toString();
+		if (val == Undefined.Value) {
+			return "undefined";
+		}
+		if (val == null) {
+			return "null";
+		}
+		return val.toString();
+	}
+
+	public static int toUInt32(Object val) {
+		return Double.valueOf(toNumber(val)).intValue();
 	}
 
 }

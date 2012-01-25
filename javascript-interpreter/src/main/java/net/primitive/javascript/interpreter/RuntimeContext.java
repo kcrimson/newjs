@@ -17,6 +17,7 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
+import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
@@ -27,6 +28,7 @@ import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
+import net.primitive.javascript.core.natives.JSArray;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
 public final class RuntimeContext {
@@ -35,11 +37,9 @@ public final class RuntimeContext {
 
 	private final FastStack<StatementExecutionContext> callStack = new FastStack<StatementExecutionContext>();
 
-	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(
-			this);
+	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(this);
 
-	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(
-			this);
+	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(this);
 
 	private final Scriptable globalObject;
 
@@ -48,6 +48,8 @@ public final class RuntimeContext {
 	private final Scope variableEnvironment;
 
 	private Scope lexicalEnvironment;
+
+	private JSArray ArrayPrototype = new JSArray();
 
 	private RuntimeContext(final Scriptable globalObject) {
 		this.globalObject = globalObject;
@@ -85,8 +87,7 @@ public final class RuntimeContext {
 			thisObj = currentContext.getThisBinding();
 		}
 
-		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv,
-				varEnv, thisObj, statement);
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, varEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
 	}
@@ -99,10 +100,8 @@ public final class RuntimeContext {
 	 * @param thisObj
 	 * @return
 	 */
-	public StatementExecutionContext enter(Statement statement, Scope lexEnv,
-			Scriptable thisObj) {
-		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv,
-				lexEnv, thisObj, statement);
+	public StatementExecutionContext enter(Statement statement, Scope lexEnv, Scriptable thisObj) {
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, lexEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
 	}
@@ -140,8 +139,7 @@ public final class RuntimeContext {
 		Completion completion = current.getCompletion();
 		CompletionType completionType = completion.getType();
 
-		if (CompletionType.Normal.equals(completionType)
-				|| CompletionType.Return.equals(completionType)) {
+		if (CompletionType.Normal.equals(completionType) || CompletionType.Return.equals(completionType)) {
 			callStack.pop();
 			if (!callStack.isEmpty()) {
 				// rewrite return completion to previous statement on stack
@@ -156,20 +154,14 @@ public final class RuntimeContext {
 			// if this is TryStatement handle exception with catch and finally
 			if (TryStatement.class.equals(statement.getClass())) {
 				TryStatement tryStatement = (TryStatement) statement;
-				CatchClause catchStatement = (CatchClause) tryStatement
-						.getCatchStatement();
+				CatchClause catchStatement = (CatchClause) tryStatement.getCatchStatement();
 				if (catchStatement != null) {
-					Scope newDeclarativeEnvironment = LexicalEnvironment
-							.newDeclarativeEnvironment(current
-									.getLexicalEnvironment());
+					Scope newDeclarativeEnvironment = LexicalEnvironment.newDeclarativeEnvironment(current.getLexicalEnvironment());
 
-					Reference mutableBinding = newDeclarativeEnvironment
-							.getBindings().createMutableBinding(
-									catchStatement.getIdentifier(), false);
+					Reference mutableBinding = newDeclarativeEnvironment.getBindings().createMutableBinding(catchStatement.getIdentifier(), false);
 					Reference.putValue(mutableBinding, completion.getValue());
 
-					enter(catchStatement, newDeclarativeEnvironment,
-							current.getThisBinding());
+					enter(catchStatement, newDeclarativeEnvironment, current.getThisBinding());
 					catchStatement.accept(statementVisitor);
 					boolean exitStatus = exit();
 					callStack.pop();
@@ -203,9 +195,7 @@ public final class RuntimeContext {
 
 	private static boolean isIterationStatement(Statement currentStatement) {
 		Class<? extends Statement> clazz = currentStatement.getClass();
-		return WhileStatement.class.equals(clazz)
-				|| DoWhileStatement.class.equals(clazz)
-				|| ForStatement.class.equals(clazz);
+		return WhileStatement.class.equals(clazz) || DoWhileStatement.class.equals(clazz) || ForStatement.class.equals(clazz);
 	}
 
 	public ScopeBindings getVariables() {
@@ -214,6 +204,12 @@ public final class RuntimeContext {
 
 	public Scriptable getGlobalObject() {
 		return globalObject;
+	}
+
+	public Scriptable newArray() {
+		JSObject object = new JSObject();
+		object.setPrototype(ArrayPrototype);
+		return object;
 	}
 
 }
