@@ -29,7 +29,7 @@ import net.primitive.javascript.core.ast.AssignmentOperator;
  * @author jpalka@gmail.com
  *
  */
-public class Operators {
+public final class Operators {
 	public static final BinaryOperator Equals = new BinaryOperator() {
 
 		@Override

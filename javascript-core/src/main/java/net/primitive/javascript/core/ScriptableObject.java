@@ -118,7 +118,7 @@ public class ScriptableObject implements Scriptable {
 					.isWriteable(true).isEnumerable(true).isConfigurable(true);
 			propertyDescriptor.setValue(value);
 			associatedProperties.put(propertyName, propertyDescriptor);
-		} else if (true) {
+		} else {
 			throw new TypeErrorException();
 		}
 
@@ -186,15 +186,15 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Enumeration<String> enumeration() {
-		Map<String, PropertyDescriptor> enumerableProperties = filterEntries(associatedProperties,
-						new Predicate<Map.Entry<String, PropertyDescriptor>>() {
+		Map<String, PropertyDescriptor> enumerableProperties = filterEntries(
+				associatedProperties,
+				new Predicate<Map.Entry<String, PropertyDescriptor>>() {
 
-							@Override
-							public boolean apply(
-									Entry<String, PropertyDescriptor> arg0) {
-								return arg0.getValue().isEnumerable();
-							}
-						});
+					@Override
+					public boolean apply(Entry<String, PropertyDescriptor> arg0) {
+						return arg0.getValue().isEnumerable();
+					}
+				});
 		return asEnumeration(enumerableProperties.keySet().iterator());
 	}
 

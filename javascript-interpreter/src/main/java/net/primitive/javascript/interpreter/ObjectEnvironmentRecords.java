@@ -27,7 +27,7 @@ import net.primitive.javascript.core.Undefined;
 
 public class ObjectEnvironmentRecords implements ScopeBindings {
 
-	final Scriptable bindingObject;
+	private final Scriptable bindingObject;
 
 	private final boolean provideThis;
 
