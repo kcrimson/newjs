@@ -15,9 +15,16 @@
  */
 package net.primitive.javascript.core;
 
+import static com.google.common.collect.Iterators.asEnumeration;
+import static com.google.common.collect.Maps.filterEntries;
+
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.common.base.Predicate;
 
 public class ScriptableObject implements Scriptable {
 
@@ -173,10 +180,22 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public Iterator<Map.Entry<String,PropertyDescriptor>> iterator() {
+	public Iterator<Map.Entry<String, PropertyDescriptor>> iterator() {
 		return associatedProperties.entrySet().iterator();
 	}
-	
-	
+
+	@Override
+	public Enumeration<String> enumeration() {
+		Map<String, PropertyDescriptor> enumerableProperties = filterEntries(associatedProperties,
+						new Predicate<Map.Entry<String, PropertyDescriptor>>() {
+
+							@Override
+							public boolean apply(
+									Entry<String, PropertyDescriptor> arg0) {
+								return arg0.getValue().isEnumerable();
+							}
+						});
+		return asEnumeration(enumerableProperties.keySet().iterator());
+	}
 
 }

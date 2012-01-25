@@ -16,7 +16,7 @@
 
 package net.primitive.javascript.interpreter;
 
-import net.primitive.javascript.core.Convertions;
+import static net.primitive.javascript.core.Convertions.toObject;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scriptable;
 
@@ -48,7 +48,7 @@ public class ObjectReference extends Reference {
 		if (base instanceof Scriptable) {
 			return (Scriptable) base;
 		} else {
-			return (Scriptable) Convertions.toObject(base);
+			return (Scriptable) toObject(base);
 		}
 	}
 

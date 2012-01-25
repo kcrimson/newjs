@@ -15,6 +15,7 @@
  */
 package net.primitive.javascript.core;
 
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -106,6 +107,12 @@ public class Undefined implements Scriptable{
 
 	@Override
 	public Iterator<Entry<String, PropertyDescriptor>> iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Enumeration<String> enumeration() {
 		// TODO Auto-generated method stub
 		return null;
 	}

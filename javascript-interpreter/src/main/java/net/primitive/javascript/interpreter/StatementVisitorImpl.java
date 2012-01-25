@@ -19,12 +19,15 @@ package net.primitive.javascript.interpreter;
 import static net.primitive.javascript.core.Convertions.toBoolean;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
+import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
@@ -274,6 +277,38 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitForInStatement(ForInStatement forInStatement) {
-		throw new UnsupportedOperationException("a chuj nie chcialo mi sie :)");
+		// TODO this needs to be carefully reviewed, as it look like
+		// VariableDeclaration
+		// ((Statement)forInStatement.getInitializerExpression()).accept(this);
+		String varName = ((VariableDeclaration) forInStatement
+				.getInitializerExpression()).getVariableName();
+
+		forInStatement.getExpression().accept(expressionVisitor);
+		Object exprRef = expressionVisitor.getResult();
+		Object exprValue = Reference.getValue(exprRef);
+
+		if (exprValue == null || Undefined.Value.equals(exprValue)) {
+			return;
+		}
+		Reference reference = runtimeContext.getVariables().getBinding(varName);
+		Scriptable obj = Convertions.toObject(exprValue);
+		Enumeration<String> enumeration = obj.enumeration();
+		Object v = null;
+		while (enumeration.hasMoreElements()) {
+			Reference.putValue(reference, enumeration.nextElement());
+			List<AstNode> astNodes = Collections.emptyList();
+			AstNodeList statements = (AstNodeList) forInStatement
+					.getStatement();
+			if (statements != null) {
+				astNodes = statements.getAstNodes();
+			}
+
+			for (AstNode astNode : astNodes) {
+				if (!executeStatement((Statement) astNode)) {
+					return;
+				}
+			}
+		}
+
 	}
 }

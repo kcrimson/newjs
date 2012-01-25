@@ -15,6 +15,7 @@
  */
 package net.primitive.javascript.core;
 
+import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -53,5 +54,11 @@ public interface Scriptable extends Iterable<Map.Entry<String,PropertyDescriptor
 	boolean delete(String propertyName, boolean failureHandling);
 
 	Object getDefaultValue(Class<?> hint);
+
+	/**
+	 * Returns enumeration of property names whose [[Enumerable]] attribute is true
+	 * @return
+	 */
+	Enumeration<String> enumeration();
 
 }
