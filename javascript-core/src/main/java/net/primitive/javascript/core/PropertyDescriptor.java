@@ -167,7 +167,7 @@ public class PropertyDescriptor {
 				&& !isAccessorDescriptor(desc);
 	}
 
-	private static interface DescriptorValueHolder {
+	static interface DescriptorValueHolder {
 
 		void set(Object value);
 

@@ -24,7 +24,7 @@ import net.primitive.javascript.core.natives.JSString;
  * @author jpalka@gmail.com
  *
  */
-public class Convertions {
+public final class Convertions {
 
 	private Convertions() {
 	}

@@ -20,7 +20,11 @@ import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 
-public class StandardObjects {
+public final class StandardObjects {
+
+	private StandardObjects() {
+
+	}
 
 	public static Scriptable init() {
 
@@ -31,8 +35,7 @@ public class StandardObjects {
 		Scriptable object = new JSObject();
 		object.setPrototype(objectPrototype);
 
-		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects)
-				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects).isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(object);
 
 		standardObjects.defineOwnProperty("Object", descriptor, true);

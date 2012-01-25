@@ -22,7 +22,11 @@ import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.annotations.JSFunction;
 
-public class JDKHost {
+public final class JDKHost {
+
+	private JDKHost() {
+
+	}
 
 	// wraps java object
 	public static Scriptable wrapJavaObject(Object object) {
@@ -32,8 +36,7 @@ public class JDKHost {
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(JSFunction.class)) {
 				JSWrappedMethod jsFunc = new JSWrappedMethod(object, method);
-				PropertyDescriptor ownProperty = new PropertyDescriptor(
-						jsObject);
+				PropertyDescriptor ownProperty = new PropertyDescriptor(jsObject);
 				ownProperty.setValue(jsFunc);
 				jsObject.defineOwnProperty(method.getName(), ownProperty, false);
 			}

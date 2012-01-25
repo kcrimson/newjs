@@ -29,7 +29,7 @@ import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
-public class RuntimeContext {
+public final class RuntimeContext {
 
 	private static final ThreadLocal<RuntimeContext> CONTEXT_LOCAL = new ThreadLocal<RuntimeContext>();
 

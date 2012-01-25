@@ -32,7 +32,7 @@ public interface Callable {
 	 * 
 	 * @return the result of the call
 	 */
-	public Object call(Scope scope, Scriptable thisObj, Object[] args);
+	Object call(Scope scope, Scriptable thisObj, Object[] args);
 
 	/**
 	 * 

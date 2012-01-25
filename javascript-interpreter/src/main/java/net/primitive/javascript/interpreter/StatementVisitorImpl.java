@@ -166,8 +166,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 	public void visitForStatement(ForStatement forStatement) {
 		AstNode initializeExpression = forStatement.getInitializeExpression();
 
-		if (initializeExpression != null
-				&& initializeExpression instanceof Statement) {
+		if (initializeExpression instanceof Statement) {
 			((Statement) initializeExpression).accept(this);
 		} else if (initializeExpression instanceof AstNodeList) {
 			List<AstNode> astNodes = ((AstNodeList) initializeExpression)

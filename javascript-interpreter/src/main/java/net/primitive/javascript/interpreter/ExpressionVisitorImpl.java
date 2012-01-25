@@ -25,7 +25,6 @@ import java.util.List;
 import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Constructor;
 import net.primitive.javascript.core.Convertions;
-import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
@@ -278,7 +277,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		
 		result = new JSArray();
 
-		List<Expression> values= arrayLiteral.getValues();
+		//List<Expression> values= arrayLiteral.getValues();
 		
 	}
 

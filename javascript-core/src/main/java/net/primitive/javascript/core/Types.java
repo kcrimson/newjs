@@ -17,17 +17,17 @@ package net.primitive.javascript.core;
 
 public final class Types {
 
-	public final static String Object = "object";
+	public static final String Object = "object";
 
-	public final static String Function = "function";
+	public static final String Function = "function";
 
-	public final static String Number = "number";
+	public static final String Number = "number";
 
-	public final static String String = "string";
+	public static final String String = "string";
 
-	public final static String Boolean = "boolean";
+	public static final String Boolean = "boolean";
 
-	public final static String Undefined = "undefined";
+	public static final String Undefined = "undefined";
 
 	private Types() {
 
