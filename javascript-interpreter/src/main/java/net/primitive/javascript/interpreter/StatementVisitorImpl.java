@@ -16,7 +16,11 @@
 
 package net.primitive.javascript.interpreter;
 
+import static java.util.Collections.emptyList;
 import static net.primitive.javascript.core.Convertions.toBoolean;
+import static net.primitive.javascript.core.Convertions.toObject;
+import static net.primitive.javascript.core.Reference.getValue;
+import static net.primitive.javascript.core.Reference.putValue;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -75,7 +79,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 			expression.accept(expressionVisitor);
 			Object value = expressionVisitor.getResult();
 
-			mutableBinding.setValue(Reference.getValue(value));
+			mutableBinding.setValue(getValue(value));
 
 		}
 	}
@@ -290,18 +294,17 @@ public class StatementVisitorImpl implements StatementVisitor {
 		if (exprValue == null || Undefined.Value.equals(exprValue)) {
 			return;
 		}
-		Reference reference = runtimeContext.getVariables().getBinding(varName);
-		Scriptable obj = Convertions.toObject(exprValue);
+
+		Reference varRef = runtimeContext.getVariables().getBinding(varName);
+		Scriptable obj = toObject(exprValue);
 		Enumeration<String> enumeration = obj.enumeration();
-		Object v = null;
+		List<AstNode> astNodes = emptyList();
+		AstNodeList statements = (AstNodeList) forInStatement.getStatement();
+		if (statements != null) {
+			astNodes = statements.getAstNodes();
+		}
 		while (enumeration.hasMoreElements()) {
-			Reference.putValue(reference, enumeration.nextElement());
-			List<AstNode> astNodes = Collections.emptyList();
-			AstNodeList statements = (AstNodeList) forInStatement
-					.getStatement();
-			if (statements != null) {
-				astNodes = statements.getAstNodes();
-			}
+			putValue(varRef, enumeration.nextElement());
 
 			for (AstNode astNode : astNodes) {
 				if (!executeStatement((Statement) astNode)) {
