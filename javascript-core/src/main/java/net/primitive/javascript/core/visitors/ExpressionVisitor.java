@@ -16,6 +16,7 @@
 package net.primitive.javascript.core.visitors;
 
 import net.primitive.javascript.core.ast.Arguments;
+import net.primitive.javascript.core.ast.ArrayLiteral;
 import net.primitive.javascript.core.ast.AssignmentExpression;
 import net.primitive.javascript.core.ast.BinaryExpression;
 import net.primitive.javascript.core.ast.CallExpression;
@@ -65,5 +66,7 @@ public interface ExpressionVisitor {
 	void visitArguments(Arguments arguments);
 
 	void visitCompoundAssignment(CompoundAssignment compoundAssignment);
+
+	void visitArrayLiteral(ArrayLiteral arrayLiteral);
 
 }

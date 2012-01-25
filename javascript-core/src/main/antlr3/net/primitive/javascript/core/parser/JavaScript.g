@@ -361,8 +361,14 @@ forInStatement returns [Statement result]
 
 forInStatementInitialiserPart returns [Object result]
   :
-  leftHandSideExpression {$result = $leftHandSideExpression.result;}
-  | 'var' LT!* variableDeclarationNoIn {$result = $variableDeclarationNoIn.result;}
+  leftHandSideExpression 
+                        {
+                         $result = $leftHandSideExpression.result;
+                        }
+  | 'var' LT!* variableDeclarationNoIn 
+                                      {
+                                       $result = $variableDeclarationNoIn.result;
+                                      }
   ;
 
 continueStatement returns [Statement result]
@@ -1167,7 +1173,10 @@ primaryExpression returns [Expression result]
            {
             $result = $literal.result;
            }
-  | arrayLiteral
+  | arrayLiteral 
+                {
+                 $result = $arrayLiteral.result;
+                }
   | objectLiteral 
                  {
                   $result = $objectLiteral.result;
@@ -1180,9 +1189,21 @@ primaryExpression returns [Expression result]
 
 // arrayLiteral definition.
 
-arrayLiteral
+arrayLiteral returns [Expression result]
+@init {
+List values = new ArrayList();
+}
   :
-  '[' LT!* assignmentExpression? (LT!* ',' (LT!* assignmentExpression)?)* LT!* ']'
+  '[' LT!* (firstExp=assignmentExpression 
+                                         {
+                                          values.add($firstExp.result);
+                                         })? (LT!* ',' (LT!* nextExp=assignmentExpression 
+                                                                                         {
+                                                                                          values.add($nextExp.result);
+                                                                                         })?)* LT!* ']' 
+                                                                                                       {
+                                                                                                        $result = new ArrayLiteral(values);
+                                                                                                       }
   ;
 
 // objectLiteral definition.

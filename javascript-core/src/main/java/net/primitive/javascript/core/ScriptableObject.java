@@ -30,7 +30,7 @@ public class ScriptableObject implements Scriptable {
 
 	private static final String PROTOTYPE = "prototype";
 
-	private final Map<String, PropertyDescriptor> associatedProperties = new HashMap<String, PropertyDescriptor>();
+	protected final Map<String, PropertyDescriptor> associatedProperties = new HashMap<String, PropertyDescriptor>();
 
 	private boolean extensible = true;
 
