@@ -1,4 +1,4 @@
-package net.primitive.javascript.interpreter;
+package net.primitive.javascript.repl;
 
 import static net.primitive.javascript.interpreter.RuntimeContext.enterContext;
 import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
@@ -8,12 +8,14 @@ import java.util.Map;
 import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
-import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
+import net.primitive.javascript.core.natives.JSObject;
 import net.primitive.javascript.core.parser.JavaScriptLexer;
 import net.primitive.javascript.core.parser.JavaScriptParser;
+import net.primitive.javascript.interpreter.ProgramVisitorImpl;
+import net.primitive.javascript.interpreter.RuntimeContext;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;

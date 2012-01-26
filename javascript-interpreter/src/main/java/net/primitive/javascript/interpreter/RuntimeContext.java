@@ -17,7 +17,6 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
-import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
@@ -29,6 +28,7 @@ import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.natives.JSArray;
+import net.primitive.javascript.core.natives.JSObject;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
 public final class RuntimeContext {

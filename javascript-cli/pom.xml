@@ -7,6 +7,7 @@
 		<artifactId>javascript</artifactId>
 		<groupId>net.primitive.javascript</groupId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>javascript-cli</artifactId>
@@ -40,11 +41,12 @@
 				<configuration>
 					<programs>
 						<program>
-							<mainClass>net.primitive.javascript.interpreter.Main</mainClass>
+							<mainClass>net.primitive.javascript.repl.Main</mainClass>
 							<name>js</name>
 						</program>
 					</programs>
 					<repositoryLayout>flat</repositoryLayout>
+					<repositoryName>lib</repositoryName>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -16,7 +16,6 @@
 package net.primitive.javascript.core.natives;
 
 import net.primitive.javascript.core.Callable;
-import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.ScriptableObject;
 
 public abstract class JSFunction extends ScriptableObject implements Callable{

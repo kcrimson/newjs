@@ -26,7 +26,7 @@ import java.util.Map;
  * @author kcrimson@bitbucket.org
  */
 
-public interface Scriptable extends Iterable<Map.Entry<String,PropertyDescriptor>>{
+public interface Scriptable {
 
 	Scriptable getPrototype();
 
@@ -48,17 +48,22 @@ public interface Scriptable extends Iterable<Map.Entry<String,PropertyDescriptor
 
 	void put(String propertyName, Object value);
 
-	boolean defineOwnProperty(String propertyName,
-			PropertyDescriptor propertyDescriptor, boolean failureHandling);
+	boolean defineOwnProperty(String propertyName, PropertyDescriptor propertyDescriptor, boolean failureHandling);
 
 	boolean delete(String propertyName, boolean failureHandling);
 
 	Object getDefaultValue(Class<?> hint);
 
 	/**
-	 * Returns enumeration of property names whose [[Enumerable]] attribute is true
+	 * Returns enumeration of property names whose [[Enumerable]] attribute is
+	 * true
+	 * 
 	 * @return
 	 */
 	Enumeration<String> enumeration();
+
+	Map<String, PropertyDescriptor> getOwnProperties();
+
+	void setExtensible(boolean b);
 
 }

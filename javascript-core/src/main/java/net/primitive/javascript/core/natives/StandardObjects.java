@@ -15,11 +15,17 @@
  */
 package net.primitive.javascript.core.natives;
 
-import net.primitive.javascript.core.JSObject;
 import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 
+/**
+ * Built-in objects available in ECMAScript.
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public final class StandardObjects {
 
 	private StandardObjects() {
@@ -30,10 +36,34 @@ public final class StandardObjects {
 
 		ScriptableObject standardObjects = new ScriptableObject();
 
-		Scriptable objectPrototype = new JSObject();
+		Scriptable objectPrototype = new ScriptableObject();
 
 		Scriptable object = new JSObject();
 		object.setPrototype(objectPrototype);
+
+		defineFunction(object, "getPrototypeOf", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.getPrototypeOf(thisObj, args);
+			}
+		});
+
+		defineFunction(object, "seal", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.seal(thisObj, args);
+			}
+		});
+
+		defineFunction(object, "freeze", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.freeze(thisObj, args);
+			}
+		});
 
 		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects).isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(object);
@@ -41,6 +71,13 @@ public final class StandardObjects {
 		standardObjects.defineOwnProperty("Object", descriptor, true);
 
 		return standardObjects;
+	}
+
+	private static void defineFunction(Scriptable object, String propertyName, AbstractCallable callable) {
+		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(object).isWriteable(false).isEnumerable(false).isConfigurable(false);
+		propertyDescriptor.setValue(callable);
+
+		object.defineOwnProperty(propertyName, propertyDescriptor, false);
 	}
 
 }

@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.Interpreter;
 import net.primitive.javascript.tests.utils.ResourceList;
 
@@ -79,10 +81,11 @@ public class BenchmarkTestDriver {
 				.println("Running benchmark test for " + testScript.getPath());
 
 		int repCount = 30000;
-		net.primitive.javascript.core.ScriptableObject scriptableObject = null;
+		Scriptable scriptableObject = null;
 		for (int i = 0; i < repCount; i++) {
 
-			scriptableObject = new net.primitive.javascript.core.ScriptableObject();
+			scriptableObject = StandardObjects.init();
+			
 
 			script2.execute(scriptableObject);
 

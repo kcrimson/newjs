@@ -17,10 +17,10 @@ package net.primitive.javascript.core;
 
 import static com.google.common.collect.Iterators.asEnumeration;
 import static com.google.common.collect.Maps.filterEntries;
+import static java.util.Collections.unmodifiableMap;
 
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -36,8 +36,7 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Scriptable getPrototype() {
-		PropertyDescriptor propertyDescriptor = associatedProperties
-				.get(PROTOTYPE);
+		PropertyDescriptor propertyDescriptor = associatedProperties.get(PROTOTYPE);
 		if (propertyDescriptor != null) {
 			return (Scriptable) propertyDescriptor.getValue();
 		}
@@ -78,6 +77,10 @@ public class ScriptableObject implements Scriptable {
 		return descriptor;
 	}
 
+	/**
+	 * TODO should we stop traversing prototype chain when checking getting
+	 * property "prototype"?
+	 */
 	@Override
 	public PropertyDescriptor getProperty(String propertyName) {
 
@@ -114,8 +117,7 @@ public class ScriptableObject implements Scriptable {
 				return;
 			}
 
-			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this)
-					.isWriteable(true).isEnumerable(true).isConfigurable(true);
+			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this).isWriteable(true).isEnumerable(true).isConfigurable(true);
 			propertyDescriptor.setValue(value);
 			associatedProperties.put(propertyName, propertyDescriptor);
 		} else {
@@ -137,8 +139,7 @@ public class ScriptableObject implements Scriptable {
 	@Override
 	public boolean delete(String propertyName, boolean failureHandling) {
 
-		PropertyDescriptor propertyDescriptor = associatedProperties
-				.remove(propertyName);
+		PropertyDescriptor propertyDescriptor = associatedProperties.remove(propertyName);
 
 		return propertyDescriptor != null;
 	}
@@ -150,8 +151,7 @@ public class ScriptableObject implements Scriptable {
 	}
 
 	@Override
-	public boolean defineOwnProperty(String propertyName,
-			PropertyDescriptor desc, boolean failureHandling) {
+	public boolean defineOwnProperty(String propertyName, PropertyDescriptor desc, boolean failureHandling) {
 		PropertyDescriptor current = getOwnProperty(propertyName);
 
 		if (current == null && !extensible) {
@@ -167,35 +167,33 @@ public class ScriptableObject implements Scriptable {
 			return true;
 		}
 
-		if (!desc.isConfigurable() && !desc.isEnumerable()
-				&& !desc.isWriteable()) {
+		if (!desc.isConfigurable() && !desc.isEnumerable() && !desc.isWriteable()) {
 			return true;
 		}
 
 		return false;
 	}
 
+	@Override
 	public void setExtensible(boolean b) {
 		extensible = b;
 	}
 
 	@Override
-	public Iterator<Map.Entry<String, PropertyDescriptor>> iterator() {
-		return associatedProperties.entrySet().iterator();
+	public Enumeration<String> enumeration() {
+		Map<String, PropertyDescriptor> enumerableProperties = filterEntries(associatedProperties, new Predicate<Map.Entry<String, PropertyDescriptor>>() {
+
+			@Override
+			public boolean apply(Entry<String, PropertyDescriptor> entry) {
+				return entry.getValue().isEnumerable();
+			}
+		});
+		return asEnumeration(enumerableProperties.keySet().iterator());
 	}
 
 	@Override
-	public Enumeration<String> enumeration() {
-		Map<String, PropertyDescriptor> enumerableProperties = filterEntries(
-				associatedProperties,
-				new Predicate<Map.Entry<String, PropertyDescriptor>>() {
-
-					@Override
-					public boolean apply(Entry<String, PropertyDescriptor> arg0) {
-						return arg0.getValue().isEnumerable();
-					}
-				});
-		return asEnumeration(enumerableProperties.keySet().iterator());
+	public Map<String, PropertyDescriptor> getOwnProperties() {
+		return unmodifiableMap(associatedProperties);
 	}
 
 }

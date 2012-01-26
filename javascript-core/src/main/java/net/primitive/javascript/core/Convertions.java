@@ -324,14 +324,42 @@ public final class Convertions {
 		if (val == null) {
 			return "null";
 		}
-		if(val instanceof Number){
-			return Integer.toString(((Number)val).intValue());
+		if (val instanceof Number) {
+			return Integer.toString(((Number) val).intValue());
 		}
 		return val.toString();
 	}
 
 	public static int toUInt32(Object val) {
 		return Double.valueOf(toNumber(val)).intValue();
+	}
+
+	public static Scriptable fromPropertyDescriptor(PropertyDescriptor desc) {
+		ScriptableObject obj = new ScriptableObject();
+		if (PropertyDescriptor.isDataDescriptor(desc)) {
+			PropertyDescriptor d = new PropertyDescriptor(obj).isWriteable(true).isConfigurable(true).isEnumerable(true);
+			d.setValue(desc.getValue());
+			obj.defineOwnProperty("value", d, false);
+
+			d = new PropertyDescriptor(obj).isWriteable(true).isConfigurable(true).isEnumerable(true);
+			d.setValue(desc.isWriteable());
+			obj.defineOwnProperty("writable", d, false);
+
+		} else {
+			// PropertyDescriptor d = new
+			// PropertyDescriptor(obj).isWriteable(true).isConfigurable(true).isEnumerable(true);
+			// d.setValue(desc.getValue());
+			// obj.defineOwnProperty("get", d, false);
+
+		}
+		PropertyDescriptor d = new PropertyDescriptor(obj).isWriteable(true).isConfigurable(true).isEnumerable(true);
+		d.setValue(desc.isEnumerable());
+		obj.defineOwnProperty("enumerable", d, false);
+		d = new PropertyDescriptor(obj).isWriteable(true).isConfigurable(true).isEnumerable(true);
+		d.setValue(desc.isConfigurable());
+		obj.defineOwnProperty("configurable", d, false);
+
+		return obj;
 	}
 
 }
