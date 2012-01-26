@@ -39,9 +39,10 @@ public class Main {
 		while ((line = consoleReader.readLine()) != null) {
 
 			if ("/global".equals(line)) {
-				for (Map.Entry<String, PropertyDescriptor> property : globalObject) {
-					consoleReader.println(property.getKey() + "=>" + property.getValue());
-				}
+				//TODO needs fix
+				//				for (Map.Entry<String, PropertyDescriptor> property : globalObject) {
+//					consoleReader.println(property.getKey() + "=>" + property.getValue());
+//				}
 				continue;
 			}
 
