@@ -30,6 +30,7 @@ import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.TypeErrorException;
 import net.primitive.javascript.core.Types;
 import net.primitive.javascript.core.Undefined;
 
@@ -105,13 +106,9 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	public static Object getPrototypeOf(Scriptable thisObj, Object[] args) {
 		// TODO is this a right place to extract value from reference, shouldn't
 		// it be extracted in other place?
-		Object obj = getValue(extractArgument(args));
-		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
-			return toObject(obj).getPrototype();
-		}
+		Object obj = extractArgument(args);
 
-		// TODO throw TypeError
-		return null;
+		return toObject(obj).getPrototype();
 	}
 
 	/**
@@ -122,20 +119,15 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	 * @see ECMA262#15.2.3.8
 	 */
 	public static Object seal(Scriptable thisObj, Object[] args) {
-		Object obj = getValue(extractArgument(args));
-		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
-			Scriptable scriptable = toObject(obj);
-			Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
-			for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
-				desc.getValue().setConfigurable(false);
-				scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
-			}
-			scriptable.setExtensible(false);
-			return scriptable;
+		Object obj = extractArgument(args);
+		Scriptable scriptable = toObject(obj);
+		Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
+		for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
+			desc.getValue().setConfigurable(false);
+			scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
 		}
-		// TODO throw TypeError
-		return null;
-
+		scriptable.setExtensible(false);
+		return scriptable;
 	}
 
 	/**
@@ -146,15 +138,10 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	 * @see ECMA262#15.2.3.3
 	 */
 	public static Object getOwnPropertyDescriptor(Scriptable thisObj, Object[] args) {
-		Object obj = getValue(extractArgument(args));
+		Object obj = extractArgument(args);
 		String name = Convertions.toString(getValue(args[1]));
-		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
-			Scriptable scriptable = toObject(obj);
-			return Convertions.fromPropertyDescriptor(scriptable.getOwnProperty(name));
-		}
-		// TODO throw TypeError
-		return null;
-
+		Scriptable scriptable = toObject(obj);
+		return Convertions.fromPropertyDescriptor(scriptable.getOwnProperty(name));
 	}
 
 	/**
@@ -165,21 +152,21 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	 * @see ECMA262#15.2.3.9
 	 */
 	public static Object freeze(Scriptable thisObj, Object[] args) {
-		Object obj = getValue(extractArgument(args));
-		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
-			Scriptable scriptable = toObject(obj);
-			Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
-			for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
-				desc.getValue().setConfigurable(false);
-				desc.getValue().setWriteable(false);
-				scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
-			}
-			scriptable.setExtensible(false);
-			return scriptable;
+		Object obj = extractArgument(args);
+		Scriptable scriptable = toObject(obj);
+		Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
+		for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
+			desc.getValue().setConfigurable(false);
+			desc.getValue().setWriteable(false);
+			scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
 		}
-		// TODO throw TypeError
-		return null;
+		scriptable.setExtensible(false);
+		return scriptable;
+	}
 
+	public static Object isExtensible(Scriptable thisObj, Object[] args) {
+		Object obj = extractArgument(args);
+		return toObject(obj).isExtensible();
 	}
 
 	/**
@@ -188,19 +175,20 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	 * @param args
 	 * @param value
 	 * @return
+	 * @throws TypeErrorException
+	 *             - when first argument is not {@link Scriptable}
 	 */
 	private static Object extractArgument(Object[] args) {
+		Object firstArg = null;
 		if (args != null && args.length > 0) {
-			return args[0];
+			firstArg = getValue(args[0]);
 		}
-		return null;
+
+		if (Types.Object.equals(Operators.TypeOf.operator(firstArg))) {
+			return firstArg;
+		}
+
+		throw new TypeErrorException();
 	}
 
-	public static Object isExtensible(Scriptable thisObj, Object[] args) {
-		Object obj = getValue(extractArgument(args));
-		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
-			return toObject(obj).isExtensible();
-		}
-		return null;
-	}
 }
