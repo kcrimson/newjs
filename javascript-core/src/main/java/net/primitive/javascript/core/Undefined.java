@@ -17,9 +17,10 @@ package net.primitive.javascript.core;
 
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
-public class Undefined implements Scriptable{
+public class Undefined implements Scriptable {
 
 	public static final Undefined Value = new Undefined();
 
@@ -35,7 +36,7 @@ public class Undefined implements Scriptable{
 	@Override
 	public void setPrototype(Scriptable prototype) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -83,12 +84,11 @@ public class Undefined implements Scriptable{
 	@Override
 	public void put(String propertyName, Object value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public boolean defineOwnProperty(String propertyName,
-			PropertyDescriptor propertyDescriptor, boolean failureHandling) {
+	public boolean defineOwnProperty(String propertyName, PropertyDescriptor propertyDescriptor, boolean failureHandling) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -106,15 +106,21 @@ public class Undefined implements Scriptable{
 	}
 
 	@Override
-	public Iterator<Entry<String, PropertyDescriptor>> iterator() {
+	public Enumeration<String> enumeration() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Enumeration<String> enumeration() {
+	public Map<String, PropertyDescriptor> getOwnProperties() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setExtensible(boolean b) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
