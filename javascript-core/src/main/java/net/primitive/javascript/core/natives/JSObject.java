@@ -127,7 +127,7 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 			Scriptable scriptable = toObject(obj);
 			Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
 			for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
-				desc.getValue().setConfigurable(true);
+				desc.getValue().setConfigurable(false);
 				scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
 			}
 			scriptable.setExtensible(false);
@@ -137,7 +137,7 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 		return null;
 
 	}
-	
+
 	/**
 	 * 
 	 * @param thisObj
@@ -147,22 +147,16 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	 */
 	public static Object getOwnPropertyDescriptor(Scriptable thisObj, Object[] args) {
 		Object obj = getValue(extractArgument(args));
+		String name = Convertions.toString(getValue(args[1]));
 		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
 			Scriptable scriptable = toObject(obj);
-			Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
-			for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
-				desc.getValue().setConfigurable(true);
-				desc.getValue().setWriteable(true);
-				scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
-			}
-			scriptable.setExtensible(false);
-			return scriptable;
+			return Convertions.fromPropertyDescriptor(scriptable.getOwnProperty(name));
 		}
 		// TODO throw TypeError
 		return null;
 
 	}
-	
+
 	/**
 	 * 
 	 * @param thisObj
@@ -176,8 +170,8 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 			Scriptable scriptable = toObject(obj);
 			Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
 			for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
-				desc.getValue().setConfigurable(true);
-				desc.getValue().setWriteable(true);
+				desc.getValue().setConfigurable(false);
+				desc.getValue().setWriteable(false);
 				scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
 			}
 			scriptable.setExtensible(false);
@@ -187,8 +181,6 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 		return null;
 
 	}
-	
-	
 
 	/**
 	 * Returns first argument or null if no arguments at all
@@ -200,6 +192,14 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	private static Object extractArgument(Object[] args) {
 		if (args != null && args.length > 0) {
 			return args[0];
+		}
+		return null;
+	}
+
+	public static Object isExtensible(Scriptable thisObj, Object[] args) {
+		Object obj = getValue(extractArgument(args));
+		if (Types.Object.equals(Operators.TypeOf.operator(obj))) {
+			return toObject(obj).isExtensible();
 		}
 		return null;
 	}

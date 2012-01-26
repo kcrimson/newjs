@@ -49,6 +49,22 @@ public final class StandardObjects {
 			}
 		});
 
+		defineFunction(object, "getOwnPropertyDescriptor", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.getOwnPropertyDescriptor(thisObj, args);
+			}
+		});
+
+		defineFunction(object, "isExtensible", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.isExtensible(thisObj, args);
+			}
+		});
+
 		defineFunction(object, "seal", new AbstractCallable() {
 
 			@Override

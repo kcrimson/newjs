@@ -16,11 +16,9 @@
 package net.primitive.javascript.core;
 
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-public class Undefined implements Scriptable {
+public final class Undefined implements Scriptable {
 
 	public static final Undefined Value = new Undefined();
 

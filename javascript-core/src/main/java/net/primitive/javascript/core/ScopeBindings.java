@@ -15,7 +15,6 @@
  */
 package net.primitive.javascript.core;
 
-
 public interface ScopeBindings {
 
 	boolean hasBinding(String name);
