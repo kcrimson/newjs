@@ -324,6 +324,9 @@ public final class Convertions {
 		if (val == null) {
 			return "null";
 		}
+		if(val instanceof Number){
+			return Integer.toString(((Number)val).intValue());
+		}
 		return val.toString();
 	}
 

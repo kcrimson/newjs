@@ -209,6 +209,8 @@ public final class RuntimeContext {
 	public Scriptable newArray() {
 		JSObject object = new JSObject();
 		object.setPrototype(ArrayPrototype);
+		object.put("length", 0);
+
 		return object;
 	}
 

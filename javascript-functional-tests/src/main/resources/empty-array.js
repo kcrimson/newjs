@@ -1,4 +1,4 @@
-var a = ["a"];
+var a = [];
 
 
-var assertResult = a.length == 1;
+var assertResult = a.length == 0;

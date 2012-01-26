@@ -275,7 +275,6 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitArrayLiteral(ArrayLiteral arrayLiteral) {
 
 		Scriptable array = context.newArray();
-		array.put("length", 0);
 
 		List values = arrayLiteral.getValues();
 		ArrayList<Object> eval = new ArrayList<Object>();
@@ -284,7 +283,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 			eval.add(result);
 		}
 
-		((JSArray) array.getPrototype()).push(null, array, eval.toArray(new Object[eval.size()]));
+		JSArray.push(array, eval.toArray(new Object[eval.size()]));
 
 		result = array;
 

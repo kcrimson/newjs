@@ -19,7 +19,7 @@ public class JSArray extends ScriptableObject {
 
 		@Override
 		public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-			return pop(scope, thisObj, args);
+			return pop(thisObj, args);
 		}
 
 		@Override
@@ -42,7 +42,7 @@ public class JSArray extends ScriptableObject {
 
 		@Override
 		public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-			return push(scope, thisObj, args);
+			return push(thisObj, args);
 		}
 
 		@Override
@@ -58,14 +58,13 @@ public class JSArray extends ScriptableObject {
 	}
 
 	/**
-	 * Array.protoype.pop()
+	 * Array.prototype.pop()
 	 * 
-	 * @param scope
 	 * @param thisObject
 	 * @param objects
 	 * @return
 	 */
-	public Object pop(Scope scope, Scriptable thisObj, Object[] args) {
+	public static Object pop(Scriptable thisObj, Object[] args) {
 		double len = toNumber(thisObj.get("length"));
 		Object element = Undefined.Value;
 		if (len > 0) {
@@ -77,29 +76,22 @@ public class JSArray extends ScriptableObject {
 		return element;
 	}
 
-	public Object push(Scope scope, Scriptable thisObj, Object[] args) {
-		// Let lenVal be the result of calling the [[Get]] internal method of O
-		// with argument "length".
+	/**
+	 * Array.prototype.push()
+	 * 
+	 * @param thisObject
+	 * @param objects
+	 * @return
+	 */
+	public static Object push(Scriptable thisObj, Object[] args) {
 		Object lenVal = thisObj.get("length");
-		// 3. Let n be ToUint32(lenVal).
 		int n = Convertions.toUInt32(lenVal);
-		// 4. Let items be an internal List whose elements are, in left to right
-		// order, the arguments that were passed to this function invocation.
 		Object[] items = args;
 		for (Object e : items) {
 			thisObj.put(Convertions.toString(n), e);
 			n++;
 			thisObj.put("length", n);
 		}
-		// 5. Repeat, while items is not empty
-		// a. Remove the first element from items and let E be the value of the
-		// element.
-		// b. Call the [[Put]] internal method of O with arguments ToString(n),
-		// E, and true.
-		// c. Increase n by 1.
-		// 6. Call the [[Put]] internal method of O with arguments "length", n,
-		// and true.
-		// 7. Return n.
 		return n;
 	}
 
