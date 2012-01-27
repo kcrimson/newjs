@@ -36,6 +36,7 @@ import net.primitive.javascript.core.Undefined;
 
 /**
  * Implementation of ECMAScript Object constructor
+ * 
  * @author jpalka@gmail.com
  * 
  */
@@ -70,7 +71,7 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 		Object value = extractArgument(args);
 
 		if (value == null || Undefined.Value.equals(value)) {
-			return standardObjects.newObject(scope, args);
+			return standardObjects.newObject();
 		}
 		return null;
 	}
@@ -189,6 +190,10 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	public static Object keys(Scriptable thisObj, Object[] args) {
 		Object obj = extractArgument(args);
 		return toObject(obj).isExtensible();
+	}
+
+	public static Object toString(Scriptable thisObj, Object[] args) {
+		return "[object " + toObject(thisObj).getClassname() + "]";
 	}
 
 	/**

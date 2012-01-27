@@ -44,14 +44,14 @@ public final class StandardObjects {
 		return standardObjects;
 	}
 
-	public Scriptable newObject(Scope scope, Object[] args) {
-		ScriptableObject newObject = new ScriptableObject();
+	public Scriptable newObject() {
+		ScriptableObject newObject = new ScriptableObject("Object");
 		newObject.setPrototype(objectPrototype);
 		return newObject;
 	}
 
 	public Scriptable newArray() {
-		ScriptableObject newArray = new ScriptableObject();
+		ScriptableObject newArray = new ScriptableObject("Array");
 		newArray.setPrototype(arrayPrototype);
 		newArray.put("length", 0);
 		return newArray;
@@ -99,6 +99,13 @@ public final class StandardObjects {
 
 	private void defineObject(Scriptable globalObject) {
 		objectPrototype = new ScriptableObject();
+		defineFunction(objectPrototype, "toString", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.toString(thisObj, args);
+			}
+		});
 
 		objectConstructor = new JSObject(this);
 		objectConstructor.setPrototype(objectPrototype);

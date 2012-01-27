@@ -21,6 +21,7 @@ import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.ForStatement;
@@ -223,6 +224,10 @@ public final class RuntimeContext {
 
 	public Scriptable newArray() {
 		return standardObjects.newArray();
+	}
+
+	public Scriptable newObject() {
+		return standardObjects.newObject();
 	}
 
 }
