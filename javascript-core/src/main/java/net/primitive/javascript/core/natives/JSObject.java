@@ -63,7 +63,7 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 		Object value = extractArgument(args);
 
 		if (value == null || Undefined.Value.equals(value)) {
-			return construct(scope, args);
+			return new ScriptableObject();
 		}
 		return null;
 	}
@@ -165,6 +165,17 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	}
 
 	public static Object isExtensible(Scriptable thisObj, Object[] args) {
+		Object obj = extractArgument(args);
+		return toObject(obj).isExtensible();
+	}
+
+	/**
+	 * 
+	 * @param thisObj
+	 * @param args
+	 * @return
+	 */
+	public static Object keys(Scriptable thisObj, Object[] args) {
 		Object obj = extractArgument(args);
 		return toObject(obj).isExtensible();
 	}
