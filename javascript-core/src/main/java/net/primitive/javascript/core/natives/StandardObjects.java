@@ -19,7 +19,6 @@ import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
-import net.primitive.javascript.core.Types;
 
 /**
  * Built-in objects available in ECMAScript.
@@ -30,10 +29,14 @@ import net.primitive.javascript.core.Types;
 public final class StandardObjects {
 
 	private Scriptable objectPrototype;
-	private Scriptable objectConstructor;
+	private JSObject objectConstructor;
+	private ScriptableObject arrayPrototype;
+	private JSArray arrayConstructor;
 
 	private StandardObjects(Scriptable globalObject) {
-		init(globalObject);
+		defineObject(globalObject);
+
+		defineArray(globalObject);
 	}
 
 	public static StandardObjects createStandardObjects(Scriptable globalObject) {
@@ -41,21 +44,63 @@ public final class StandardObjects {
 		return standardObjects;
 	}
 
-	public Scriptable newObject() {
-		ScriptableObject object = new ScriptableObject(Types.Object);
-		object.setPrototype(objectPrototype);
-		return object;
+	public Scriptable newObject(Scope scope, Object[] args) {
+		ScriptableObject newObject = new ScriptableObject();
+		newObject.setPrototype(objectPrototype);
+		return newObject;
 	}
 
 	public Scriptable newArray() {
-		return null;
+		ScriptableObject newArray = new ScriptableObject();
+		newArray.setPrototype(arrayPrototype);
+		newArray.put("length", 0);
+		return newArray;
 	}
 
-	private Scriptable init(Scriptable standardObjects) {
+	private Scriptable init(Scriptable globalObject) {
 
+		defineObject(globalObject);
+
+		defineArray(globalObject);
+
+		return globalObject;
+	}
+
+	private void defineArray(Scriptable globalObject) {
+
+		arrayPrototype = new ScriptableObject();
+		arrayPrototype.setPrototype(objectPrototype);
+
+		defineFunction(arrayPrototype, "pop", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSArray.pop(thisObj, args);
+			}
+		});
+
+		defineFunction(arrayPrototype, "push", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSArray.push(thisObj, args);
+			}
+		});
+
+		arrayConstructor = new JSArray(this);
+
+		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
+				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		descriptor.setValue(arrayConstructor);
+
+		globalObject.defineOwnProperty("Array", descriptor, true);
+
+	}
+
+	private void defineObject(Scriptable globalObject) {
 		objectPrototype = new ScriptableObject();
 
-		objectConstructor = new JSObject();
+		objectConstructor = new JSObject(this);
 		objectConstructor.setPrototype(objectPrototype);
 
 		defineFunction(objectConstructor, "getPrototypeOf",
@@ -104,13 +149,11 @@ public final class StandardObjects {
 			}
 		});
 
-		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects)
+		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
 				.isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(objectConstructor);
 
-		standardObjects.defineOwnProperty("Object", descriptor, true);
-
-		return standardObjects;
+		globalObject.defineOwnProperty("Object", descriptor, true);
 	}
 
 	private static void defineFunction(Scriptable object, String propertyName,

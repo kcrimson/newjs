@@ -1,7 +1,12 @@
 package net.primitive.javascript.core.natives;
 
 import static net.primitive.javascript.core.Convertions.toNumber;
+
+import java.util.List;
+
+import net.primitive.javascript.core.Constructor;
 import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
@@ -9,52 +14,17 @@ import net.primitive.javascript.core.Undefined;
 
 /**
  * 
- * Implementation of JavaScript Array prototype
+ * Implementation of JavaScript Array constructor
  * 
  * @author jpalka@gmail.com
  */
-public class JSArray extends ScriptableObject {
+public class JSArray extends ScriptableObject implements Function, Constructor {
 
-	private JSFunction _js_pop = new JSFunction() {
+	private final StandardObjects standardObjects;
 
-		@Override
-		public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-			return pop(thisObj, args);
-		}
-
-		@Override
-		public Object[] bindParameters(Object[] actualParameters) {
-			return null;
-		}
-
-		@Override
-		public Scope getScope() {
-			return null;
-		}
-
-	};
-	private JSFunction _js_push = new JSFunction() {
-
-		@Override
-		public Scope getScope() {
-			return null;
-		}
-
-		@Override
-		public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-			return push(thisObj, args);
-		}
-
-		@Override
-		public Object[] bindParameters(Object[] actualParameters) {
-			return null;
-		}
-	};;
-
-	public JSArray() {
-
-		put("pop", _js_pop);
-		put("push", _js_push);
+	public JSArray(StandardObjects standardObjects) {
+		super("Function");
+		this.standardObjects = standardObjects;
 	}
 
 	/**
@@ -93,6 +63,42 @@ public class JSArray extends ScriptableObject {
 			thisObj.put("length", n);
 		}
 		return n;
+	}
+
+	@Override
+	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object[] bindParameters(Object[] actualParameters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Scope getScope() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Scriptable construct(Scope scope, Object[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object hasInstance(Object lvar) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> getParameterList() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

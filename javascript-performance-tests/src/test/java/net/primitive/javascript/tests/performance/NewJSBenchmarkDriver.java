@@ -11,6 +11,9 @@ import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.interpreter.Interpreter;
 
 import org.antlr.runtime.RecognitionException;
+import org.apache.commons.lang.time.StopWatch;
+
+import com.google.common.base.Stopwatch;
 
 public class NewJSBenchmarkDriver implements BenchmarkDriver {
 
@@ -24,6 +27,9 @@ public class NewJSBenchmarkDriver implements BenchmarkDriver {
 		Script script = interpreter.interpret(testScript);
 
 		Scriptable globalObject = null;
+		
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
 		for (int i = 0; i < repCount; i++) {
 
 			globalObject = new ScriptableObject();
@@ -32,7 +38,8 @@ public class NewJSBenchmarkDriver implements BenchmarkDriver {
 			script.execute(globalObject);
 
 		}
-		// System.out.println(globalObject.get("assertResult"));
+		stopwatch.stop();
+		System.out.println(stopwatch.getTime());
 	}
 
 }

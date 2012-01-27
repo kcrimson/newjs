@@ -10,8 +10,10 @@ import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.natives.JSObject;
+import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.core.parser.JavaScriptLexer;
 import net.primitive.javascript.core.parser.JavaScriptParser;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
@@ -33,9 +35,10 @@ public class Main {
 		consoleReader.println("ECMAScript 5 \"strict mode\". Use /? for mode details");
 
 		String line;
-		Scriptable globalObject = new JSObject();
+		Scriptable globalObject = new ScriptableObject();
+		StandardObjects standardObjects = StandardObjects.createStandardObjects(globalObject);
 		net.primitive.javascript.core.jdk.Console.init(globalObject);
-		RuntimeContext currentContext = enterContext(globalObject);
+		RuntimeContext currentContext = enterContext(standardObjects,globalObject);
 		while ((line = consoleReader.readLine()) != null) {
 
 			if ("/global".equals(line)) {
