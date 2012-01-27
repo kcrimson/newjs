@@ -19,6 +19,7 @@ import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.Types;
 
 /**
  * Built-in objects available in ECMAScript.
@@ -28,44 +29,66 @@ import net.primitive.javascript.core.ScriptableObject;
  */
 public final class StandardObjects {
 
-	private StandardObjects() {
+	private Scriptable objectPrototype;
+	private Scriptable objectConstructor;
 
+	private StandardObjects(Scriptable globalObject) {
+		init(globalObject);
 	}
 
-	public static Scriptable init() {
+	public static StandardObjects createStandardObjects(Scriptable globalObject) {
+		StandardObjects standardObjects = new StandardObjects(globalObject);
+		return standardObjects;
+	}
 
-		ScriptableObject standardObjects = new ScriptableObject();
-
-		Scriptable objectPrototype = new ScriptableObject();
-
-		Scriptable object = new JSObject();
+	public Scriptable newObject() {
+		ScriptableObject object = new ScriptableObject(Types.Object);
 		object.setPrototype(objectPrototype);
+		return object;
+	}
 
-		defineFunction(object, "getPrototypeOf", new AbstractCallable() {
+	public Scriptable newArray() {
+		return null;
+	}
 
-			@Override
-			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-				return JSObject.getPrototypeOf(thisObj, args);
-			}
-		});
+	private Scriptable init(Scriptable standardObjects) {
 
-		defineFunction(object, "getOwnPropertyDescriptor", new AbstractCallable() {
+		objectPrototype = new ScriptableObject();
 
-			@Override
-			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-				return JSObject.getOwnPropertyDescriptor(thisObj, args);
-			}
-		});
+		objectConstructor = new JSObject();
+		objectConstructor.setPrototype(objectPrototype);
 
-		defineFunction(object, "isExtensible", new AbstractCallable() {
+		defineFunction(objectConstructor, "getPrototypeOf",
+				new AbstractCallable() {
 
-			@Override
-			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-				return JSObject.isExtensible(thisObj, args);
-			}
-		});
+					@Override
+					public Object call(Scope scope, Scriptable thisObj,
+							Object[] args) {
+						return JSObject.getPrototypeOf(thisObj, args);
+					}
+				});
 
-		defineFunction(object, "seal", new AbstractCallable() {
+		defineFunction(objectConstructor, "getOwnPropertyDescriptor",
+				new AbstractCallable() {
+
+					@Override
+					public Object call(Scope scope, Scriptable thisObj,
+							Object[] args) {
+						return JSObject.getOwnPropertyDescriptor(thisObj, args);
+					}
+				});
+
+		defineFunction(objectConstructor, "isExtensible",
+				new AbstractCallable() {
+
+					@Override
+					public Object call(Scope scope, Scriptable thisObj,
+							Object[] args) {
+						return JSObject.isExtensible(thisObj, args);
+					}
+				});
+
+		defineFunction(objectConstructor, "seal", new AbstractCallable() {
 
 			@Override
 			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
@@ -73,7 +96,7 @@ public final class StandardObjects {
 			}
 		});
 
-		defineFunction(object, "freeze", new AbstractCallable() {
+		defineFunction(objectConstructor, "freeze", new AbstractCallable() {
 
 			@Override
 			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
@@ -81,16 +104,19 @@ public final class StandardObjects {
 			}
 		});
 
-		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects).isWriteable(true).isEnumerable(false).isConfigurable(true);
-		descriptor.setValue(object);
+		PropertyDescriptor descriptor = new PropertyDescriptor(standardObjects)
+				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		descriptor.setValue(objectConstructor);
 
 		standardObjects.defineOwnProperty("Object", descriptor, true);
 
 		return standardObjects;
 	}
 
-	private static void defineFunction(Scriptable object, String propertyName, AbstractCallable callable) {
-		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(object).isWriteable(false).isEnumerable(false).isConfigurable(false);
+	private static void defineFunction(Scriptable object, String propertyName,
+			AbstractCallable callable) {
+		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(object)
+				.isWriteable(false).isEnumerable(false).isConfigurable(false);
 		propertyDescriptor.setValue(callable);
 
 		object.defineOwnProperty(propertyName, propertyDescriptor, false);
