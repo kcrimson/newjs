@@ -16,7 +16,6 @@
 package net.primitive.javascript.core.ast;
 
 import lombok.Getter;
-import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class IfStatement extends Statement {
 

@@ -18,7 +18,6 @@ package net.primitive.javascript.core.ast;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public abstract class Statement extends AstNode {
 

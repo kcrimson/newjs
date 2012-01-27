@@ -21,7 +21,6 @@ import java.util.List;
 
 import lombok.Getter;
 
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
 public class FunctionExpression extends Expression {
 

@@ -18,7 +18,6 @@ package net.primitive.javascript.core.ast;
 import java.util.List;
 
 import lombok.Getter;
-import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class SwitchStatement extends Statement {
 

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.primitive.javascript.core.visitors;
+package net.primitive.javascript.core.ast;
 
-import net.primitive.javascript.core.ast.Program;
 
 public interface ProgramVisitor{
 

@@ -1,7 +1,7 @@
 package net.primitive.javascript.compiler;
 
 import net.primitive.javascript.core.ast.Program;
-import net.primitive.javascript.core.visitors.ProgramVisitor;
+import net.primitive.javascript.core.ast.ProgramVisitor;
 
 public class ProgramVisitorImpl implements ProgramVisitor {
 

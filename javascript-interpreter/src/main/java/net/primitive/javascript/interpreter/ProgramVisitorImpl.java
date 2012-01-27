@@ -21,8 +21,8 @@ import java.util.List;
 
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.Program;
+import net.primitive.javascript.core.ast.ProgramVisitor;
 import net.primitive.javascript.core.ast.Statement;
-import net.primitive.javascript.core.visitors.ProgramVisitor;
 
 public class ProgramVisitorImpl implements ProgramVisitor {
 

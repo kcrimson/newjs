@@ -18,7 +18,6 @@ package net.primitive.javascript.core.ast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.primitive.javascript.core.BinaryOperator;
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
 @AllArgsConstructor
 public final class BinaryExpression extends Expression {

@@ -17,7 +17,6 @@ package net.primitive.javascript.core.ast;
 
 import java.util.List;
 
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
 public class Arguments extends Expression {
 

@@ -41,6 +41,7 @@ import net.primitive.javascript.core.ast.CallExpression;
 import net.primitive.javascript.core.ast.CompoundAssignment;
 import net.primitive.javascript.core.ast.ConditionalExpression;
 import net.primitive.javascript.core.ast.Expression;
+import net.primitive.javascript.core.ast.ExpressionVisitor;
 import net.primitive.javascript.core.ast.FunctionExpression;
 import net.primitive.javascript.core.ast.Identifier;
 import net.primitive.javascript.core.ast.Literal;
@@ -52,7 +53,6 @@ import net.primitive.javascript.core.ast.This;
 import net.primitive.javascript.core.ast.UnaryExpression;
 import net.primitive.javascript.core.ast.WrappedExpression;
 import net.primitive.javascript.core.natives.JSArray;
-import net.primitive.javascript.core.visitors.ExpressionVisitor;
 
 public class ExpressionVisitorImpl implements ExpressionVisitor {
 

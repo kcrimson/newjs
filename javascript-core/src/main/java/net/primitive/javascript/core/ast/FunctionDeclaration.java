@@ -20,7 +20,6 @@ import static java.util.Collections.unmodifiableList;
 import java.util.List;
 
 import lombok.Getter;
-import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public final class FunctionDeclaration extends Statement {
 

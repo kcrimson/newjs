@@ -45,11 +45,11 @@ import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
+import net.primitive.javascript.core.ast.StatementVisitor;
 import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
-import net.primitive.javascript.core.visitors.StatementVisitor;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
@@ -135,7 +135,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		runtimeContext.enter(statement);
 		try {
 			statement.accept(this);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			runtimeContext.currentExecutionContext().throwException(e);
 		}
 		return runtimeContext.exit();
