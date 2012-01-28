@@ -78,25 +78,21 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 
 	@Override
 	public Object[] bindParameters(Object[] actualParameters) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Scope getScope() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object hasInstance(Object lvar) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<String> getParameterList() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -191,6 +187,10 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 		Object obj = extractArgument(args);
 		return toObject(obj).isExtensible();
 	}
+
+	/*
+	 * Implementations of object prototype properties
+	 */
 
 	public static Object toString(Scriptable thisObj, Object[] args) {
 		return "[object " + toObject(thisObj).getClassname() + "]";

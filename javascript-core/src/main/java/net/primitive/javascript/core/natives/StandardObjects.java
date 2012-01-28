@@ -21,7 +21,7 @@ import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 
 /**
- * Built-in objects available in ECMAScript.
+ * Standard built-in objects available in ECMAScript.
  * 
  * @author jpalka@gmail.com
  * 
@@ -32,11 +32,34 @@ public final class StandardObjects {
 	private JSObject objectConstructor;
 	private ScriptableObject arrayPrototype;
 	private JSArray arrayConstructor;
+	private ScriptableObject jsonConstructor;
 
 	private StandardObjects(Scriptable globalObject) {
 		defineObject(globalObject);
 
 		defineArray(globalObject);
+
+		defineJSON(globalObject);
+	}
+
+	private void defineJSON(Scriptable globalObject) {
+		jsonConstructor = new ScriptableObject();
+		jsonConstructor.setPrototype(objectPrototype);
+
+		defineFunction(jsonConstructor, "stringify", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSON.stringify(scope, args);
+			}
+		});
+
+		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
+				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		descriptor.setValue(jsonConstructor);
+
+		globalObject.defineOwnProperty("JSON", descriptor, true);
+
 	}
 
 	public static StandardObjects createStandardObjects(Scriptable globalObject) {
@@ -55,15 +78,6 @@ public final class StandardObjects {
 		newArray.setPrototype(arrayPrototype);
 		newArray.put("length", 0);
 		return newArray;
-	}
-
-	private Scriptable init(Scriptable globalObject) {
-
-		defineObject(globalObject);
-
-		defineArray(globalObject);
-
-		return globalObject;
 	}
 
 	private void defineArray(Scriptable globalObject) {

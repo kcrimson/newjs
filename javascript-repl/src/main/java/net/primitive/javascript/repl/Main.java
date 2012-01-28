@@ -31,7 +31,7 @@ public class Main {
 
 		ConsoleReader consoleReader = new ConsoleReader("newjs shell", System.in, System.out, terminal);
 		consoleReader.setPrompt("js> ");
-
+		
 		consoleReader.println("ECMAScript 5 \"strict mode\". Use /? for mode details");
 
 		String line;
@@ -41,22 +41,22 @@ public class Main {
 		RuntimeContext currentContext = enterContext(standardObjects,globalObject);
 		while ((line = consoleReader.readLine()) != null) {
 
-			if ("/global".equals(line)) {
+			if ("/g".equals(line)) {
 				for (Map.Entry<String, PropertyDescriptor> property : globalObject.getOwnProperties().entrySet()) {
-					consoleReader.println(property.getKey() + "=>" + property.getValue());
+					consoleReader.println(property.getKey() + "=>" + property.getValue().getValue());
 				}
 				continue;
 			}
 
-			if ("/exit".equals(line)) {
+			if ("/x".equals(line)) {
 				break;
 			}
 
 			if ("/?".equals(line)) {
 				consoleReader.println("This is help for ECMAScript 5 \"strict mode\" shell");
 				consoleReader.println("/? - prints this help message");
-				consoleReader.println("/global - prints all global objects");
-				consoleReader.println("/exit - exits shell");
+				consoleReader.println("/g - prints all global objects");
+				consoleReader.println("/e - exits shell");
 				continue;
 			}
 
