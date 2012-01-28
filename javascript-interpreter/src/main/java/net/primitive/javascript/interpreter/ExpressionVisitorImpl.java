@@ -191,7 +191,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitObjectLiteral(ObjectLiteral objectLiteral) {
 		List<NameValuePair> nameValuePairs = objectLiteral.getNameValuePairs();
-		ScriptableObject scriptableObject = new ScriptableObject();
+		Scriptable scriptableObject = context.newObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
 			scriptableObject.put((String) pair.getName(), Reference.getValue(result));

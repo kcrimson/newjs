@@ -25,6 +25,7 @@ import java.io.IOException;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ast.Program;
+import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.core.parser.JavaScriptLexer;
 import net.primitive.javascript.core.parser.JavaScriptParser;
 
@@ -52,7 +53,11 @@ public class Interpreter {
 
 			@Override
 			public void execute(Scriptable globalObject) {
-				RuntimeContext currentContext = enterContext(globalObject);
+				StandardObjects standardObjects = StandardObjects
+						.createStandardObjects(globalObject);
+
+				RuntimeContext currentContext = enterContext(standardObjects,
+						globalObject);
 
 				ProgramVisitorImpl visitor = new ProgramVisitorImpl(
 						currentContext);
@@ -81,7 +86,10 @@ public class Interpreter {
 
 			@Override
 			public void execute(Scriptable globalObject) {
-				RuntimeContext currentContext = enterContext(globalObject);
+				StandardObjects standardObjects = StandardObjects
+						.createStandardObjects(globalObject);
+				RuntimeContext currentContext = enterContext(standardObjects,
+						globalObject);
 
 				ProgramVisitorImpl visitor = new ProgramVisitorImpl(
 						currentContext);

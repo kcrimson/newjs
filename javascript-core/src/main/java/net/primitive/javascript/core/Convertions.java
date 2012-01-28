@@ -74,9 +74,6 @@ public final class Convertions {
 		}
 		if (object instanceof Scriptable) {
 			Object val = ((Scriptable) object).getDefaultValue(Boolean.class);
-			if (val instanceof Scriptable) {
-				// val error, bo mial bys primitive
-			}
 			return toBoolean(val);
 		}
 		return true;

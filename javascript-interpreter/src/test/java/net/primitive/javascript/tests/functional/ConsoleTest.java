@@ -17,6 +17,7 @@ package net.primitive.javascript.tests.functional;
 
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.jdk.Console;
 import net.primitive.javascript.core.jdk.JDKHost;
 import net.primitive.javascript.core.natives.StandardObjects;
@@ -28,17 +29,18 @@ public class ConsoleTest {
 
 	@Test
 	public void should_have_log_function() throws Exception {
-		Scriptable stdObjs = StandardObjects.init();
+		Scriptable globalObject = new ScriptableObject();
+		StandardObjects stdObjs = StandardObjects.createStandardObjects(globalObject);
 
 		Console console = new Console();
 
-		stdObjs.put("console", JDKHost.wrapJavaObject(console));
+		globalObject.put("console", JDKHost.wrapJavaObject(console));
 
 		Interpreter interpreter = new Interpreter();
 
 		Script script = interpreter.interpret("console.log(\"Hello\");");
 
-		script.execute(stdObjs);
+		script.execute(globalObject);
 
 	}
 

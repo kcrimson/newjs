@@ -80,7 +80,6 @@
 	<modules>
 		<module>javascript-core</module>
 		<module>javascript-interpreter</module>
-		<module>javascript-compiler</module>
 		<module>javascript-functional-tests</module>
 		<module>javascript-performance-tests</module>
 		<module>javascript-cli</module>

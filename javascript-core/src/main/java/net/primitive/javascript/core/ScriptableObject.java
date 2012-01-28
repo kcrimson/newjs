@@ -35,6 +35,15 @@ public class ScriptableObject implements Scriptable {
 	private boolean extensible = true;
 
 	private Scriptable prototype;
+	private final String classname;
+
+	public ScriptableObject(String classname) {
+		this.classname = classname;
+	}
+
+	public ScriptableObject() {
+		classname = null;
+	}
 
 	@Override
 	public Scriptable getPrototype() {
@@ -48,7 +57,7 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public String getClassname() {
-		return null;
+		return classname;
 	}
 
 	@Override

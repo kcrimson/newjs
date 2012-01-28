@@ -8,9 +8,23 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/target/appassembler/</directory>
-			<outputDirectory>/</outputDirectory>
+			<directory>${project.basedir}/target/appassembler/lib</directory>
+			<outputDirectory>/lib</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/target/appassembler/bin</directory>
+			<outputDirectory>/bin</outputDirectory>
+			<includes>
+				<include>js.bat</include>
+			</includes>
+		</fileSet>		
+		<fileSet>
+			<directory>${project.basedir}/target/appassembler/bin</directory>
+			<outputDirectory>/bin</outputDirectory>
+			<includes>
+				<include>js</include>
+			</includes>
+			<fileMode>0755</fileMode>
+		</fileSet>		
 	</fileSets>
-
 </assembly>

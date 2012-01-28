@@ -28,6 +28,7 @@ import junitparams.Parameters;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.jdk.Console;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.Interpreter;
@@ -55,15 +56,17 @@ public class InterpreterTest {
 	@Parameters(method = "getParameters")
 	public void drive_javascript_test(String javaScriptFile) throws Exception {
 
-		Scriptable scope = StandardObjects.init();
+		Scriptable globalObject = new ScriptableObject();
+		StandardObjects stdObjs = StandardObjects.createStandardObjects(globalObject);
 
-		Console.init(scope);
+
+		Console.init(globalObject);
 
 		Interpreter interpreter = new Interpreter();
 
 		Script script = interpreter.interpret(new File(javaScriptFile));
-		script.execute(scope);
-		Object object = scope.get("assertResult");
+		script.execute(globalObject);
+		Object object = globalObject.get("assertResult");
 		assertTrue("assert failed in " + javaScriptFile,
 				Convertions.toBoolean(object));
 

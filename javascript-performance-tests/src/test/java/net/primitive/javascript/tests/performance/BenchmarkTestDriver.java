@@ -17,30 +17,19 @@
 package net.primitive.javascript.tests.performance;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.natives.StandardObjects;
-import net.primitive.javascript.interpreter.Interpreter;
 import net.primitive.javascript.tests.utils.ResourceList;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.ScriptableObject;
 
-/**
- * Test driver program for the ANTLR3 Maven Architype demo
- * 
- * @author Jim Idle (jimi@temporal-wave.com)
- */
 @RunWith(Parameterized.class)
 public class BenchmarkTestDriver {
 
@@ -63,59 +52,37 @@ public class BenchmarkTestDriver {
 		return parameters;
 	}
 
-	/**
-	 * Just a simple test driver for the ASP parser to show how to call it.
-	 */
 	@Test
 	public void run_benchmark() throws Exception {
 
-		System.gc();
-		long time = System.currentTimeMillis();
-
-		Interpreter interpreter = new Interpreter();
+		StopWatch stopWatch = new StopWatch();
+		int repCount = 30000;
 		File testScript = new File(javaScriptFile);
-		net.primitive.javascript.core.Script script2 = interpreter
-				.interpret(testScript);
-
 		System.out
 				.println("Running benchmark test for " + testScript.getPath());
+		BenchmarkDriver newjsDriver = new NewJSBenchmarkDriver();
 
-		int repCount = 30000;
-		Scriptable scriptableObject = null;
-		for (int i = 0; i < repCount; i++) {
-
-			scriptableObject = StandardObjects.init();
-			
-
-			script2.execute(scriptableObject);
-
-		}
-		System.out.println(scriptableObject.get("assertResult"));
-		System.out.println("NewJS times: "
-				+ (System.currentTimeMillis() - time));
 		System.gc();
-		Context context = Context.enter();
-		// , "", 0, null);
-		Script script = context.compileReader(new FileReader(testScript), "",
-				0, null);
+		stopWatch.start();
+		newjsDriver.benchmark(repCount, testScript);
+		stopWatch.stop();
 
-		time = System.currentTimeMillis();
-		org.mozilla.javascript.ScriptableObject standardObjects = null;
-		for (int i = 0; i < repCount; i++) {
-			// context.evaluateReader(standardObjects, new
-			// FileReader(testScript), "", 0, null);
-			standardObjects = context.initStandardObjects();
-			script.exec(context, standardObjects);
-		}
-		System.out.println(ScriptableObject.getProperty(standardObjects,
-				"assertResult"));
-		System.out.println("Rhino: " + (System.currentTimeMillis() - time));
+		System.out.println("NewJS times: " + stopWatch.getTime());
+
+		stopWatch.reset();
+
+		System.gc();
+		RhinoBenchmarkDriver rhinoBenchmarkDriver = new RhinoBenchmarkDriver();
+		stopWatch.start();
+		rhinoBenchmarkDriver.benchmark(repCount, testScript);
+		stopWatch.stop();
+
+		System.out.println("Rhino: " + stopWatch.getTime());
 	}
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
 				"../javascript-functional-tests/src/main/resources/read-prototype-properties.js");
 		testDriver.run_benchmark();
-
 	}
 }

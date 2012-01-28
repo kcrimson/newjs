@@ -35,11 +35,19 @@ import net.primitive.javascript.core.Types;
 import net.primitive.javascript.core.Undefined;
 
 /**
+ * Implementation of ECMAScript Object constructor
  * 
- * @author palkaj01
+ * @author jpalka@gmail.com
  * 
  */
 public class JSObject extends ScriptableObject implements Function, Constructor {
+
+	private final StandardObjects standardObjects;
+
+	public JSObject(StandardObjects standardObjects) {
+		super("Function");
+		this.standardObjects = standardObjects;
+	}
 
 	/**
 	 * @see ECMA262#15.2.1.1
@@ -63,32 +71,28 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 		Object value = extractArgument(args);
 
 		if (value == null || Undefined.Value.equals(value)) {
-			return construct(scope, args);
+			return standardObjects.newObject();
 		}
 		return null;
 	}
 
 	@Override
 	public Object[] bindParameters(Object[] actualParameters) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Scope getScope() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object hasInstance(Object lvar) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<String> getParameterList() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -121,7 +125,8 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	public static Object seal(Scriptable thisObj, Object[] args) {
 		Object obj = extractArgument(args);
 		Scriptable scriptable = toObject(obj);
-		Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
+		Map<String, PropertyDescriptor> ownProperties = scriptable
+				.getOwnProperties();
 		for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
 			desc.getValue().setConfigurable(false);
 			scriptable.defineOwnProperty(desc.getKey(), desc.getValue(), true);
@@ -137,11 +142,13 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	 * @return
 	 * @see ECMA262#15.2.3.3
 	 */
-	public static Object getOwnPropertyDescriptor(Scriptable thisObj, Object[] args) {
+	public static Object getOwnPropertyDescriptor(Scriptable thisObj,
+			Object[] args) {
 		Object obj = extractArgument(args);
 		String name = Convertions.toString(getValue(args[1]));
 		Scriptable scriptable = toObject(obj);
-		return Convertions.fromPropertyDescriptor(scriptable.getOwnProperty(name));
+		return Convertions.fromPropertyDescriptor(scriptable
+				.getOwnProperty(name));
 	}
 
 	/**
@@ -154,7 +161,8 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	public static Object freeze(Scriptable thisObj, Object[] args) {
 		Object obj = extractArgument(args);
 		Scriptable scriptable = toObject(obj);
-		Map<String, PropertyDescriptor> ownProperties = scriptable.getOwnProperties();
+		Map<String, PropertyDescriptor> ownProperties = scriptable
+				.getOwnProperties();
 		for (Entry<String, PropertyDescriptor> desc : ownProperties.entrySet()) {
 			desc.getValue().setConfigurable(false);
 			desc.getValue().setWriteable(false);
@@ -167,6 +175,25 @@ public class JSObject extends ScriptableObject implements Function, Constructor 
 	public static Object isExtensible(Scriptable thisObj, Object[] args) {
 		Object obj = extractArgument(args);
 		return toObject(obj).isExtensible();
+	}
+
+	/**
+	 * 
+	 * @param thisObj
+	 * @param args
+	 * @return
+	 */
+	public static Object keys(Scriptable thisObj, Object[] args) {
+		Object obj = extractArgument(args);
+		return toObject(obj).isExtensible();
+	}
+
+	/*
+	 * Implementations of object prototype properties
+	 */
+
+	public static Object toString(Scriptable thisObj, Object[] args) {
+		return "[object " + toObject(thisObj).getClassname() + "]";
 	}
 
 	/**
