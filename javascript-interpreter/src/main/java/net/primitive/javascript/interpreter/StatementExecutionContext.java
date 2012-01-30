@@ -21,8 +21,8 @@ import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.Statement;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Represents a statement execution frame

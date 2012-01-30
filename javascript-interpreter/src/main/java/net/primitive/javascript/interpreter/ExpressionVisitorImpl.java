@@ -204,8 +204,10 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		StatementExecutionContext executionContext = context.currentExecutionContext();
 		Scope lexenv = executionContext.getLexicalEnvironment();
-
-		result = new JSNativeFunction(lexenv, functionExpression.getFunctionName(), functionExpression.getParameterList(), functionExpression.getFunctionBody());
+		JSNativeFunction function = new JSNativeFunction(lexenv, functionExpression.getFunctionName(), functionExpression.getParameterList(), functionExpression.getFunctionBody());
+		function.setPrototype(context.getObjectPrototype());
+		result = function;
+		
 	}
 
 	@Override
