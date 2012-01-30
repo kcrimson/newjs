@@ -15,13 +15,12 @@
  */
 package net.primitive.javascript.core.natives;
 
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Standard built-in objects available in ECMAScript.
@@ -96,7 +95,7 @@ public final class StandardObjects {
 					//
 					// }
 
-					if (StringUtils.isNumeric(propertyName)) {
+					if (isNumeric(propertyName)) {
 						int index = Convertions.toUInt32(propertyName);
 						if (index >= oldLen && !lenDesc.isWriteable()) {
 							throw new IllegalArgumentException("za duzy ten index w stosunku");
