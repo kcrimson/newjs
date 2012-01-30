@@ -15,6 +15,11 @@
  */
 package net.primitive.javascript.core.natives;
 
+import static org.apache.commons.lang.StringUtils.isNumeric;
+
+import org.apache.commons.lang.StringUtils;
+
+import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
@@ -54,6 +59,14 @@ public final class StandardObjects {
 			}
 		});
 
+		defineFunction(jsonConstructor, "parse", new AbstractCallable() {
+
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSON.parse(scope, args);
+			}
+		});
+
 		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
 				.isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(jsonConstructor);
@@ -74,7 +87,43 @@ public final class StandardObjects {
 	}
 
 	public Scriptable newArray() {
-		ScriptableObject newArray = new ScriptableObject("Array");
+		ScriptableObject newArray = new ScriptableObject("Array") {
+
+			@Override
+			public boolean defineOwnProperty(String propertyName,
+					PropertyDescriptor desc, boolean failureHandling) {
+				PropertyDescriptor lenDesc = getOwnProperty("length");
+				if (lenDesc!=null) {
+					int oldLen = Convertions.toUInt32(lenDesc.getValue());
+
+					// if ("length".equals(propertyName)) {
+					//
+					// }
+
+					if (isNumeric(propertyName)) {
+						int index = Convertions.toUInt32(propertyName);
+						if (index >= oldLen && !lenDesc.isWriteable()) {
+							throw new IllegalArgumentException(
+									"za duzy ten index w stosunku");
+						}
+
+						super.defineOwnProperty(propertyName, desc, false);
+
+						if (index >= oldLen) {
+							lenDesc.setValue(index+1);
+							super.defineOwnProperty(propertyName, lenDesc,
+									false);
+						}
+
+						return true;
+
+					}
+				}
+
+				return super.defineOwnProperty(propertyName, desc,
+						failureHandling);
+			}
+		};
 		newArray.setPrototype(arrayPrototype);
 		newArray.put("length", 0);
 		return newArray;

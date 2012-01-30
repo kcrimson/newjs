@@ -50,6 +50,13 @@ public class JSON extends ScriptableObject {
 		return new JSONObject(map).toString();
 	}
 
+	public static Object parse(Scope scope, Object[] args) {
+		// String text = Convertions.toString((extractArgument(args)));
+		//
+		// JSONObject json = new JSONObject(text);
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
 	/**
 	 * Returns first argument or null if no arguments at all
 	 * 
