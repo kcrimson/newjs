@@ -4,7 +4,12 @@ import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScriptableObject;
 
-public abstract class AbstractCallable extends ScriptableObject implements Callable {
+public abstract class AbstractCallable extends ScriptableObject implements
+		Callable {
+
+	public AbstractCallable() {
+		super();
+	}
 
 	@Override
 	public Object[] bindParameters(Object[] actualParameters) {

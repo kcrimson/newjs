@@ -13,8 +13,6 @@ import net.primitive.javascript.interpreter.Interpreter;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.lang.time.StopWatch;
 
-import com.google.common.base.Stopwatch;
-
 public class NewJSBenchmarkDriver implements BenchmarkDriver {
 
 	/* (non-Javadoc)

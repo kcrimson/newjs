@@ -82,7 +82,7 @@ public class BenchmarkTestDriver {
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"../javascript-functional-tests/src/main/resources/read-prototype-properties.js");
+				"/home/palkaj01/projects/newjs/javascript-functional-tests/target/classes/array/large-array.js");
 		testDriver.run_benchmark();
 	}
 }
