@@ -1,5 +1,6 @@
 package net.primitive.javascript.core.natives;
 
+import static com.google.common.collect.Maps.filterValues;
 import static com.google.common.collect.Maps.transformValues;
 import static net.primitive.javascript.core.Convertions.toObject;
 import static net.primitive.javascript.core.Reference.getValue;
@@ -17,6 +18,7 @@ import net.primitive.javascript.core.Types;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 public class JSON extends ScriptableObject {
 
@@ -29,16 +31,30 @@ public class JSON extends ScriptableObject {
 		Map<String, PropertyDescriptor> ownProperties = object
 				.getOwnProperties();
 
-		Map<String, Object> map = transformValues(ownProperties,
-				new Function<PropertyDescriptor, Object>() {
+		Map<String, Object> map = transformValues(
+				filterValues(ownProperties,
+						new Predicate<PropertyDescriptor>() {
+
+							@Override
+							public boolean apply(PropertyDescriptor desc) {
+								return desc.isEnumerable();
+							}
+						}), new Function<PropertyDescriptor, Object>() {
 
 					@Override
-					public Object apply(PropertyDescriptor arg0) {
-						return arg0.getValue();
+					public Object apply(PropertyDescriptor desc) {
+						return desc.getValue();
 					}
 				});
 
 		return new JSONObject(map).toString();
+	}
+
+	public static Object parse(Scope scope, Object[] args) {
+		// String text = Convertions.toString((extractArgument(args)));
+		//
+		// JSONObject json = new JSONObject(text);
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	/**

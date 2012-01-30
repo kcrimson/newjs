@@ -27,31 +27,26 @@ public final class Undefined implements Scriptable {
 
 	@Override
 	public Scriptable getPrototype() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setPrototype(Scriptable prototype) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public String getClassname() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isExtensible() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean hasProperty(String propertyName) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -136,7 +136,8 @@ public class ScriptableObject implements Scriptable {
 			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this)
 					.isWriteable(true).isEnumerable(true).isConfigurable(true);
 			propertyDescriptor.setValue(value);
-			associatedProperties.put(propertyName, propertyDescriptor);
+			defineOwnProperty(propertyName, propertyDescriptor, false);
+			//associatedProperties.put(propertyName, propertyDescriptor);
 		} else {
 			throw new TypeErrorException();
 		}
