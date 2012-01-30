@@ -230,4 +230,8 @@ public final class RuntimeContext {
 		return standardObjects.newObject();
 	}
 
+	public Scriptable getObjectPrototype() {
+		return standardObjects.getObjectPrototype();
+	}
+
 }

@@ -15,10 +15,7 @@
  */
 package net.primitive.javascript.core.natives;
 
-import static org.apache.commons.lang.StringUtils.isNumeric;
-
-import org.apache.commons.lang.StringUtils;
-
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
@@ -67,8 +64,7 @@ public final class StandardObjects {
 			}
 		});
 
-		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
-				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject).isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(jsonConstructor);
 
 		globalObject.defineOwnProperty("JSON", descriptor, true);
@@ -90,10 +86,9 @@ public final class StandardObjects {
 		ScriptableObject newArray = new ScriptableObject("Array") {
 
 			@Override
-			public boolean defineOwnProperty(String propertyName,
-					PropertyDescriptor desc, boolean failureHandling) {
+			public boolean defineOwnProperty(String propertyName, PropertyDescriptor desc, boolean failureHandling) {
 				PropertyDescriptor lenDesc = getOwnProperty("length");
-				if (lenDesc!=null) {
+				if (lenDesc != null) {
 					int oldLen = Convertions.toUInt32(lenDesc.getValue());
 
 					// if ("length".equals(propertyName)) {
@@ -103,16 +98,14 @@ public final class StandardObjects {
 					if (isNumeric(propertyName)) {
 						int index = Convertions.toUInt32(propertyName);
 						if (index >= oldLen && !lenDesc.isWriteable()) {
-							throw new IllegalArgumentException(
-									"za duzy ten index w stosunku");
+							throw new IllegalArgumentException("za duzy ten index w stosunku");
 						}
 
 						super.defineOwnProperty(propertyName, desc, false);
 
 						if (index >= oldLen) {
-							lenDesc.setValue(index+1);
-							super.defineOwnProperty(propertyName, lenDesc,
-									false);
+							lenDesc.setValue(index + 1);
+							super.defineOwnProperty(propertyName, lenDesc, false);
 						}
 
 						return true;
@@ -120,8 +113,7 @@ public final class StandardObjects {
 					}
 				}
 
-				return super.defineOwnProperty(propertyName, desc,
-						failureHandling);
+				return super.defineOwnProperty(propertyName, desc, failureHandling);
 			}
 		};
 		newArray.setPrototype(arrayPrototype);
@@ -152,8 +144,7 @@ public final class StandardObjects {
 
 		arrayConstructor = new JSArray(this);
 
-		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
-				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject).isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(arrayConstructor);
 
 		globalObject.defineOwnProperty("Array", descriptor, true);
@@ -173,35 +164,29 @@ public final class StandardObjects {
 		objectConstructor = new JSObject(this);
 		objectConstructor.setPrototype(objectPrototype);
 
-		defineFunction(objectConstructor, "getPrototypeOf",
-				new AbstractCallable() {
+		defineFunction(objectConstructor, "getPrototypeOf", new AbstractCallable() {
 
-					@Override
-					public Object call(Scope scope, Scriptable thisObj,
-							Object[] args) {
-						return JSObject.getPrototypeOf(thisObj, args);
-					}
-				});
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.getPrototypeOf(thisObj, args);
+			}
+		});
 
-		defineFunction(objectConstructor, "getOwnPropertyDescriptor",
-				new AbstractCallable() {
+		defineFunction(objectConstructor, "getOwnPropertyDescriptor", new AbstractCallable() {
 
-					@Override
-					public Object call(Scope scope, Scriptable thisObj,
-							Object[] args) {
-						return JSObject.getOwnPropertyDescriptor(thisObj, args);
-					}
-				});
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.getOwnPropertyDescriptor(thisObj, args);
+			}
+		});
 
-		defineFunction(objectConstructor, "isExtensible",
-				new AbstractCallable() {
+		defineFunction(objectConstructor, "isExtensible", new AbstractCallable() {
 
-					@Override
-					public Object call(Scope scope, Scriptable thisObj,
-							Object[] args) {
-						return JSObject.isExtensible(thisObj, args);
-					}
-				});
+			@Override
+			public Object call(Scope scope, Scriptable thisObj, Object[] args) {
+				return JSObject.isExtensible(thisObj, args);
+			}
+		});
 
 		defineFunction(objectConstructor, "seal", new AbstractCallable() {
 
@@ -219,20 +204,37 @@ public final class StandardObjects {
 			}
 		});
 
-		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject)
-				.isWriteable(true).isEnumerable(false).isConfigurable(true);
+		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject).isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(objectConstructor);
 
 		globalObject.defineOwnProperty("Object", descriptor, true);
 	}
 
-	private static void defineFunction(Scriptable object, String propertyName,
-			AbstractCallable callable) {
-		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(object)
-				.isWriteable(false).isEnumerable(false).isConfigurable(false);
+	private static void defineFunction(Scriptable object, String propertyName, AbstractCallable callable) {
+		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(object).isWriteable(false).isEnumerable(false).isConfigurable(false);
 		propertyDescriptor.setValue(callable);
 
 		object.defineOwnProperty(propertyName, propertyDescriptor, false);
+	}
+
+	public Scriptable getObjectPrototype() {
+		return objectPrototype;
+	}
+
+	public JSObject getObjectConstructor() {
+		return objectConstructor;
+	}
+
+	public ScriptableObject getArrayPrototype() {
+		return arrayPrototype;
+	}
+
+	public JSArray getArrayConstructor() {
+		return arrayConstructor;
+	}
+
+	public ScriptableObject getJsonConstructor() {
+		return jsonConstructor;
 	}
 
 }

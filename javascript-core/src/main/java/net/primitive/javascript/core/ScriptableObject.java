@@ -34,6 +34,7 @@ public class ScriptableObject implements Scriptable {
 
 	private boolean extensible = true;
 
+	private Scriptable prototype;
 	private final String classname;
 
 	public ScriptableObject(String classname) {
@@ -46,19 +47,12 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Scriptable getPrototype() {
-		PropertyDescriptor propertyDescriptor = associatedProperties
-				.get(PROTOTYPE);
-		if (propertyDescriptor != null) {
-			return (Scriptable) propertyDescriptor.getValue();
-		}
-		return null;
+		return prototype;
 	}
 
 	@Override
 	public void setPrototype(Scriptable prototype) {
-		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this);
-		propertyDescriptor.setValue(prototype);
-		defineOwnProperty(PROTOTYPE, propertyDescriptor, false);
+		this.prototype = prototype;
 	}
 
 	@Override
@@ -73,6 +67,12 @@ public class ScriptableObject implements Scriptable {
 
 	@Override
 	public Object get(String propertyName) {
+		
+		if(PROTOTYPE.equals(propertyName)){
+			return getPrototype();
+		}
+		
+		
 		PropertyDescriptor descriptor = getProperty(propertyName);
 		if (descriptor == null) {
 			return Undefined.Value;
@@ -112,6 +112,11 @@ public class ScriptableObject implements Scriptable {
 	@Override
 	public void put(String propertyName, Object value) {
 
+		if(PROTOTYPE.equals(propertyName)){
+			setPrototype(prototype);
+			return;
+		}
+		
 		if (canPut(propertyName)) {
 
 			PropertyDescriptor ownDesc = getOwnProperty(propertyName);

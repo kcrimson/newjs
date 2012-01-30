@@ -42,13 +42,11 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 	private final AstNodeList functionBody;
 	private final Scope scope;
 
-	public JSNativeFunction(Scope scope, String functionName,
-			List<String> parameterList, AstNodeList functionBody) {
+	public JSNativeFunction(Scope scope, String functionName, List<String> parameterList, AstNodeList functionBody) {
 		this.scope = scope;
 		this.functionName = functionName;
 		this.parameterList = parameterList;
 		this.functionBody = functionBody;
-		setPrototype(new ScriptableObject());
 	}
 
 	@Override
@@ -62,8 +60,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		Scope newDeclEnv = newDeclarativeEnvironment(scope);
 
 		for (int i = 0; i < parameterList.size(); i++) {
-			Reference mutableBinding = newDeclEnv.getBindings()
-					.createMutableBinding(parameterList.get(i), false);
+			Reference mutableBinding = newDeclEnv.getBindings().createMutableBinding(parameterList.get(i), false);
 			Object value = getValue(args[i]);
 			mutableBinding.setValue(value);
 		}
@@ -77,8 +74,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 				break;
 			}
 		}
-		returnValue = currentContext.currentExecutionContext().getCompletion()
-				.getValue();
+		returnValue = currentContext.currentExecutionContext().getCompletion().getValue();
 
 		return returnValue;// returnValue;
 	}
@@ -162,8 +158,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 
 	@Override
 	public Object[] bindParameters(Object[] actualParameters) {
-		List<Object> values = new ArrayList<Object>(
-				Arrays.asList(actualParameters));
+		List<Object> values = new ArrayList<Object>(Arrays.asList(actualParameters));
 		if (actualParameters.length < parameterList.size()) {
 			int diff = parameterList.size() - actualParameters.length;
 			for (int i = 0; i < diff; i++) {

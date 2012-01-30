@@ -93,6 +93,7 @@ public class StatementVisitorImpl implements StatementVisitor {
 		JSNativeFunction jsFunction = new JSNativeFunction(varenv,
 				functionName, functionDeclaration.getParameterList(),
 				functionDeclaration.getFunctionBody());
+		jsFunction.setPrototype(runtimeContext.getObjectPrototype());
 		ScopeBindings envrecs = varenv.getBindings();
 		Reference mutableBinding = envrecs.createMutableBinding(functionName,
 				false);

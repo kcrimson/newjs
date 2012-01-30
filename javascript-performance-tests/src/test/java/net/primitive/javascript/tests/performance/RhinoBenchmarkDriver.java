@@ -3,7 +3,7 @@ package net.primitive.javascript.tests.performance;
 import java.io.File;
 import java.io.FileReader;
 
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.ScriptableObject;

@@ -71,4 +71,8 @@ public class InterpreterTest {
 				Convertions.toBoolean(object));
 
 	}
+	
+	public static void main(String[] args) throws Exception {
+		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/javascript-functional-tests/src/main/resources/read-prototype-properties.js");
+	}
 }

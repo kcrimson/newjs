@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 import net.primitive.javascript.tests.utils.ResourceList;
 
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
