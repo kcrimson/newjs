@@ -18,6 +18,8 @@ package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.core.Convertions.toBoolean;
 import static net.primitive.javascript.core.Reference.getValue;
+import static net.primitive.javascript.core.Reference.putValue;
+import static net.primitive.javascript.interpreter.LexicalEnvironment.getIdentifierReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,6 @@ import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.TypeErrorException;
 import net.primitive.javascript.core.Types;
 import net.primitive.javascript.core.Undefined;
@@ -71,10 +72,10 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		binaryExpression.getOp1().accept(this);
-		Object result1 = Reference.getValue(result);
+		Object result1 = getValue(result);
 
 		binaryExpression.getOp2().accept(this);
-		Object result2 = Reference.getValue(result);
+		Object result2 = getValue(result);
 
 		result = binaryExpression.getOperator().operator(result1, result2);
 	}
@@ -92,15 +93,15 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitIdentifier(Identifier identifier) {
 
-		result = LexicalEnvironment.getIdentifierReference(context.currentExecutionContext().getLexicalEnvironment(), identifier.getIdentfierName());
+		result = getIdentifierReference(context.currentExecutionContext().getLexicalEnvironment(), identifier.getIdentfierName());
 	}
 
 	@Override
 	public void visitAssignmentExpression(AssignmentExpression assignmentExpression) {
 		assignmentExpression.getRightHandSideExpression().accept(this);
-		Object value = Reference.getValue(result);
+		Object value = getValue(result);
 		assignmentExpression.getLeftHandSideExpression().accept(this);
-		Reference.putValue(result, value);
+		putValue(result, value);
 	}
 
 	/*
@@ -236,7 +237,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	public void visitNewExpression(NewExpression newExpression) {
 		newExpression.getExpression().accept(this);
 		Object ref = result;
-		Object constructor = Reference.getValue(ref);
+		Object constructor = getValue(ref);
 		if (Types.isConstructor(constructor)) {
 			result = ((Constructor) constructor).construct(null, null);
 			return;

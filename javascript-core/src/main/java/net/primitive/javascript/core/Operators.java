@@ -26,10 +26,12 @@ import net.primitive.javascript.core.ast.AssignmentOperator;
 
 /**
  * Set of static code which implements all operators available in ECMAScript.
+ * 
  * @author jpalka@gmail.com
- *
+ * 
  */
 public final class Operators {
+
 	public static final BinaryOperator Equals = new BinaryOperator() {
 
 		@Override
@@ -52,8 +54,27 @@ public final class Operators {
 			return false;
 		}
 	};
+
 	public static final BinaryOperator DoesNotEquals = null;
-	public static final BinaryOperator StrictEquals = null;
+
+	public static final BinaryOperator StrictEquals = new BinaryOperator() {
+
+		@Override
+		public Object operator(Object op1, Object op2) {
+			Object op1type = TypeOf.operator(op1);
+			Object op2type = TypeOf.operator(op2);
+			if (!op1type.equals(op2type)) {
+				return false;
+			}
+
+			if (op1.equals(Types.Undefined)) {
+				return true;
+			}
+
+			return null;
+		}
+	};
+
 	public static final BinaryOperator StrictDoesNotEquals = null;
 
 	public static final BinaryOperator LogicalAND = new BinaryOperator() {
@@ -68,6 +89,7 @@ public final class Operators {
 	};
 
 	public static final BinaryOperator LogicalOR = null;
+
 	public static final BinaryOperator BitwiseOR = null;
 	public static final BinaryOperator BitwiseXOR = null;
 	public static final BinaryOperator BitwiseAND = null;
