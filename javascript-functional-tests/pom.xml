@@ -1,13 +1,61 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>javascript</artifactId>
-    <groupId>net.primitive.javascript</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-  <artifactId>javascript-functional-tests</artifactId>
-  <name>javascript-functional-tests</name>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>javascript</artifactId>
+		<groupId>net.primitive.javascript</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>javascript-functional-tests</artifactId>
+	<name>javascript-functional-tests</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.primitive.javascript</groupId>
+			<artifactId>javascript-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>net.primitive.javascript</groupId>
+							<artifactId>javascript-core</artifactId>
+							<version>${project.version}</version>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+						</artifactItem>
+						<artifactItem>
+							<groupId>net.primitive.javascript</groupId>
+							<artifactId>javascript-interpreter</artifactId>
+							<version>${project.version}</version>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+						</artifactItem>
+					</artifactItems>
+				</configuration>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<phase>
+							compile
+						</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
