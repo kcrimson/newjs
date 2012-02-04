@@ -278,11 +278,11 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		Scriptable array = context.newArray();
 
-		List values = arrayLiteral.getValues();
+		List<?> values = arrayLiteral.getValues();
 		ArrayList<Object> eval = new ArrayList<Object>();
 		for (Object obj : values) {
 			((Expression) obj).accept(this);
-			eval.add(result);
+			eval.add(getValue(result));
 		}
 
 		JSArray.push(array, eval.toArray(new Object[eval.size()]));
