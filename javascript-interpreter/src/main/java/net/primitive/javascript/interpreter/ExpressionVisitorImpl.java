@@ -92,11 +92,13 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitIdentifier(Identifier identifier) {
 
-		result = getIdentifierReference(context.currentExecutionContext().getLexicalEnvironment(), identifier.getIdentfierName());
+		result = getIdentifierReference(context.currentExecutionContext()
+				.getLexicalEnvironment(), identifier.getIdentfierName());
 	}
 
 	@Override
-	public void visitAssignmentExpression(AssignmentExpression assignmentExpression) {
+	public void visitAssignmentExpression(
+			AssignmentExpression assignmentExpression) {
 		assignmentExpression.getRightHandSideExpression().accept(this);
 		Object value = getValue(result);
 		assignmentExpression.getLeftHandSideExpression().accept(this);
@@ -137,16 +139,20 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 				suffix = suffixes[i];
 				String propertyNameString;
 				if (Identifier.class.equals(suffix.getClass())) {
-					propertyNameString = ((Identifier) suffix).getIdentfierName();
+					propertyNameString = ((Identifier) suffix)
+							.getIdentfierName();
 				} else {
 					suffix.accept(this);
 					Object propertyNameReference = result;
-					Object propertyNameValue = Reference.getValue(propertyNameReference);
-					propertyNameString = Convertions.toString(propertyNameValue);
+					Object propertyNameValue = Reference
+							.getValue(propertyNameReference);
+					propertyNameString = Convertions
+							.toString(propertyNameValue);
 				}
 				baseValue = Reference.getValue(baseReference);
 
-				baseReference = new ObjectReference(baseValue, propertyNameString);
+				baseReference = new ObjectReference(baseValue,
+						propertyNameString);
 			}
 			result = baseReference;
 		}
@@ -166,7 +172,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 			if (reference.isPropertyReference()) {
 				thisValue = reference.getBase();
 			} else {
-				thisValue = ((ScopeBindings) reference.getBase()).implicitThisValue();
+				thisValue = ((ScopeBindings) reference.getBase())
+						.implicitThisValue();
 			}
 		} else {
 			thisValue = context.getGlobalObject();
@@ -182,9 +189,11 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		Callable callable = (Callable) func;
 
-		Object[] vals = callable.bindParameters(values.toArray(new Object[] {}));
+		Object[] vals = callable
+				.bindParameters(values.toArray(new Object[] {}));
 
-		result = callable.call(callable.getScope(), (Scriptable) thisValue, vals);
+		result = callable.call(callable.getScope(), (Scriptable) thisValue,
+				vals);
 
 	}
 
@@ -194,7 +203,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Scriptable scriptableObject = context.newObject();
 		for (NameValuePair pair : nameValuePairs) {
 			pair.getValue().accept(this);
-			scriptableObject.put((String) pair.getName(), Reference.getValue(result));
+			scriptableObject.put((String) pair.getName(),
+					Reference.getValue(result));
 		}
 		result = scriptableObject;
 	}
@@ -202,12 +212,16 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	@Override
 	public void visitFunctionExpression(FunctionExpression functionExpression) {
 
-		StatementExecutionContext executionContext = context.currentExecutionContext();
+		StatementExecutionContext executionContext = context
+				.currentExecutionContext();
 		Scope lexenv = executionContext.getLexicalEnvironment();
-		JSNativeFunction function = new JSNativeFunction(lexenv, functionExpression.getFunctionName(), functionExpression.getParameterList(), functionExpression.getFunctionBody());
+		JSNativeFunction function = new JSNativeFunction(lexenv,
+				functionExpression.getFunctionName(),
+				functionExpression.getParameterList(),
+				functionExpression.getFunctionBody());
 		function.setPrototype(context.getObjectPrototype());
 		result = function;
-		
+
 	}
 
 	@Override
@@ -216,7 +230,8 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 	}
 
 	@Override
-	public void visitConditionalExpression(ConditionalExpression conditionalExpression) {
+	public void visitConditionalExpression(
+			ConditionalExpression conditionalExpression) {
 
 		conditionalExpression.getOp1().accept(this);
 
@@ -278,10 +293,10 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 
 		Scriptable array = context.newArray();
 
-		List<?> values = arrayLiteral.getValues();
+		List<Expression> values = arrayLiteral.getValues();
 		ArrayList<Object> eval = new ArrayList<Object>();
-		for (Object obj : values) {
-			((Expression) obj).accept(this);
+		for (Expression obj : values) {
+			obj.accept(this);
 			eval.add(getValue(result));
 		}
 
