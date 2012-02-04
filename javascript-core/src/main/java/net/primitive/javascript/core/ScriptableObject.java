@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Primitive Team <jpalka@gmail.com>
+ * Copyright (C) 2012 Primitive Team <jpalka@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,11 @@ import java.util.Map.Entry;
 
 import com.google.common.base.Predicate;
 
+/**
+ * 
+ * @author jpalka@gmail.com
+ *
+ */
 public class ScriptableObject implements Scriptable {
 
 	private static final String PROTOTYPE = "prototype";
@@ -101,9 +106,9 @@ public class ScriptableObject implements Scriptable {
 			return prop;
 		}
 
-		Scriptable prototype = getPrototype();
-		if (prototype != null) {
-			return prototype.getProperty(propertyName);
+		Scriptable proto = getPrototype();
+		if (proto != null) {
+			return proto.getProperty(propertyName);
 		}
 
 		return null;

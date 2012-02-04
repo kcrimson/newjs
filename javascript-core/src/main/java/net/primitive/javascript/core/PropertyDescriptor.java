@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Primitive Team <jpalka@gmail.com>
+ * Copyright (C) 2012 Primitive Team <jpalka@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,13 @@ package net.primitive.javascript.core;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+/**
+ * The Property Descriptor type is used to explain the manipulation and
+ * reification of named property attributes.
+ * 
+ * @author jpalka@gmail.com
+ * @see ECMA262#8.10
+ */
 public class PropertyDescriptor {
 
 	private static final Object[] EMPTY_ARGS = new Object[] {};

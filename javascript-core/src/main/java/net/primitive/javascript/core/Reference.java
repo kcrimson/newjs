@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Primitive Team <jpalka@gmail.com>
+ * Copyright (C) 2012 Primitive Team <jpalka@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package net.primitive.javascript.core;
 /**
  * A Reference is a resolved name binding.
  * 
- * 
+ * @author jpalka@gmail.com 
  */
 public abstract class Reference {
 

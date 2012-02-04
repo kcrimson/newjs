@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2012 Primitive Team <jpalka@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.primitive.javascript.repl;
 
 import static net.primitive.javascript.interpreter.RuntimeContext.enterContext;
@@ -21,6 +36,7 @@ import net.primitive.javascript.core.parser.JavaScriptParser;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 import net.primitive.javascript.interpreter.RuntimeContext;
 
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 
@@ -88,15 +104,28 @@ public class Main {
 			}
 			
 			if("/l".equals(line)){
+				final JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRFileStream(
+						"sample.js"));
+
+				final CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+
+				final JavaScriptParser javaScriptParser = new JavaScriptParser(
+						commonTokenStream);
+				final Program program = javaScriptParser.program().result;
+
+				ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext);
+
+				program.accept(visitor);
+
 				continue;
 			}
 
-			JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(
+			final JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(
 					line));
 
-			CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+			final CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 
-			JavaScriptParser javaScriptParser = new JavaScriptParser(
+			final JavaScriptParser javaScriptParser = new JavaScriptParser(
 					commonTokenStream);
 			final Program program = javaScriptParser.program().result;
 
