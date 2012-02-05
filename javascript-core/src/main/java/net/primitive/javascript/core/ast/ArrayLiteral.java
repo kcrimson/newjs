@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ArrayLiteral extends Expression {
 	
 	@Getter
-	private final List values;
+	private final List<?> values;
 	
 	@Override
 	public void accept(ExpressionVisitor visitor) {
