@@ -79,6 +79,8 @@ public class JSArray extends ScriptableObject implements Function, Constructor {
 		}
 		return n;
 	}
+	
+	
 
 	@Override
 	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
