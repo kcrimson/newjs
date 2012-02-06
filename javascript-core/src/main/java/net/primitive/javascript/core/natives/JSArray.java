@@ -102,8 +102,10 @@ public class JSArray extends ScriptableObject implements Function, Constructor {
 
 	@Override
 	public Scriptable construct(Scope scope, Object[] args) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Scriptable newArray = standardObjects.newArray();
+		
+		return newArray;
 	}
 
 	@Override

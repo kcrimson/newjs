@@ -35,12 +35,12 @@ public class ScriptableObject implements Scriptable {
 
 	private static final String PROTOTYPE = "prototype";
 
+	private final String classname;
 	private final Map<String, PropertyDescriptor> associatedProperties = new HashMap<String, PropertyDescriptor>();
 
+	private Scriptable prototype;
 	private boolean extensible = true;
 
-	private Scriptable prototype;
-	private final String classname;
 
 	public ScriptableObject(String classname) {
 		this.classname = classname;
