@@ -9,5 +9,9 @@ package net.primitive.javascript.repl;
  */
 public interface REPLRuntime {
 
+	void exit();
+
+	void println(String string);
+
 
 }

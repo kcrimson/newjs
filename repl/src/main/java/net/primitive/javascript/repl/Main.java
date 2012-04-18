@@ -81,6 +81,8 @@ public class Main {
 		RuntimeContext currentContext = enterContext(standardObjects,
 				globalObject);
 
+		REPLRuntime runtime = null;
+
 		String line;
 		CommandParser parser = new CommandParser();
 		while ((line = consoleReader.readLine()) != null) {
@@ -88,7 +90,7 @@ public class Main {
 			CommandMatcher matcher = parser.matcher(line);
 
 			if (matcher.matches()) {
-				matcher.command().execute(line);
+				matcher.command().execute(runtime, line);
 				// if ("/g".equals(line)) {
 				// for (Map.Entry<String, PropertyDescriptor> property :
 				// globalObject

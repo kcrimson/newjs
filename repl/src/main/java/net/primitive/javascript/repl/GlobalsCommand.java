@@ -3,9 +3,8 @@ package net.primitive.javascript.repl;
 public class GlobalsCommand implements Command {
 
 	@Override
-	public CommandContinue execute(String commandLine) {
-		// TODO Auto-generated method stub
-		return null;
+	public void execute(REPLRuntime runtime, String commandLine) {
+		runtime.println("Hello");
 	}
 
 	@Override

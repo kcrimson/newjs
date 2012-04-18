@@ -1,6 +1,7 @@
 package net.primitive.javascript.repl;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
@@ -9,11 +10,13 @@ public class ExitCommandTest {
 	@Test
 	public void should_exit_repl() {
 
+		REPLRuntime runtime = mock(REPLRuntime.class);
+		
 		ExitCommand command = new ExitCommand();
 
-		CommandContinue cc = command.execute("");
+		command.execute(runtime,"");
 
-		assertEquals(CommandContinue.Break, cc);
+		verify(runtime).exit();
 	}
 
 }

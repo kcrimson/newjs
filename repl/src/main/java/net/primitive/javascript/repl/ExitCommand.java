@@ -3,8 +3,8 @@ package net.primitive.javascript.repl;
 public class ExitCommand implements Command {
 
 	@Override
-	public CommandContinue execute(String commandLine) {
-		return CommandContinue.Break;
+	public void execute(REPLRuntime runtime,String commandLine) {
+		runtime.exit();
 	}
 
 	@Override
