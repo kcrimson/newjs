@@ -1,5 +1,7 @@
 package net.primitive.javascript.repl;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -17,8 +19,8 @@ public class GlobalsCommand implements Command {
 					.getGlobalObject();
 			for (Map.Entry<String, PropertyDescriptor> property : globalObject
 					.getOwnProperties().entrySet()) {
-				runtime.println(property.getKey() + "=>"
-						+ Convertions.toString(property.getValue().getValue()));
+				runtime.println(format(" %s => %s", property.getKey(),
+						Convertions.toString(property.getValue().getValue())));
 			}
 
 		} catch (IOException e) {
@@ -28,8 +30,7 @@ public class GlobalsCommand implements Command {
 
 	@Override
 	public String getHelp() {
-		// TODO Auto-generated method stub
-		return null;
+		return "prints out objects available in global scope";
 	}
 
 }

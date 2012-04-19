@@ -10,7 +10,7 @@ public class CommandParserTest {
 	public void should_parse_quit_cmd() {
 
 		CommandParser parser = new CommandParser();
-		String cmd = "/x";
+		String cmd = "/x wewewew";
 
 		CommandMatcher matcher = parser.matcher(cmd);
 		assertTrue(matcher.matches());

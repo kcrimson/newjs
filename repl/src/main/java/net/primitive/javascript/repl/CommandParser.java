@@ -2,8 +2,18 @@ package net.primitive.javascript.repl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public class CommandParser {
+
+	private static final Pattern COMMAND_PATTERN = Pattern
+			.compile("(/[a-z])(\\s*(.*))*");
 
 	private final Map<String, Command> availableCommands = new HashMap<String, Command>();
 
@@ -14,20 +24,32 @@ public class CommandParser {
 
 	private void registerAvailableCommands() {
 		availableCommands.put("/x", new ExitCommand());
-		availableCommands.put("/g", new GlobalsCommand());		
+		availableCommands.put("/g", new GlobalsCommand());
+		availableCommands.put("/h", new HelpCommand());
 	}
 
 	public CommandMatcher matcher(String cmd) {
 
-		String trimmedCmd = cmd.trim();
+		Matcher matcher = COMMAND_PATTERN.matcher(cmd);
 
-		Command command = availableCommands.get(trimmedCmd);
+		if (matcher.matches()) {
 
-		if (command != null) {
-			return new CommandMatcher(command);
+			String trimmedCmd = matcher.group(1);
+
+			Command command = availableCommands.get(trimmedCmd);
+
+			if (command != null) {
+				return new CommandMatcher(command);
+			}
+
+			// throw new CommandNotFound();
 		}
 
 		return null;
 	}
 
+	public Map<String, Command> getAvailableCommands() {
+		return availableCommands;
+	}
+	
 }

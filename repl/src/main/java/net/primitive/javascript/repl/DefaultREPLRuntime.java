@@ -1,8 +1,10 @@
 package net.primitive.javascript.repl;
 
 import static java.lang.System.out;
+import static java.util.Collections.unmodifiableMap;
 
 import java.io.IOException;
+import java.util.Map;
 
 import jline.Terminal;
 import jline.console.ConsoleReader;
@@ -12,11 +14,13 @@ public class DefaultREPLRuntime implements REPLRuntime {
 
 	private final Terminal terminal;
 	private final ConsoleReader reader;
+	private final CommandParser commandParser;
 
-	public DefaultREPLRuntime(Terminal terminal,ConsoleReader reader) {
+	public DefaultREPLRuntime(Terminal terminal,ConsoleReader reader,CommandParser commandParser) {
 		super();
 		this.terminal = terminal;
 		this.reader = reader;
+		this.commandParser = commandParser;
 	}
 
 	@Override
@@ -35,6 +39,11 @@ public class DefaultREPLRuntime implements REPLRuntime {
 	@Override
 	public void println(String message) throws IOException{
 		reader.println(message);
+	}
+
+	@Override
+	public Map<String, Command> getCommands() {
+		return unmodifiableMap(commandParser.getAvailableCommands());
 	}
 
 }

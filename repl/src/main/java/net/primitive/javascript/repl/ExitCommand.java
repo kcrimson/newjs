@@ -9,7 +9,7 @@ public class ExitCommand implements Command {
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "exits ECMAScript console";
 	}
 
 }

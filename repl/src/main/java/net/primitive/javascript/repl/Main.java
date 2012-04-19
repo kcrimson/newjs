@@ -78,15 +78,16 @@ public class Main {
 		RuntimeContext currentContext = enterContext(standardObjects,
 				globalObject);
 
-		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader);
+		CommandParser parser = new CommandParser();
+		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader,
+				parser);
 
 		String line;
-		CommandParser parser = new CommandParser();
 		while ((line = consoleReader.readLine()) != null) {
 
 			CommandMatcher matcher = parser.matcher(line);
 
-			if (matcher!=null && matcher.matches()) {
+			if (matcher != null && matcher.matches()) {
 				matcher.command().execute(runtime, line);
 				// if ("/g".equals(line)) {
 				// for (Map.Entry<String, PropertyDescriptor> property :

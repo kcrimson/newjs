@@ -1,6 +1,7 @@
 package net.primitive.javascript.repl;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 /**
@@ -14,6 +15,8 @@ public interface REPLRuntime {
 	void exit();
 
 	void println(String string) throws IOException;
+
+	Map<String, Command> getCommands();
 
 
 }
