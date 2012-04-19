@@ -13,7 +13,7 @@ import net.primitive.javascript.interpreter.RuntimeContext;
 public class GlobalsCommand implements Command {
 
 	@Override
-	public void execute(REPLRuntime runtime, String commandLine) {
+	public void execute(REPLRuntime runtime, String[] args) {
 		try {
 			Scriptable globalObject = RuntimeContext.currentContext()
 					.getGlobalObject();

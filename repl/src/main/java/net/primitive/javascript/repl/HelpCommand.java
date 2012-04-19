@@ -6,7 +6,7 @@ import java.util.Map;
 public class HelpCommand implements Command {
 
 	@Override
-	public void execute(REPLRuntime runtime, String commandLine) {
+	public void execute(REPLRuntime runtime, String[] args) {
 		Map<String, Command> commands = runtime.getCommands();
 		for (Map.Entry<String, Command> entry : commands.entrySet()) {
 			try {

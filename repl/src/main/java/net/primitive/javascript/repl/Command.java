@@ -7,7 +7,7 @@ public interface Command {
 	 * @param commandLine
 	 * @return 
 	 */
-	void execute(REPLRuntime runtime, String commandLine);
+	void execute(REPLRuntime runtime, String[] args);
 	
 	String getHelp();
 	

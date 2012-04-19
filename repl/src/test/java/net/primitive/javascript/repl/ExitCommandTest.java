@@ -14,7 +14,7 @@ public class ExitCommandTest {
 		
 		ExitCommand command = new ExitCommand();
 
-		command.execute(runtime,"");
+		command.execute(runtime,new String[]{});
 
 		verify(runtime).exit();
 	}

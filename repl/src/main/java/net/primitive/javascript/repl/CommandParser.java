@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class CommandParser {
 
 	private static final Pattern COMMAND_PATTERN = Pattern
-			.compile("(/[a-z])(\\s*(.*))*");
+			.compile("(/[a-z])((\\s+(\\w+))*)?");
 
 	private final Map<String, Command> availableCommands = new HashMap<String, Command>();
 
@@ -37,9 +37,10 @@ public class CommandParser {
 			String trimmedCmd = matcher.group(1);
 
 			Command command = availableCommands.get(trimmedCmd);
+			String[] args = matcher.group(2).trim().split("\\s+");
 
 			if (command != null) {
-				return new CommandMatcher(command);
+				return new CommandMatcher(command,args);
 			}
 
 			// throw new CommandNotFound();

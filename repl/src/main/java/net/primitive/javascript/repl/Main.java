@@ -88,7 +88,7 @@ public class Main {
 			CommandMatcher matcher = parser.matcher(line);
 
 			if (matcher != null && matcher.matches()) {
-				matcher.command().execute(runtime, line);
+				matcher.execute(runtime);
 				// if ("/g".equals(line)) {
 				// for (Map.Entry<String, PropertyDescriptor> property :
 				// globalObject

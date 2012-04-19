@@ -16,7 +16,8 @@ public class DefaultREPLRuntime implements REPLRuntime {
 	private final ConsoleReader reader;
 	private final CommandParser commandParser;
 
-	public DefaultREPLRuntime(Terminal terminal,ConsoleReader reader,CommandParser commandParser) {
+	public DefaultREPLRuntime(Terminal terminal, ConsoleReader reader,
+			CommandParser commandParser) {
 		super();
 		this.terminal = terminal;
 		this.reader = reader;
@@ -37,7 +38,7 @@ public class DefaultREPLRuntime implements REPLRuntime {
 	}
 
 	@Override
-	public void println(String message) throws IOException{
+	public void println(String message) throws IOException {
 		reader.println(message);
 	}
 
