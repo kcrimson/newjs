@@ -143,6 +143,7 @@ public final class StandardObjects {
 		});
 
 		arrayConstructor = new JSArray(this);
+		arrayConstructor.setPrototype(arrayPrototype);
 
 		PropertyDescriptor descriptor = new PropertyDescriptor(globalObject).isWriteable(true).isEnumerable(false).isConfigurable(true);
 		descriptor.setValue(arrayConstructor);

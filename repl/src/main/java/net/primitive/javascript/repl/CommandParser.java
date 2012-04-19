@@ -14,6 +14,7 @@ public class CommandParser {
 
 	private void registerAvailableCommands() {
 		availableCommands.put("/x", new ExitCommand());
+		availableCommands.put("/g", new GlobalsCommand());		
 	}
 
 	public CommandMatcher matcher(String cmd) {

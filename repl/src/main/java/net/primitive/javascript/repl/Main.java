@@ -20,13 +20,11 @@ import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
 
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 
 import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
-import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.Program;
@@ -36,7 +34,6 @@ import net.primitive.javascript.core.parser.JavaScriptParser;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 import net.primitive.javascript.interpreter.RuntimeContext;
 
-import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 
@@ -81,7 +78,7 @@ public class Main {
 		RuntimeContext currentContext = enterContext(standardObjects,
 				globalObject);
 
-		REPLRuntime runtime = null;
+		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader);
 
 		String line;
 		CommandParser parser = new CommandParser();
@@ -89,7 +86,7 @@ public class Main {
 
 			CommandMatcher matcher = parser.matcher(line);
 
-			if (matcher.matches()) {
+			if (matcher!=null && matcher.matches()) {
 				matcher.command().execute(runtime, line);
 				// if ("/g".equals(line)) {
 				// for (Map.Entry<String, PropertyDescriptor> property :
@@ -149,6 +146,7 @@ public class Main {
 							currentContext);
 					program.accept(visitor);
 				} catch (Exception e) {
+					e.printStackTrace();
 					String msg = e.getMessage();
 					if (msg == null) {
 						msg = "something unexpected happend";

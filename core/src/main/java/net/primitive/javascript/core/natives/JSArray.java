@@ -120,4 +120,11 @@ public class JSArray extends ScriptableObject implements Function, Constructor {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return "[object Array]";
+	}
+
+	
+	
 }

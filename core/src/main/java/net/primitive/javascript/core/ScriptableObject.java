@@ -18,6 +18,7 @@ package net.primitive.javascript.core;
 import static com.google.common.collect.Iterators.asEnumeration;
 import static com.google.common.collect.Maps.filterEntries;
 import static java.util.Collections.unmodifiableMap;
+import static net.primitive.javascript.core.Convertions.toObject;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -118,7 +119,7 @@ public class ScriptableObject implements Scriptable {
 	public void put(String propertyName, Object value) {
 
 		if(PROTOTYPE.equals(propertyName)){
-			setPrototype(prototype);
+			setPrototype(toObject(value));
 			return;
 		}
 		
@@ -224,4 +225,11 @@ public class ScriptableObject implements Scriptable {
 		return unmodifiableMap(associatedProperties);
 	}
 
+	@Override
+	public String toString() {
+		return "[object Object]";
+	}
+
+	
+	
 }

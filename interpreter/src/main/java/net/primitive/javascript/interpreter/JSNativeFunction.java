@@ -75,7 +75,7 @@ public class JSNativeFunction extends ScriptableObject implements Function {
 		}
 		returnValue = currentContext.currentExecutionContext().getCompletion().getValue();
 
-		return returnValue;// returnValue;
+		return returnValue;
 	}
 
 	@Override
