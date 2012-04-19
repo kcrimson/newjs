@@ -55,7 +55,7 @@ public abstract class Reference {
 		if (object instanceof Reference) {
 			Reference ref = (Reference) object;
 			if (ref.isUnresolvableReference()) {
-				throw new ReferenceErrorException();
+				throw new ReferenceErrorException(ref);
 			}
 
 			return ref.getValue();
@@ -65,7 +65,7 @@ public abstract class Reference {
 
 	public static void putValue(Object object, Object value) {
 		if (!(object instanceof Reference)) {
-			throw new ReferenceErrorException();
+			throw new ReferenceErrorException("object is not reference");
 		}
 
 		Reference reference = (Reference) object;
