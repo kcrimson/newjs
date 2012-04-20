@@ -31,7 +31,7 @@ public class ScriptableObjectTest {
 	@Test
 	public void should_put_property() {
 
-		ScriptableObject scriptableObject = new ScriptableObject();
+		BaseScriptableObject scriptableObject = new ScriptableObject();
 
 		scriptableObject.put("obj", "obj");
 
@@ -45,7 +45,7 @@ public class ScriptableObjectTest {
 
 	@Test
 	public void should_not_put_property_on_not_extensible_object() {
-		ScriptableObject scriptableObject = new ScriptableObject();
+		BaseScriptableObject scriptableObject = new ScriptableObject();
 		scriptableObject.setExtensible(false);
 
 		expectedException.expect(TypeErrorException.class);
@@ -59,7 +59,7 @@ public class ScriptableObjectTest {
 
 	@Test
 	public void should_throw_type_error_when_put_property_on_not_extensible_object() {
-		ScriptableObject scriptableObject = new ScriptableObject();
+		BaseScriptableObject scriptableObject = new ScriptableObject();
 		scriptableObject.setExtensible(false);
 
 		expectedException.expect(TypeErrorException.class);
@@ -75,7 +75,7 @@ public class ScriptableObjectTest {
 
 	@Test
 	public void should_overwrite_property_with_data_descriptor() {
-		ScriptableObject scriptableObject = new ScriptableObject();
+		BaseScriptableObject scriptableObject = new ScriptableObject();
 		scriptableObject.put("obj", "value0");
 		scriptableObject.put("obj", "value1");
 
@@ -88,7 +88,7 @@ public class ScriptableObjectTest {
 		ScriptableObject prototype = new ScriptableObject();
 		prototype.put("name", "value");
 
-		ScriptableObject object = new ScriptableObject();
+		BaseScriptableObject object = new ScriptableObject();
 		object.setPrototype(prototype);
 
 		object.put("name", "changed");
@@ -102,7 +102,7 @@ public class ScriptableObjectTest {
 		ScriptableObject prototype = new ScriptableObject();
 		prototype.put("name", "value");
 
-		ScriptableObject object = new ScriptableObject();
+		BaseScriptableObject object = new ScriptableObject();
 		object.setPrototype(prototype);
 
 		assertEquals("value", object.get("name"));

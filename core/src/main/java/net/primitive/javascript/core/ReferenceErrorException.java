@@ -22,4 +22,12 @@ public class ReferenceErrorException extends EcmaScriptException {
 	 */
 	private static final long serialVersionUID = -1975888452078284271L;
 
+	public ReferenceErrorException(Reference ref) {
+		super(String.format("unable to resolve reference to '%s'",
+				ref.getReferencedName()));
+	}
+
+	public ReferenceErrorException(String msg) {
+		super(msg);
+	}
 }

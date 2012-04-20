@@ -28,7 +28,7 @@ public class Console {
 	public static void init(Scriptable scriptable) {
 		Console console = new Console();
 
-		scriptable.put("console", JDKHost.wrapJavaObject(console));
+		scriptable.put("console", JavaHost.wrapJavaObject(console));
 
 	}
 
