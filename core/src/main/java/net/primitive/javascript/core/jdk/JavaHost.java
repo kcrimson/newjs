@@ -72,6 +72,7 @@ public final class JavaHost extends BaseScriptableObject {
 
 	@Override
 	public PropertyDescriptor getOwnProperty(String propertyName) {
+		System.out.println("root package: "+propertyName);
 		PropertyDescriptor descriptor = new PropertyDescriptor(this)
 				.isConfigurable(false).isEnumerable(false).isWriteable(false);
 		descriptor.setValue(new JavaPackageWrapper(propertyName));

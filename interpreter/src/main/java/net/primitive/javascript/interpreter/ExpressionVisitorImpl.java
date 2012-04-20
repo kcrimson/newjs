@@ -21,6 +21,7 @@ import static net.primitive.javascript.core.Reference.putValue;
 import static net.primitive.javascript.interpreter.LexicalEnvironment.getIdentifierReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.primitive.javascript.core.Callable;
@@ -252,8 +253,16 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		newExpression.getExpression().accept(this);
 		Object ref = result;
 		Object constructor = getValue(ref);
+
+		Expression arguments = newExpression.getArguments();
+		List<Object> v = Collections.emptyList();
+		if (arguments != null) {
+			arguments.accept(this);
+			v = (List<Object>) result;
+		}
+
 		if (Types.isConstructor(constructor)) {
-			result = ((Constructor) constructor).construct(null, null);
+			result = ((Constructor) constructor).construct(null, v.toArray(new String[]{}));
 			return;
 		}
 		throw new TypeErrorException();

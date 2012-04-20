@@ -15,23 +15,27 @@
  */
 package net.primitive.javascript.core.ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
 public class NewExpression extends Expression {
 
+	@Getter
 	private final Expression expression;
+
+	@Getter
+	private final Expression arguments;
 
 	public NewExpression(Expression expression) {
 		super();
 		this.expression = expression;
+		this.arguments = null;
 	}
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {
 		visitor.visitNewExpression(this);
-	}
-
-	public Expression getExpression() {
-		return expression;
 	}
 
 }

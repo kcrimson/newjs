@@ -604,7 +604,7 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
                         }
     | 'new' LT!* exp=memberExpression LT!* arguments 
                                                     {
-                                                     $result = new NewExpression($exp.result);
+                                                     $result = new NewExpression($exp.result,$arguments.result);
                                                     }
   )
   (LT!* memberExpressionSuffix 

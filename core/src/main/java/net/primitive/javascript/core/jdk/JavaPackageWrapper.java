@@ -25,13 +25,14 @@ public class JavaPackageWrapper extends BaseScriptableObject {
 	@Override
 	public PropertyDescriptor getOwnProperty(String propertyName) {
 		// try to load class
-		String classname = propertyName;
+		String classname = packagePartName;
 		JavaPackageWrapper parent = parentPackageWrapper;
 		while (parent!= null) {
 			classname = parent.getPackagePartName() + "."
 					+ classname;
 			parent = parent.getParentPackageWrapper();
 		}
+		classname = classname+"."+propertyName;
 		
 		System.out.println("loading: "+classname);
 

@@ -32,7 +32,7 @@ public class JavaClassWrapper extends ScriptableObject implements Function {
 
 	@Override
 	public Object[] bindParameters(Object[] actualParameters) {
-		return null;
+		return actualParameters;
 	}
 
 	@Override
@@ -46,6 +46,7 @@ public class JavaClassWrapper extends ScriptableObject implements Function {
 		Object[] convertedArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
 			convertedArgs[i] = toObject(args[i]);
+			System.out.println(convertedArgs[i].getClass());
 		}
 
 		try {
