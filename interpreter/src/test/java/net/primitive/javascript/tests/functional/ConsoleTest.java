@@ -19,7 +19,7 @@ import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.jdk.Console;
-import net.primitive.javascript.core.jdk.JDKHost;
+import net.primitive.javascript.core.jdk.JavaHost;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.Interpreter;
 
@@ -34,7 +34,7 @@ public class ConsoleTest {
 
 		Console console = new Console();
 
-		globalObject.put("console", JDKHost.wrapJavaObject(console));
+		globalObject.put("console", JavaHost.wrapJavaObject(console));
 
 		Interpreter interpreter = new Interpreter();
 

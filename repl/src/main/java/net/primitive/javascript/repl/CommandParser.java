@@ -25,7 +25,7 @@ public class CommandParser {
 	private void registerAvailableCommands() {
 		availableCommands.put("/x", new ExitCommand());
 		availableCommands.put("/g", new GlobalsCommand());
-		availableCommands.put("/h", new HelpCommand());
+		availableCommands.put("/?", new HelpCommand());
 		availableCommands.put("/l", new LoadScriptCommand());
 	}
 
