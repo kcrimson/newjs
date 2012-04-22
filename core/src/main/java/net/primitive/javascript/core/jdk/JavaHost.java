@@ -15,8 +15,11 @@
  */
 package net.primitive.javascript.core.jdk;
 
+import static java.util.Collections.emptyMap;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -24,7 +27,9 @@ import net.primitive.javascript.core.BaseScriptableObject;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
+import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.annotations.JSFunction;
+import net.primitive.javascript.core.natives.JSPrimitveWrapper;
 
 /**
  * Wrapper methods for Java objects, classes and methods
@@ -36,6 +41,38 @@ public final class JavaHost extends BaseScriptableObject {
 
 	public JavaHost() {
 
+	}
+
+	/**
+	 * Unwraps Java object from ECMAScript object
+	 * 
+	 * @return
+	 */
+	public static Object unwrap(Object object) {
+		if (object == null || Undefined.Value == object
+				|| object instanceof String || object instanceof Boolean
+				|| object instanceof Number) {
+			return object;
+		}
+
+		if (object instanceof JSPrimitveWrapper) {
+			return ((JSPrimitveWrapper<?>) object).getPrimitiveValue();
+		}
+
+		if (object instanceof JavaObjectWrapper) {
+			return ((JavaObjectWrapper) object).getJavaObject();
+		}
+
+		return object;
+	}
+
+	public static Object wrap(Object object) {
+		if (object == null || Undefined.Value == object
+				|| object instanceof String || object instanceof Boolean
+				|| object instanceof Number || object instanceof Scriptable) {
+			return object;
+		}
+		return new JavaObjectWrapper(object);
 	}
 
 	/**
@@ -72,7 +109,6 @@ public final class JavaHost extends BaseScriptableObject {
 
 	@Override
 	public PropertyDescriptor getOwnProperty(String propertyName) {
-		System.out.println("root package: "+propertyName);
 		PropertyDescriptor descriptor = new PropertyDescriptor(this)
 				.isConfigurable(false).isEnumerable(false).isWriteable(false);
 		descriptor.setValue(new JavaPackageWrapper(propertyName));
@@ -95,14 +131,12 @@ public final class JavaHost extends BaseScriptableObject {
 
 	@Override
 	public Enumeration<String> enumeration() {
-		// TODO should return empty
 		return null;
 	}
 
 	@Override
 	public Map<String, PropertyDescriptor> getOwnProperties() {
-		// TODO should return empty
-		return null;
+		return emptyMap();
 	}
 
 }

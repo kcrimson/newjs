@@ -45,8 +45,7 @@ public class JavaClassWrapper extends ScriptableObject implements Function {
 		// unwrap arguments
 		Object[] convertedArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
-			convertedArgs[i] = toObject(args[i]);
-			System.out.println(convertedArgs[i].getClass());
+			convertedArgs[i] = JavaHost.unwrap((args[i]));
 		}
 
 		try {
