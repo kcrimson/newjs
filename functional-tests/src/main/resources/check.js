@@ -1,23 +1,27 @@
 var print = console.log;
 var io = Host.java.io;
 
-function Filesystem(){
+function Filesystem() {
 
-  this.mkdir = function(){
+	this.directory = "tmp";
 
-    var file = new io.File("tmp");
+	this.mkdir = function() {
 
-    if(!file.exists()){
-      print("Nie ma");
-      if(file.mkdir()){
-	print("No to stworzylem");
-      }
-    }
-  }
+		var file = new io.File(this.directory);
+
+		if (!file.exists()) {
+			print("Nie ma");
+			if (file.mkdir()) {
+				print("No to stworzylem");
+			}
+		}
+	}
+
+	this.exists = function() {
+		return new io.File(this.directory).exists();
+	}
 }
-
-
 
 var fs = new Filesystem();
 
-fs.mkdir();
+var assertResult = fs.exists();

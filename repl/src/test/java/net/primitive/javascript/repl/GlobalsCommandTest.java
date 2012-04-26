@@ -26,7 +26,7 @@ public class GlobalsCommandTest {
 		GlobalsCommand command = new GlobalsCommand();
 		command.execute(runtime, new String[] {});
 
-		verify(runtime, times(3)).println(Mockito.anyString());
+		verify(runtime, times(4)).println(Mockito.anyString());
 	}
 
 }

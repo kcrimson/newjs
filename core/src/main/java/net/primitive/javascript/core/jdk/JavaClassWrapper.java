@@ -3,6 +3,7 @@ package net.primitive.javascript.core.jdk;
 import static net.primitive.javascript.core.Convertions.toObject;
 import static org.apache.commons.beanutils.ConstructorUtils.invokeConstructor;
 
+import java.lang.ref.Reference;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class JavaClassWrapper extends ScriptableObject implements Function {
 		// unwrap arguments
 		Object[] convertedArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
-			convertedArgs[i] = JavaHost.unwrap((args[i]));
+			convertedArgs[i] = JavaHost.unwrap(net.primitive.javascript.core.Reference.getValue((args[i])));
 		}
 
 		try {

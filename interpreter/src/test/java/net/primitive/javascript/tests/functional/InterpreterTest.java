@@ -73,6 +73,6 @@ public class InterpreterTest {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/src/main/resources/array-prototype.js");
+		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/src/main/resources/check.js");
 	}
 }

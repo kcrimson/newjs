@@ -27,6 +27,7 @@ import java.util.List;
 import net.primitive.javascript.core.Callable;
 import net.primitive.javascript.core.Constructor;
 import net.primitive.javascript.core.Convertions;
+import net.primitive.javascript.core.Function;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
@@ -262,7 +263,9 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		}
 
 		if (Types.isConstructor(constructor)) {
-			result = ((Constructor) constructor).construct(null, v.toArray(new String[]{}));
+			result = ((Constructor) constructor).construct(
+					((Function) constructor).getScope(),
+					v.toArray(new Object[] {}));
 			return;
 		}
 		throw new TypeErrorException();
