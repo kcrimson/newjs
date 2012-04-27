@@ -1,6 +1,5 @@
 package net.primitive.javascript.core.jdk;
 
-import static net.primitive.javascript.core.Convertions.toObject;
 import static org.apache.commons.beanutils.ConstructorUtils.invokeConstructor;
 
 import java.lang.ref.Reference;

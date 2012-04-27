@@ -20,6 +20,11 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 
+ * @author jpalka@gmail.com
+ *
+ */
 @AllArgsConstructor
 public class ObjectLiteral extends Expression {
 

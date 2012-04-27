@@ -9,6 +9,11 @@ import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 
+/**
+ * 
+ * @author jpalka@gmail.com
+ *
+ */
 public class JavaMethodWrapper extends ScriptableObject implements Callable {
 
 	private final Object javaObject;

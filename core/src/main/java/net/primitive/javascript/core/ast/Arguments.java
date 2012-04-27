@@ -17,21 +17,19 @@ package net.primitive.javascript.core.ast;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+/**
+ * 
+ * @author jpalka@gmail.com
+ *
+ */
+@AllArgsConstructor
 public class Arguments extends Expression {
 
+	@Getter
 	private final List<Expression> argumentsList;
-
-	public Arguments(List<Expression> argumentsList) {
-		this.argumentsList = argumentsList;
-	}
-
-	/**
-	 * @return the argumentsList
-	 */
-	public List<Expression> getArgumentsList() {
-		return argumentsList;
-	}
 
 	@Override
 	public void accept(ExpressionVisitor visitor) {

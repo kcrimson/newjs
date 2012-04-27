@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.primitive.javascript.core.BaseScriptableObject;
 import net.primitive.javascript.core.PropertyDescriptor;
+import net.primitive.javascript.core.Scriptable;
 
 /**
  * 
@@ -22,11 +23,12 @@ public class JavaObjectWrapper extends BaseScriptableObject {
 	@Override
 	public PropertyDescriptor getOwnProperty(String propertyName) {
 
-		JavaMethodWrapper methodWrapper = new JavaMethodWrapper(javaObject,propertyName);
-		
+		JavaMethodWrapper methodWrapper = new JavaMethodWrapper(javaObject,
+				propertyName);
+
 		PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this);
 		propertyDescriptor.setValue(methodWrapper);
-		
+
 		return propertyDescriptor;
 	}
 
@@ -45,16 +47,19 @@ public class JavaObjectWrapper extends BaseScriptableObject {
 
 	@Override
 	public Enumeration<String> enumeration() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Map<String, PropertyDescriptor> getOwnProperties() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Java object which is wrapped by this {@link Scriptable}
+	 * 
+	 * @return
+	 */
 	public Object getJavaObject() {
 		return javaObject;
 	}
