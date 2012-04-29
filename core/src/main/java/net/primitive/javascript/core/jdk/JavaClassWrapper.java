@@ -2,7 +2,6 @@ package net.primitive.javascript.core.jdk;
 
 import static org.apache.commons.beanutils.ConstructorUtils.invokeConstructor;
 
-import java.lang.ref.Reference;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 

@@ -16,7 +16,6 @@
 package net.primitive.javascript.core.natives;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
-import net.primitive.javascript.core.BaseScriptableObject;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.PropertyDescriptor;
 import net.primitive.javascript.core.Scope;
@@ -250,20 +249,25 @@ public final class StandardObjects {
 		return objectPrototype;
 	}
 
-	public JSObject getObjectConstructor() {
+	public Scriptable getObjectConstructor() {
 		return objectConstructor;
 	}
 
-	public BaseScriptableObject getArrayPrototype() {
+	public Scriptable getArrayPrototype() {
 		return arrayPrototype;
 	}
 
-	public JSArray getArrayConstructor() {
+	public Scriptable getArrayConstructor() {
 		return arrayConstructor;
 	}
 
-	public BaseScriptableObject getJsonConstructor() {
+	public Scriptable getJsonConstructor() {
 		return jsonConstructor;
 	}
+
+	public Scriptable getFunctionPrototype() {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
 
 }

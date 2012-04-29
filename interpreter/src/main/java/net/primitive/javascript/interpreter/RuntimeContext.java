@@ -20,28 +20,39 @@ import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
-import net.primitive.javascript.core.natives.JSObject;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
+/**
+ * Represents ECMAScript interpreter context in which script is executed. It
+ * holds handles to global (top-level) {@link Scriptable} object, standard
+ * objects, variable and lexical scope. It is bound to execution thread by
+ * calling {@link RuntimeContext#enterContext(StandardObjects, Scriptable)},
+ * which later is aquired by calling {@link RuntimeContext#currentContext()}.
+ * 
+ * <blockquote> <strong>WARNING</strong><br/>
+ * At the moment there is no way to share same RuntimeContext between multiple
+ * threads, as this implementation is not thread-safe at the moment.
+ * </blockquote>
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public final class RuntimeContext {
 
 	private static final ThreadLocal<RuntimeContext> CONTEXT_LOCAL = new ThreadLocal<RuntimeContext>();
 
 	private final FastStack<StatementExecutionContext> callStack = new FastStack<StatementExecutionContext>();
 
-	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(
-			this);
+	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(this);
 
-	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(
-			this);
+	private final StatementVisitorImpl statementVisitor = new StatementVisitorImpl(this);
 
 	private final Scriptable globalObject;
 
@@ -53,7 +64,7 @@ public final class RuntimeContext {
 
 	private final StandardObjects standardObjects;
 
-	private RuntimeContext(final StandardObjects standardObjects,final Scriptable globalObject) {
+	private RuntimeContext(final StandardObjects standardObjects, final Scriptable globalObject) {
 		this.standardObjects = standardObjects;
 		this.globalObject = globalObject;
 		this.globalEnvironment = newObjectEnvironment(globalObject, null);
@@ -75,6 +86,13 @@ public final class RuntimeContext {
 		return statementVisitor;
 	}
 
+	/**
+	 * Used by {@link Interpreter} to push next statement on the call stack.
+	 * <blockquote><strong>Internal use only.</strong></blockquote>
+	 * 
+	 * @param statement
+	 * @return
+	 */
 	public StatementExecutionContext enter(Statement statement) {
 		Scope varEnv;
 		Scope lexEnv;
@@ -90,47 +108,55 @@ public final class RuntimeContext {
 			thisObj = currentContext.getThisBinding();
 		}
 
-		final StatementExecutionContext newContext = new StatementExecutionContext(
-				lexEnv, varEnv, thisObj, statement);
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, varEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
 	}
 
 	/**
 	 * Enters new execution context for function call
+	 * <blockquote><strong>Internal use only.</strong></blockquote>
 	 * 
 	 * @param statement
 	 * @param lexEnv
 	 * @param thisObj
 	 * @return
 	 */
-	public StatementExecutionContext enter(Statement statement, Scope lexEnv,
-			Scriptable thisObj) {
-		final StatementExecutionContext newContext = new StatementExecutionContext(
-				lexEnv, lexEnv, thisObj, statement);
+	public StatementExecutionContext enter(Statement statement, Scope lexEnv, Scriptable thisObj) {
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, lexEnv, thisObj, statement);
 		callStack.push(newContext);
 		return newContext;
 	}
 
 	/**
-	 * This method creates new runtime context for script execution
+	 * This method creates new runtime context for script execution and binds it
+	 * to current thread.
 	 * 
 	 * @param globalObject
 	 *            instance of global object
 	 * 
 	 * @return
 	 */
-	public static RuntimeContext enterContext(StandardObjects standardObjects,Scriptable globalObject) {
-		RuntimeContext context = new RuntimeContext(standardObjects,globalObject);
+	public static RuntimeContext enterContext(StandardObjects standardObjects, Scriptable globalObject) {
+		RuntimeContext context = new RuntimeContext(standardObjects, globalObject);
 		CONTEXT_LOCAL.set(context);
 		return context;
 	}
 
+	/**
+	 * Returns context bound to current thread,
+	 * 
+	 * @return {@literal null} when there is no context bound to current thread
+	 */
 	public static RuntimeContext currentContext() {
 		RuntimeContext context = CONTEXT_LOCAL.get();
 		return context;
 	}
 
+	/**
+	 * Unbinds context from current thread. Once this methods is called you will
+	 * be not able to execute scripts in current thread.
+	 */
 	public static void exitContext() {
 		CONTEXT_LOCAL.set(null);
 	}
@@ -139,14 +165,19 @@ public final class RuntimeContext {
 		return callStack.peek();
 	}
 
+	/**
+	 * Removes statement from call stack. 
+	 * <blockquote><strong>Internal use only.</strong></blockquote>
+	 * 
+	 * @return
+	 */
 	public boolean exit() {
 		StatementExecutionContext current = callStack.peek();
 
 		Completion completion = current.getCompletion();
 		CompletionType completionType = completion.getType();
 
-		if (CompletionType.Normal.equals(completionType)
-				|| CompletionType.Return.equals(completionType)) {
+		if (CompletionType.Normal.equals(completionType) || CompletionType.Return.equals(completionType)) {
 			callStack.pop();
 			if (!callStack.isEmpty()) {
 				// rewrite return completion to previous statement on stack
@@ -161,20 +192,14 @@ public final class RuntimeContext {
 			// if this is TryStatement handle exception with catch and finally
 			if (TryStatement.class.equals(statement.getClass())) {
 				TryStatement tryStatement = (TryStatement) statement;
-				CatchClause catchStatement = (CatchClause) tryStatement
-						.getCatchStatement();
+				CatchClause catchStatement = (CatchClause) tryStatement.getCatchStatement();
 				if (catchStatement != null) {
-					Scope newDeclarativeEnvironment = LexicalEnvironment
-							.newDeclarativeEnvironment(current
-									.getLexicalEnvironment());
+					Scope newDeclarativeEnvironment = LexicalEnvironment.newDeclarativeEnvironment(current.getLexicalEnvironment());
 
-					Reference mutableBinding = newDeclarativeEnvironment
-							.getBindings().createMutableBinding(
-									catchStatement.getIdentifier(), false);
+					Reference mutableBinding = newDeclarativeEnvironment.getBindings().createMutableBinding(catchStatement.getIdentifier(), false);
 					Reference.putValue(mutableBinding, completion.getValue());
 
-					enter(catchStatement, newDeclarativeEnvironment,
-							current.getThisBinding());
+					enter(catchStatement, newDeclarativeEnvironment, current.getThisBinding());
 					catchStatement.accept(statementVisitor);
 					boolean exitStatus = exit();
 					callStack.pop();
@@ -208,9 +233,7 @@ public final class RuntimeContext {
 
 	private static boolean isIterationStatement(Statement currentStatement) {
 		Class<? extends Statement> clazz = currentStatement.getClass();
-		return WhileStatement.class.equals(clazz)
-				|| DoWhileStatement.class.equals(clazz)
-				|| ForStatement.class.equals(clazz);
+		return WhileStatement.class.equals(clazz) || DoWhileStatement.class.equals(clazz) || ForStatement.class.equals(clazz);
 	}
 
 	public ScopeBindings getVariables() {
