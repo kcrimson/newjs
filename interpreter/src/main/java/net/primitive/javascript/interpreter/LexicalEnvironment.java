@@ -15,25 +15,38 @@
  */
 package net.primitive.javascript.interpreter;
 
+import static net.primitive.javascript.interpreter.RuntimeContext.currentContext;
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
+import net.primitive.javascript.core.natives.StandardObjects;
 
 public final class LexicalEnvironment {
 
 	private LexicalEnvironment() {
 	}
 
-	public static Scope newObjectEnvironment(Scriptable bindingObject,
-			Scope outerScope) {
-		return new Scope(outerScope, new ObjectEnvironmentRecords(
-				bindingObject, true));
+	/**
+	 * Special case for creating object environment (used only for creating top
+	 * level environment).
+	 * 
+	 * @param stdObjects
+	 * @param bindingObject
+	 * @param outerScope
+	 * @return
+	 */
+	public static Scope newObjectEnvironment(StandardObjects stdObjects, Scriptable bindingObject) {
+		return new Scope(stdObjects, null, new ObjectEnvironmentRecords(bindingObject, true));
+	}
+
+	public static Scope newObjectEnvironment(Scriptable bindingObject, Scope outerScope) {
+		return new Scope(currentContext().getStandardObjects(), outerScope, new ObjectEnvironmentRecords(bindingObject, true));
 	}
 
 	public static Scope newDeclarativeEnvironment(Scope outerScope) {
-		return new Scope(outerScope, new DeclarativeEnvironmentRecords());
+		return new Scope(currentContext().getStandardObjects(), outerScope, new DeclarativeEnvironmentRecords());
 	}
 
 	public static Reference getIdentifierReference(Scope env, String name) {

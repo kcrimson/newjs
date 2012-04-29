@@ -16,6 +16,7 @@
 package net.primitive.javascript.core;
 
 /**
+ * Implemented by all classes which represent binary operator.
  * 
  * @author jpalka@gmail.com
  * 

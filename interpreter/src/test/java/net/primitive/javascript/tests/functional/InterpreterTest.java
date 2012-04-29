@@ -32,6 +32,7 @@ import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.jdk.Console;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.Interpreter;
+import net.primitive.javascript.interpreter.RuntimeContext;
 import net.primitive.javascript.tests.utils.ResourceList;
 
 import org.junit.Test;
@@ -41,8 +42,7 @@ import org.junit.runner.RunWith;
 public class InterpreterTest {
 
 	protected Object[] getParameters() {
-		Collection<String> scripts = ResourceList.getResources(Pattern
-				.compile(".*\\.js"));
+		Collection<String> scripts = ResourceList.getResources(Pattern.compile(".*\\.js"));
 		List<Object[]> parameters = new ArrayList<Object[]>();
 
 		for (String script : scripts) {
@@ -59,7 +59,7 @@ public class InterpreterTest {
 		Scriptable globalObject = new ScriptableObject();
 		StandardObjects stdObjs = StandardObjects.createStandardObjects(globalObject);
 
-
+		RuntimeContext.enterContext(stdObjs, globalObject);
 		Console.init(globalObject);
 
 		Interpreter interpreter = new Interpreter();
@@ -67,11 +67,12 @@ public class InterpreterTest {
 		Script script = interpreter.interpret(new File(javaScriptFile));
 		script.execute(globalObject);
 		Object object = globalObject.get("assertResult");
-		assertTrue("assert failed in " + javaScriptFile,
-				Convertions.toBoolean(object));
+
+		RuntimeContext.exitContext();
+		assertTrue("assert failed in " + javaScriptFile, Convertions.toBoolean(object));
 
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/src/main/resources/check.js");
 	}

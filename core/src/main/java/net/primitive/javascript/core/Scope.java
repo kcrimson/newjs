@@ -15,6 +15,8 @@
  */
 package net.primitive.javascript.core;
 
+import net.primitive.javascript.core.natives.StandardObjects;
+
 /**
  * Implementation of Lexical environment concept
  * 
@@ -27,8 +29,11 @@ public class Scope {
 
 	private final ScopeBindings bindings;
 
-	public Scope(Scope outerScope, ScopeBindings bindings) {
+	private final StandardObjects stdObjects;
+
+	public Scope(StandardObjects stdObjects, Scope outerScope, ScopeBindings bindings) {
 		super();
+		this.stdObjects = stdObjects;
 		this.outerScope = outerScope;
 		this.bindings = bindings;
 	}
@@ -45,5 +50,9 @@ public class Scope {
 	 */
 	public ScopeBindings getBindings() {
 		return bindings;
+	}
+
+	public Scriptable newObject() {
+		return stdObjects.newObject();
 	}
 }

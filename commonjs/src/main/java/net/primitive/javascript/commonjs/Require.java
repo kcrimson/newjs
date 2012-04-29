@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.naming.Context;
+
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.PropertyDescriptor;
-import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.jdk.JavaHost;
 import net.primitive.javascript.core.natives.JSFunction;
 import net.primitive.javascript.core.natives.StandardObjects;
 
@@ -62,7 +62,7 @@ public class Require extends JSFunction {
 	 * program's main module using {@link #requireMain(Context, String)} and
 	 * then act on the main module's exports.
 	 * 
-	 * @param cx
+	 * @param stdObjects
 	 *            the current context
 	 * @param nativeScope
 	 *            a scope that provides the standard native JavaScript objects.
@@ -79,15 +79,15 @@ public class Require extends JSFunction {
 	 *            means that it doesn't have the "paths" property, and also that
 	 *            the modules it loads don't export the "module.uri" property.
 	 */
-	public Require(StandardObjects cx, Scriptable nativeScope, ModuleScriptProvider moduleScriptProvider, Script preExec, Script postExec, boolean sandboxed) {
+	public Require(StandardObjects stdObjects, Scriptable nativeScope, ModuleScriptProvider moduleScriptProvider, Script preExec, Script postExec, boolean sandboxed) {
 		this.moduleScriptProvider = moduleScriptProvider;
 		this.nativeScope = nativeScope;
 		this.sandboxed = sandboxed;
 		this.preExec = preExec;
 		this.postExec = postExec;
-		setPrototype(cx.getFunctionPrototype());
+		setPrototype(stdObjects.getFunctionPrototype());
 		if (!sandboxed) {
-			paths = cx.newArray();
+			paths = stdObjects.newArray();
 			PropertyDescriptor desc = new PropertyDescriptor(this).isConfigurable(false).isEnumerable(true).isWriteable(false);
 			desc.setValue(paths);
 			defineOwnProperty("paths", desc, true);
@@ -117,7 +117,7 @@ public class Require extends JSFunction {
 	 *             this require() instance already has a different main module
 	 *             set.
 	 */
-	public Scriptable requireMain(StandardObjects cx, String mainModuleId) {
+	public Scriptable requireMain(Scope scope, String mainModuleId) {
 		if (this.mainModuleId != null) {
 			if (!this.mainModuleId.equals(mainModuleId)) {
 				throw new IllegalStateException("Main module already set to " + this.mainModuleId);
@@ -128,7 +128,7 @@ public class Require extends JSFunction {
 		ModuleScript moduleScript;
 		try {
 			// try to get the module script to see if it is on the module path
-			moduleScript = moduleScriptProvider.getModuleScript(cx, mainModuleId, null, paths);
+			moduleScript = moduleScriptProvider.getModuleScript(scope, mainModuleId, null, paths);
 		} catch (RuntimeException x) {
 			throw x;
 		} catch (Exception x) {
@@ -136,7 +136,7 @@ public class Require extends JSFunction {
 		}
 
 		if (moduleScript != null) {
-			mainExports = getExportedModuleInterface(cx, mainModuleId, null, true);
+			mainExports = getExportedModuleInterface(scope, mainModuleId, null, true);
 		} else if (!sandboxed) {
 
 			URI mainUri = null;
@@ -157,7 +157,7 @@ public class Require extends JSFunction {
 				}
 				mainUri = file.toURI();
 			}
-			mainExports = getExportedModuleInterface(cx, mainUri.toString(), mainUri, true);
+			mainExports = getExportedModuleInterface(scope, mainUri.toString(), mainUri, true);
 		}
 
 		this.mainModuleId = mainModuleId;
@@ -172,7 +172,8 @@ public class Require extends JSFunction {
 	 *            the scope where the require() function is to be installed.
 	 */
 	public void install(Scriptable scope) {
-		// ScriptableObject.putProperty(scope, "require", this);
+
+		scope.put("require", this);
 	}
 
 	@Override
@@ -216,8 +217,8 @@ public class Require extends JSFunction {
 				}
 			}
 		}
-		//TODO Scope needs to delegate 
-		return null;//getExportedModuleInterface(cx, id, uri, false);
+		// TODO Scope needs to delegate
+		return getExportedModuleInterface(scope, id, uri, false);
 	}
 
 	@Override
@@ -227,7 +228,7 @@ public class Require extends JSFunction {
 		return null;
 	}
 
-	private Scriptable getExportedModuleInterface(StandardObjects cx, String id, URI uri, boolean isMain) {
+	private Scriptable getExportedModuleInterface(Scope  scope, String id, URI uri, boolean isMain) {
 		// Check if the requested module is already completely loaded
 		Scriptable exports = exportedModuleInterfaces.get(id);
 		if (exports != null) {
@@ -261,12 +262,12 @@ public class Require extends JSFunction {
 				return exports;
 			}
 			// Nope, still not loaded; we're loading it then.
-			final ModuleScript moduleScript = getModule(cx, id, uri);
+			final ModuleScript moduleScript = getModule(scope, id, uri);
 			if (sandboxed && !moduleScript.isSandboxed()) {
 				// throw ScriptRuntime.throwError(cx, nativeScope, "Module \"" +
 				// id + "\" is not contained in sandbox.");
 			}
-			exports = cx.newObject();
+			exports = scope.newObject();
 			// Are we the outermost locked invocation on this thread?
 			final boolean outermostLocked = threadLoadingModules == null;
 			if (outermostLocked) {
@@ -285,7 +286,7 @@ public class Require extends JSFunction {
 			try {
 				// Support non-standard Node.js feature to allow modules to
 				// replace the exports object by setting module.exports.
-				Scriptable newExports = executeModuleScript(cx, id, exports, moduleScript, isMain);
+				Scriptable newExports = executeModuleScript(scope, id, exports, moduleScript, isMain);
 				if (exports != newExports) {
 					threadLoadingModules.put(id, newExports);
 					exports = newExports;
@@ -310,8 +311,8 @@ public class Require extends JSFunction {
 		return exports;
 	}
 
-	private Scriptable executeModuleScript(StandardObjects cx, String id, Scriptable exports, ModuleScript moduleScript, boolean isMain) {
-		final Scriptable moduleObject = cx.newObject();
+	private Scriptable executeModuleScript(Scope scope, String id, Scriptable exports, ModuleScript moduleScript, boolean isMain) {
+		final Scriptable moduleObject = scope.newObject();
 		URI uri = moduleScript.getUri();
 		URI base = moduleScript.getBase();
 
@@ -341,13 +342,13 @@ public class Require extends JSFunction {
 		if (isMain) {
 			// defineReadOnlyProperty(this, "main", moduleObject);
 		}
-		executeOptionalScript(preExec, cx, executionScope);
+		executeOptionalScript(preExec, scope, executionScope);
 		moduleScript.getScript().execute(executionScope);
-		executeOptionalScript(postExec, cx, executionScope);
+		executeOptionalScript(postExec, scope, executionScope);
 		return Convertions.toObject(moduleObject.get("exports"));
 	}
 
-	private static void executeOptionalScript(Script script, StandardObjects cx, Scriptable executionScope) {
+	private static void executeOptionalScript(Script script, Scope scope, Scriptable executionScope) {
 		if (script != null) {
 			script.execute(executionScope);
 		}
@@ -360,9 +361,9 @@ public class Require extends JSFunction {
 	// ScriptableObject.PERMANENT);
 	// }
 
-	private ModuleScript getModule(StandardObjects cx, String id, URI uri) {
+	private ModuleScript getModule(Scope scope, String id, URI uri) {
 		try {
-			final ModuleScript moduleScript = moduleScriptProvider.getModuleScript(cx, id, uri, paths);
+			final ModuleScript moduleScript = moduleScriptProvider.getModuleScript(scope, id, uri, paths);
 			if (moduleScript == null) {
 				// throw ScriptRuntime.throwError(cx, nativeScope, "Module \"" +
 				// id + "\" not found.");

@@ -20,6 +20,8 @@ import net.primitive.javascript.core.natives.JSNumber;
 import net.primitive.javascript.core.natives.JSString;
 
 /**
+ * Utlility class which has methods which handle type convertions as described
+ * in ECMAScript specs.
  * 
  * @author jpalka@gmail.com
  * 

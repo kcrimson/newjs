@@ -67,7 +67,7 @@ public final class RuntimeContext {
 	private RuntimeContext(final StandardObjects standardObjects, final Scriptable globalObject) {
 		this.standardObjects = standardObjects;
 		this.globalObject = globalObject;
-		this.globalEnvironment = newObjectEnvironment(globalObject, null);
+		this.globalEnvironment = newObjectEnvironment(standardObjects, globalObject);
 		this.lexicalEnvironment = globalEnvironment;
 		this.variableEnvironment = lexicalEnvironment;
 	}
@@ -146,11 +146,18 @@ public final class RuntimeContext {
 	/**
 	 * Returns context bound to current thread,
 	 * 
-	 * @return {@literal null} when there is no context bound to current thread
+	 * @return
+	 * @throws RuntimeException
+	 *             when there is no context bound to current thread
 	 */
 	public static RuntimeContext currentContext() {
 		RuntimeContext context = CONTEXT_LOCAL.get();
-		return context;
+
+		if (context != null) {
+			return context;
+		}
+
+		throw new RuntimeException("no RuntimeContext bound to current thread");
 	}
 
 	/**
@@ -166,8 +173,8 @@ public final class RuntimeContext {
 	}
 
 	/**
-	 * Removes statement from call stack. 
-	 * <blockquote><strong>Internal use only.</strong></blockquote>
+	 * Removes statement from call stack. <blockquote><strong>Internal use
+	 * only.</strong></blockquote>
 	 * 
 	 * @return
 	 */
@@ -254,6 +261,10 @@ public final class RuntimeContext {
 
 	public Scriptable getObjectPrototype() {
 		return standardObjects.getObjectPrototype();
+	}
+
+	public StandardObjects getStandardObjects() {
+		return standardObjects;
 	}
 
 }

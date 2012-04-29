@@ -18,6 +18,8 @@ package net.primitive.javascript.repl;
 import static net.primitive.javascript.interpreter.RuntimeContext.enterContext;
 import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
 
+import java.io.Reader;
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -25,6 +27,10 @@ import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import net.primitive.javascript.commonjs.ModuleScript;
+import net.primitive.javascript.commonjs.Require;
+import net.primitive.javascript.commonjs.provider.ModuleSource;
+import net.primitive.javascript.commonjs.provider.SoftCachingModuleScriptProvider;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.Program;
@@ -55,8 +61,18 @@ public class Main {
 		final Scriptable globalObject = new ScriptableObject();
 		StandardObjects standardObjects = StandardObjects
 				.createStandardObjects(globalObject);
+		
 		net.primitive.javascript.core.jdk.Console.init(globalObject);
 
+//		new Require(standardObjects,globalObject, new SoftCachingModuleScriptProvider() {
+//			
+//			@Override
+//			protected ModuleScript loadModuleScript(ModuleSource moduleSource, Reader reader, URI sourceUri) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//		})
+		
 		consoleReader.addCompleter(new Completer() {
 
 			@Override

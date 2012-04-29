@@ -3,8 +3,8 @@ package net.primitive.javascript.commonjs;
 
 import java.net.URI;
 
+import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.natives.StandardObjects;
 
 /**
  * Should be implemented by Rhino embeddings to allow the require() function to
@@ -36,7 +36,7 @@ public interface ModuleScriptProvider
      * @throws IllegalArgumentException if the module ID is syntactically not a
      * valid absolute module identifier.
      */
-    public ModuleScript getModuleScript(StandardObjects cx, String moduleId,
+    public ModuleScript getModuleScript(Scope scope, String moduleId,
             URI moduleUri, Scriptable paths)
             throws Exception;
 
