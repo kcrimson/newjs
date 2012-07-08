@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
-			<version>0.4.0</version>
+			<version>0.5.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -83,7 +83,7 @@
 		<module>performance-tests</module>
 		<module>cli</module>
 		<module>repl</module>
-    <module>commonjs</module>
+    	<module>commonjs</module>
   </modules>
 
 	<repositories>

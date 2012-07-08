@@ -604,7 +604,7 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
                         }
     | 'new' LT!* exp=memberExpression LT!* arguments 
                                                     {
-                                                     $result = new NewExpression($exp.result,$arguments.result);
+                                                     $result = new NewExpression($exp.result, $arguments.result);
                                                     }
   )
   (LT!* memberExpressionSuffix 
@@ -686,7 +686,7 @@ propertyReferenceSuffix returns [Expression result]
                      }
   ;
 
-assignmentOperator returns [AssignmentOperator result]
+assignmentOperator returns [BinaryOperator result]
   :
   '=' 
      {
@@ -695,7 +695,10 @@ assignmentOperator returns [AssignmentOperator result]
   | '*='
   | '/='
   | '%='
-  | '+='
+  | '+=' 
+        {
+         $result = Operators.Plus;
+        }
   | '-='
   | '<<='
   | '>>='

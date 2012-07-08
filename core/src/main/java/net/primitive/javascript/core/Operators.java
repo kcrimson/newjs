@@ -22,8 +22,6 @@ import static net.primitive.javascript.core.Convertions.toPrimitive;
 import static net.primitive.javascript.core.Reference.getValue;
 import static net.primitive.javascript.core.Reference.putValue;
 
-import net.primitive.javascript.core.ast.AssignmentOperator;
-
 /**
  * Set of static code which implements all operators available in ECMAScript.
  * 
@@ -44,8 +42,7 @@ public final class Operators {
 					return true;
 				}
 				if (Types.Number.equals(type1)) {
-					return ((Number) op1).doubleValue() == ((Number) op2)
-							.doubleValue();
+					return ((Number) op1).doubleValue() == ((Number) op2).doubleValue();
 				}
 				if (Types.String.equals(type1)) {
 					return ((String) op1).equals(op2);
@@ -180,7 +177,13 @@ public final class Operators {
 		}
 	};
 
-	public static final AssignmentOperator Assign = null;
+	public static final BinaryOperator Assign = new BinaryOperator() {
+
+		@Override
+		public Object operator(Object op1, Object op2) {
+			return op2;
+		}
+	};
 
 	public static final UnaryOperator TypeOf = new UnaryOperator() {
 

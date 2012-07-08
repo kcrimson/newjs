@@ -18,8 +18,6 @@ package net.primitive.javascript.repl;
 import static net.primitive.javascript.interpreter.RuntimeContext.enterContext;
 import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
 
-import java.io.Reader;
-import java.net.URI;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -27,10 +25,6 @@ import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
-import net.primitive.javascript.commonjs.ModuleScript;
-import net.primitive.javascript.commonjs.Require;
-import net.primitive.javascript.commonjs.provider.ModuleSource;
-import net.primitive.javascript.commonjs.provider.SoftCachingModuleScriptProvider;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.Program;
@@ -51,33 +45,31 @@ public class Main {
 		Terminal terminal = TerminalFactory.create();
 		terminal.init();
 
-		ConsoleReader consoleReader = new ConsoleReader("newjs shell",
-				System.in, System.out, terminal);
+		ConsoleReader consoleReader = new ConsoleReader("newjs shell", System.in, System.out, terminal);
 		consoleReader.setPrompt("js> ");
 
-		consoleReader
-				.println("ECMAScript 5 \"strict mode\". Use /? for mode details");
+		consoleReader.println("ECMAScript 5 \"strict mode\". Use /h for mode details");
 
 		final Scriptable globalObject = new ScriptableObject();
-		StandardObjects standardObjects = StandardObjects
-				.createStandardObjects(globalObject);
-		
+		StandardObjects standardObjects = StandardObjects.createStandardObjects(globalObject);
+
 		net.primitive.javascript.core.jdk.Console.init(globalObject);
 
-//		new Require(standardObjects,globalObject, new SoftCachingModuleScriptProvider() {
-//			
-//			@Override
-//			protected ModuleScript loadModuleScript(ModuleSource moduleSource, Reader reader, URI sourceUri) {
-//				// TODO Auto-generated method stub
-//				return null;
-//			}
-//		})
-		
+		// new Require(standardObjects,globalObject, new
+		// SoftCachingModuleScriptProvider() {
+		//
+		// @Override
+		// protected ModuleScript loadModuleScript(ModuleSource moduleSource,
+		// Reader reader, URI sourceUri) {
+		// // TODO Auto-generated method stub
+		// return null;
+		// }
+		// })
+
 		consoleReader.addCompleter(new Completer() {
 
 			@Override
-			public int complete(String buffer, int cursor,
-					List<CharSequence> candidates) {
+			public int complete(String buffer, int cursor, List<CharSequence> candidates) {
 
 				Enumeration<String> enumeration = globalObject.enumeration();
 				while (enumeration.hasMoreElements()) {
@@ -91,12 +83,10 @@ public class Main {
 			}
 		});
 
-		RuntimeContext currentContext = enterContext(standardObjects,
-				globalObject);
+		RuntimeContext currentContext = enterContext(standardObjects, globalObject);
 
 		CommandParser parser = new CommandParser();
-		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader,
-				parser);
+		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader, parser);
 
 		String line;
 		while ((line = consoleReader.readLine()) != null) {
@@ -109,15 +99,11 @@ public class Main {
 
 				// wrap parsing, so we don't exit in a most unexpected moment
 				try {
-					final JavaScriptLexer lexer = new JavaScriptLexer(
-							new ANTLRStringStream(line));
-					final CommonTokenStream commonTokenStream = new CommonTokenStream(
-							lexer);
-					final JavaScriptParser javaScriptParser = new JavaScriptParser(
-							commonTokenStream);
+					final JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(line));
+					final CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+					final JavaScriptParser javaScriptParser = new JavaScriptParser(commonTokenStream);
 					final Program program = javaScriptParser.program().result;
-					ProgramVisitorImpl visitor = new ProgramVisitorImpl(
-							currentContext);
+					ProgramVisitorImpl visitor = new ProgramVisitorImpl(currentContext);
 					program.accept(visitor);
 				} catch (Exception e) {
 					e.printStackTrace();

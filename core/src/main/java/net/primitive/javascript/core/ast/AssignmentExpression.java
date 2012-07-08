@@ -15,15 +15,15 @@
  */
 package net.primitive.javascript.core.ast;
 
+import net.primitive.javascript.core.BinaryOperator;
 
 public final class AssignmentExpression extends Expression {
 
 	private final Expression leftHandSideExpression;
-	private final AssignmentOperator assignmentOperator;
+	private final BinaryOperator assignmentOperator;
 	private final Expression rightHandSideExpression;
 
-	public AssignmentExpression(Expression expression,
-			AssignmentOperator assignmentOperator, Expression expression2) {
+	public AssignmentExpression(Expression expression, BinaryOperator assignmentOperator, Expression expression2) {
 		this.leftHandSideExpression = expression;
 		this.assignmentOperator = assignmentOperator;
 		this.rightHandSideExpression = expression2;
@@ -39,7 +39,7 @@ public final class AssignmentExpression extends Expression {
 	/**
 	 * @return the assignmentOperator
 	 */
-	public AssignmentOperator getAssignmentOperator() {
+	public BinaryOperator getAssignmentOperator() {
 		return assignmentOperator;
 	}
 

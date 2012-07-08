@@ -104,6 +104,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		assignmentExpression.getRightHandSideExpression().accept(this);
 		Object value = getValue(result);
 		assignmentExpression.getLeftHandSideExpression().accept(this);
+		value = assignmentExpression.getAssignmentOperator().operator(getValue(result), value);
 		putValue(result, value);
 	}
 
