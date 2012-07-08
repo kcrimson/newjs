@@ -699,7 +699,10 @@ assignmentOperator returns [BinaryOperator result]
         {
          $result = Operators.Plus;
         }
-  | '-='
+  | '-=' 
+        {
+         $result = Operators.Minus;
+        }
   | '<<='
   | '>>='
   | '>>>='
