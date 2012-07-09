@@ -1,11 +1,15 @@
 package net.primitive.javascript.core.jdk;
 
+import static net.primitive.javascript.core.Reference.getValue;
+import static net.primitive.javascript.core.jdk.JavaHost.unwrap;
 import static org.apache.commons.beanutils.ConstructorUtils.invokeConstructor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import net.primitive.javascript.core.EcmaScriptException;
 import net.primitive.javascript.core.Function;
+import net.primitive.javascript.core.ReferenceErrorException;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
@@ -26,12 +30,17 @@ public class JavaClassWrapper extends ScriptableObject implements Function {
 
 	@Override
 	public Object call(Scope scope, Scriptable thisObj, Object[] args) {
-		return null;
+		return construct(scope, args);
 	}
 
 	@Override
 	public Object[] bindParameters(Object[] actualParameters) {
-		return actualParameters;
+		// unwrap arguments
+		Object[] convertedArgs = new Object[actualParameters.length];
+		for (int i = 0; i < actualParameters.length; i++) {
+			convertedArgs[i] = unwrap(getValue((actualParameters[i])));
+		}
+		return convertedArgs;
 	}
 
 	@Override
@@ -41,30 +50,19 @@ public class JavaClassWrapper extends ScriptableObject implements Function {
 
 	@Override
 	public Scriptable construct(Scope scope, Object[] args) {
-		// unwrap arguments
-		Object[] convertedArgs = new Object[args.length];
-		for (int i = 0; i < args.length; i++) {
-			convertedArgs[i] = JavaHost.unwrap(net.primitive.javascript.core.Reference.getValue((args[i])));
-		}
 
 		try {
-			Object object = invokeConstructor(javaClass, convertedArgs);
+			Object object = invokeConstructor(javaClass, args);
 			return new JavaObjectWrapper(object);
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ReferenceErrorException("no constructor found");
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new EcmaScriptException("illegal access to Java object constructor");
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new EcmaScriptException("illegal access to Java object constructor");
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new EcmaScriptException("illegal access to Java object constructor");
 		}
-
-		return null;
 	}
 
 	@Override

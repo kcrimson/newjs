@@ -12,16 +12,16 @@ import net.primitive.javascript.core.ScriptableObject;
 /**
  * 
  * @author jpalka@gmail.com
- *
+ * 
  */
 public class JavaMethodWrapper extends ScriptableObject implements Callable {
 
 	private final Object javaObject;
-	private final String propertyName;
+	private final String methodName;
 
-	public JavaMethodWrapper(Object javaObject, String propertyName) {
+	public JavaMethodWrapper(Object javaObject, String methodName) {
 		this.javaObject = javaObject;
-		this.propertyName = propertyName;
+		this.methodName = methodName;
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class JavaMethodWrapper extends ScriptableObject implements Callable {
 
 		Object object = null;
 		try {
-			object = MethodUtils.invokeMethod(javaObject, propertyName, args);
+			object = MethodUtils.invokeMethod(javaObject, methodName, args);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
