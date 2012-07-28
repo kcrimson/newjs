@@ -23,6 +23,12 @@ import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.ast.ProgramVisitor;
 import net.primitive.javascript.core.ast.Statement;
 
+/**
+ * This is main interpreter loop.
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public class ProgramVisitorImpl implements ProgramVisitor {
 
 	private final RuntimeContext context;

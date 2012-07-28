@@ -220,7 +220,7 @@ public class ExpressionVisitorImpl implements ExpressionVisitor {
 		Scope lexenv = executionContext.getLexicalEnvironment();
 		JSNativeFunction function = new JSNativeFunction(lexenv,
 				functionExpression.getFunctionName(),
-				functionExpression.getParameterList(),
+				(List<String>) functionExpression.getParameterList(),
 				functionExpression.getFunctionBody());
 		function.setPrototype(context.getObjectPrototype());
 		result = function;

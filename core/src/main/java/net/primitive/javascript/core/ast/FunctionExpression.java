@@ -25,10 +25,10 @@ import lombok.Getter;
 public class FunctionExpression extends Expression {
 
 	@Getter private final String functionName;
-	@Getter private final List parameterList;
+	@Getter private final List<?> parameterList;
 	@Getter private final AstNodeList functionBody;
 
-	public FunctionExpression(String functionName, List parameterList,
+	public FunctionExpression(String functionName, List<?> parameterList,
 			AstNodeList functionBody) {
 		this.functionName = functionName;
 		this.parameterList = unmodifiableList(parameterList);

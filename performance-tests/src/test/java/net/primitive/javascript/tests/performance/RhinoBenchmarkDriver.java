@@ -41,9 +41,6 @@ public class RhinoBenchmarkDriver implements BenchmarkDriver {
 			script.exec(context, standardObjects);
 		}
 		stopwatch.stop();
-		System.out.println(stopwatch.getTime());
-		// System.out.println(ScriptableObject.getProperty(standardObjects,
-		// "assertResult"));
 
 	}
 

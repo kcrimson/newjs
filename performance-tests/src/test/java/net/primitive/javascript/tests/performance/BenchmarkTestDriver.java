@@ -66,7 +66,8 @@ public class BenchmarkTestDriver {
 		newjsDriver.benchmark(repCount, testScript);
 		stopWatch.stop();
 
-		System.out.println("NewJS times: " + stopWatch.getTime());
+		long newJSTime = stopWatch.getTime();
+		System.out.println("NewJS times: " + newJSTime);
 
 		stopWatch.reset();
 
@@ -76,12 +77,14 @@ public class BenchmarkTestDriver {
 		rhinoBenchmarkDriver.benchmark(repCount, testScript);
 		stopWatch.stop();
 
-		System.out.println("Rhino: " + stopWatch.getTime());
+		long rhinoTime = stopWatch.getTime();
+		System.out.println("Rhino: " + rhinoTime);
+		System.out.println("NewJS vs Rhino: "+((float)rhinoTime/newJSTime));
 	}
 
 	public static void main(String[] argv) throws Exception {
 		BenchmarkTestDriver testDriver = new BenchmarkTestDriver(
-				"/home/palkaj01/projects/newjs/javascript-functional-tests/target/classes/array/large-array.js");
+				"/home/palkaj01/projects/newjs/functional-tests/target/classes/new-function.js");
 		testDriver.run_benchmark();
 	}
 }

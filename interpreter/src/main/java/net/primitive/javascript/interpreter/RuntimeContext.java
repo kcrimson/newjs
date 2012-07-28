@@ -173,8 +173,8 @@ public final class RuntimeContext {
 	}
 
 	/**
-	 * Removes statement from call stack. <blockquote><strong>Internal use
-	 * only.</strong></blockquote>
+	 * Removes statement from call stack. 
+	 * <blockquote><strong>Internal use only.</strong></blockquote>
 	 * 
 	 * @return
 	 */

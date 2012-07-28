@@ -18,6 +18,11 @@ package net.primitive.javascript.repl;
 import static net.primitive.javascript.interpreter.RuntimeContext.enterContext;
 import static net.primitive.javascript.interpreter.RuntimeContext.exitContext;
 
+import java.io.File;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -25,12 +30,19 @@ import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import net.primitive.javascript.commonjs.ModuleScript;
+import net.primitive.javascript.commonjs.ModuleScriptProvider;
+import net.primitive.javascript.commonjs.Require;
+import net.primitive.javascript.commonjs.provider.ModuleSource;
+import net.primitive.javascript.commonjs.provider.SoftCachingModuleScriptProvider;
+import net.primitive.javascript.commonjs.provider.UrlModuleSourceProvider;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.ScriptableObject;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.core.parser.JavaScriptLexer;
 import net.primitive.javascript.core.parser.JavaScriptParser;
+import net.primitive.javascript.interpreter.Interpreter;
 import net.primitive.javascript.interpreter.ProgramVisitorImpl;
 import net.primitive.javascript.interpreter.RuntimeContext;
 
@@ -84,6 +96,23 @@ public class Main {
 		});
 
 		RuntimeContext currentContext = enterContext(standardObjects, globalObject);
+
+		// new UrlModuleSourceProvider(Arrays.asList(new File(".").toURL()));
+		//
+		// ModuleScriptProvider moduleScriptProvider = new
+		// SoftCachingModuleScriptProvider() {
+		//
+		// @Override
+		// protected ModuleScript loadModuleScript(ModuleSource moduleSource,
+		// Reader reader, URI sourceUri) {
+		// Interpreter interpreter = new Interpreter();
+		//
+		// return null;
+		// }
+		// };
+		// globalObject
+		// .put("require", new Require(standardObjects, globalObject,
+		// moduleScriptProvider, null, null, false));
 
 		CommandParser parser = new CommandParser();
 		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader, parser);

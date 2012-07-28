@@ -52,7 +52,6 @@ public class NewJSBenchmarkDriver implements BenchmarkDriver {
 
 		}
 		stopwatch.stop();
-		System.out.println(stopwatch.getTime());
 	}
 
 }

@@ -86,12 +86,23 @@ public class StatementExecutionContext {
 		statement.accept(visitor);
 	}
 
+	/**
+	 * Called when statement frame returns value
+	 * 
+	 * @param value
+	 *            value returned by this statement frame
+	 */
 	public void returnValue(Object value) {
 		completion.setType(CompletionType.Return);
 		completion.setValue(value);
 		completion.setTarget(null);
 	}
 
+	/**
+	 * Called when statement frame throws an exception
+	 * 
+	 * @param exceptionObject
+	 */
 	public void throwException(Object exceptionObject) {
 		completion.setType(CompletionType.Throw);
 		completion.setValue(exceptionObject);

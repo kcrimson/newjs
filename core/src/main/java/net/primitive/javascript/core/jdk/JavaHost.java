@@ -19,7 +19,6 @@ import static java.util.Collections.emptyMap;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 

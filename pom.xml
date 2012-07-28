@@ -83,8 +83,9 @@
 		<module>performance-tests</module>
 		<module>cli</module>
 		<module>repl</module>
-    	<module>commonjs</module>
-  </modules>
+	    	<module>commonjs</module>
+    		<module>compiler</module>
+  	</modules>
 
 	<repositories>
 		<repository>
