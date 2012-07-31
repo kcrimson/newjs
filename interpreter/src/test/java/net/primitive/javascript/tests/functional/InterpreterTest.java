@@ -74,6 +74,6 @@ public class InterpreterTest {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/target/classes/plus-assignment.js");
+		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/target/classes/f.js");
 	}
 }

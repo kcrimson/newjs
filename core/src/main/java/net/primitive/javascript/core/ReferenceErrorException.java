@@ -15,6 +15,13 @@
  */
 package net.primitive.javascript.core;
 
+/**
+ * EcmaScript exception thrown whenever reference is not found (not bound to
+ * lexical environment)
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public class ReferenceErrorException extends EcmaScriptException {
 
 	/**

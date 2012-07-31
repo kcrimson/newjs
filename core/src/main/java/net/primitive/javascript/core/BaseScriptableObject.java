@@ -2,6 +2,13 @@ package net.primitive.javascript.core;
 
 import static net.primitive.javascript.core.Convertions.toObject;
 
+/**
+ * Base implementation of {@link net.primitive.javascript.core.Scriptable}.
+ * Implements prototype chain, but doesn't implement store for members.
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public abstract class BaseScriptableObject implements Scriptable {
 
 	private static final String PROTOTYPE = "prototype";
@@ -16,7 +23,6 @@ public abstract class BaseScriptableObject implements Scriptable {
 	public BaseScriptableObject() {
 		classname = null;
 	}
-
 
 	@Override
 	public Scriptable getPrototype() {
@@ -40,12 +46,11 @@ public abstract class BaseScriptableObject implements Scriptable {
 
 	@Override
 	public Object get(String propertyName) {
-		
-		if(PROTOTYPE.equals(propertyName)){
+
+		if (PROTOTYPE.equals(propertyName)) {
 			return getPrototype();
 		}
-		
-		
+
 		PropertyDescriptor descriptor = getProperty(propertyName);
 		if (descriptor == null) {
 			return Undefined.Value;
@@ -59,54 +64,54 @@ public abstract class BaseScriptableObject implements Scriptable {
 	 */
 	@Override
 	public PropertyDescriptor getProperty(String propertyName) {
-	
+
 		PropertyDescriptor prop = getOwnProperty(propertyName);
-	
+
 		if (prop != null) {
 			return prop;
 		}
-	
+
 		Scriptable proto = getPrototype();
 		if (proto != null) {
 			return proto.getProperty(propertyName);
 		}
-	
+
 		return null;
 	}
 
 	@Override
 	public void put(String propertyName, Object value) {
-	
-		if(PROTOTYPE.equals(propertyName)){
+
+		if (PROTOTYPE.equals(propertyName)) {
 			setPrototype(toObject(value));
 			return;
 		}
-		
+
 		if (canPut(propertyName)) {
-	
+
 			PropertyDescriptor ownDesc = getOwnProperty(propertyName);
-	
+
 			if (PropertyDescriptor.isDataDescriptor(ownDesc)) {
 				ownDesc.setValue(value);
 				return;
 			}
-	
+
 			PropertyDescriptor desc = getProperty(propertyName);
-	
+
 			if (PropertyDescriptor.isAccessorDescriptor(desc)) {
 				desc.setValue(value);
 				return;
 			}
-	
+
 			PropertyDescriptor propertyDescriptor = new PropertyDescriptor(this)
 					.isWriteable(true).isEnumerable(true).isConfigurable(true);
 			propertyDescriptor.setValue(value);
 			defineOwnProperty(propertyName, propertyDescriptor, false);
-			//associatedProperties.put(propertyName, propertyDescriptor);
+			// associatedProperties.put(propertyName, propertyDescriptor);
 		} else {
 			throw new TypeErrorException();
 		}
-	
+
 	}
 
 	@Override

@@ -15,6 +15,11 @@
  */
 package net.primitive.javascript.core;
 
+/**
+ * An executable EcmaScript script object.
+ * @author jpalka@gmail.com
+ *
+ */
 public interface Script {
 
 	void execute(Scriptable globalObject);
