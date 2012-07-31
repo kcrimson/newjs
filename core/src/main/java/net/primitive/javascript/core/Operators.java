@@ -52,7 +52,13 @@ public final class Operators {
 		}
 	};
 
-	public static final BinaryOperator DoesNotEquals = null;
+	public static final BinaryOperator DoesNotEquals = new BinaryOperator() {
+		
+		@Override
+		public Object operator(Object op1, Object op2) {
+			return !(Boolean)Equals.operator(op1, op2);
+		}
+	};
 
 	public static final BinaryOperator StrictEquals = new BinaryOperator() {
 
