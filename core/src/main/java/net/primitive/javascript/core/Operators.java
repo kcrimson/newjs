@@ -78,7 +78,13 @@ public final class Operators {
 		}
 	};
 
-	public static final BinaryOperator StrictDoesNotEquals = null;
+	public static final BinaryOperator StrictDoesNotEquals = new BinaryOperator() {
+		
+		@Override
+		public Object operator(Object op1, Object op2) {
+			return !(Boolean)StrictEquals.operator(op1, op2);
+		}
+	};
 
 	public static final BinaryOperator LogicalAND = new BinaryOperator() {
 

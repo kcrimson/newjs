@@ -1251,7 +1251,9 @@ propertyName
 
 literal returns [Expression result]
   :
-  'null'
+  'null' { 
+            $result = new Literal(null);
+          }
   | 'true' 
           {
            $result = new Literal(Boolean.TRUE);
