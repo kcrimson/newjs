@@ -44,4 +44,6 @@ public interface StatementVisitor {
 
 	void visitForInStatement(ForInStatement forInStatement);
 
+	void visitSwitchStatement(SwitchStatement switchStatement);
+
 }

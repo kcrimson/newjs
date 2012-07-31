@@ -45,6 +45,7 @@ import net.primitive.javascript.core.ast.IfStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.StatementVisitor;
+import net.primitive.javascript.core.ast.SwitchStatement;
 import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
@@ -305,6 +306,21 @@ public class StatementVisitorImpl implements StatementVisitor {
 		while (enumeration.hasMoreElements()) {
 			putValue(varRef, enumeration.nextElement());
 
+			for (AstNode astNode : astNodes) {
+				if (!executeStatement((Statement) astNode)) {
+					return;
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void visitSwitchStatement(SwitchStatement switchStatement) {
+		AstNodeList nodeList = switchStatement.getDefaultClause();
+
+		if(nodeList !=null){
+			List<AstNode> astNodes = nodeList.getAstNodes();
 			for (AstNode astNode : astNodes) {
 				if (!executeStatement((Statement) astNode)) {
 					return;
