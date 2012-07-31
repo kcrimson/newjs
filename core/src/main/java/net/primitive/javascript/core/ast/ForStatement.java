@@ -28,8 +28,8 @@ public class ForStatement extends Statement {
 	@Getter
 	private final AstNode statements;
 
-	public ForStatement(AstNode initializeExpression, Expression incrementExpression,
-			Expression testExpression, AstNode statements) {
+	public ForStatement(AstNode initializeExpression,
+			Expression testExpression, Expression incrementExpression, AstNode statements) {
 				this.initializeExpression = initializeExpression;
 				this.incrementExpression = incrementExpression;
 				this.testExpression = testExpression;

@@ -24,9 +24,9 @@ import static net.primitive.javascript.core.Reference.putValue;
 
 /**
  * Set of static code which implements all operators available in ECMAScript.
- * 
+ *
  * @author jpalka@gmail.com
- * 
+ *
  */
 public final class Operators {
 
@@ -97,7 +97,13 @@ public final class Operators {
 			return Convertions.toNumber(op1) > Convertions.toNumber(op2);
 		}
 	};
-	public static final BinaryOperator LessThanOrEqual = null;
+	public static final BinaryOperator LessThanOrEqual = new BinaryOperator() {
+
+		@Override
+		public Object operator(Object op1, Object op2) {
+			return Convertions.toNumber(op1) <= Convertions.toNumber(op2);
+		}
+	};
 	public static final BinaryOperator LessThan = new BinaryOperator() {
 
 		@Override

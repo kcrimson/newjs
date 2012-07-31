@@ -3,14 +3,16 @@ var print = console.log;
 		var var2 = 1;
 		var var3;
 	 
-		var num = 20;
+		var num = 8;
  
  
-		for(var i=3; i <= num;i++)
+		for(var i=3;i<=num;i++)
 		{
 			var3 = var1 + var2;
 			var1 = var2;
 			var2 = var3;
- 
 			print(var3);
+		
 		}
+
+		var assertResult = (var3==13);
