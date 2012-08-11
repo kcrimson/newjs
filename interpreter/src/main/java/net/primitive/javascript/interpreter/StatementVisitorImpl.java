@@ -34,6 +34,7 @@ import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.AstNode;
 import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
+import net.primitive.javascript.core.ast.CaseClauseStatement;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.Expression;
@@ -317,9 +318,16 @@ public class StatementVisitorImpl implements StatementVisitor {
 
 	@Override
 	public void visitSwitchStatement(SwitchStatement switchStatement) {
+
+		List<CaseClauseStatement> clauses = switchStatement.getClauses();
+
+		for (CaseClauseStatement clause : clauses) {
+			clause.getExpression();
+		}
+
 		AstNodeList nodeList = switchStatement.getDefaultClause();
 
-		if(nodeList !=null){
+		if (nodeList != null) {
 			List<AstNode> astNodes = nodeList.getAstNodes();
 			for (AstNode astNode : astNodes) {
 				if (!executeStatement((Statement) astNode)) {

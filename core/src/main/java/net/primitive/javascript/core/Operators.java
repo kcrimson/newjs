@@ -79,7 +79,7 @@ public final class Operators {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return !(Boolean) StrictEquals.operator(op1, op2);
+			return !toBoolean(StrictEquals.operator(op1, op2));
 		}
 	};
 
@@ -87,7 +87,7 @@ public final class Operators {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			if (!Convertions.toBoolean(op1)) {
+			if (!toBoolean(op1)) {
 				return op1;
 			}
 			return op2;
@@ -103,21 +103,21 @@ public final class Operators {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return Convertions.toNumber(op1) > Convertions.toNumber(op2);
+			return toNumber(op1) > toNumber(op2);
 		}
 	};
 	public static final BinaryOperator LessThanOrEqual = new BinaryOperator() {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return Convertions.toNumber(op1) <= Convertions.toNumber(op2);
+			return toNumber(op1) <= toNumber(op2);
 		}
 	};
 	public static final BinaryOperator LessThan = new BinaryOperator() {
 
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return Convertions.toNumber(op1) < Convertions.toNumber(op2);
+			return toNumber(op1) < toNumber(op2);
 		}
 	};
 	public static final BinaryOperator InstanceOf = new BinaryOperator() {
