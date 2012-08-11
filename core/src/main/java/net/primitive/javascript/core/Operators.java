@@ -15,12 +15,10 @@
  */
 package net.primitive.javascript.core;
 
-import static net.primitive.javascript.core.Convertions.toBoolean;
-import static net.primitive.javascript.core.Convertions.toNumber;
-import static net.primitive.javascript.core.Convertions.toObject;
-import static net.primitive.javascript.core.Convertions.toPrimitive;
-import static net.primitive.javascript.core.Reference.getValue;
-import static net.primitive.javascript.core.Reference.putValue;
+import static net.primitive.javascript.core.Convertions.*;
+import static net.primitive.javascript.core.Reference.*;
+
+
 
 /**
  * Set of static code which implements all operators available in ECMAScript.
@@ -135,7 +133,20 @@ public final class Operators {
 	};
 
 	public static final BinaryOperator GreaterThanOrEual = null;
-	public static final BinaryOperator In = null;
+	public static final BinaryOperator In = new BinaryOperator(){
+		@Override
+		public Object operator(Object op1, Object op2) {
+			
+			Object op1Value = Reference.getValue(op1);
+			Object op2Value = Reference.getValue(op2);
+			
+			if(!Types.Object.equals(Operators.TypeOf.operator(op2Value))){
+				throw new TypeErrorException();
+			}
+			
+			return Convertions.toObject(op2Value).hasProperty( Convertions.toString(op1Value) );
+		}
+	};
 	public static final BinaryOperator RightShift = null;
 	public static final BinaryOperator UnsignedRightShift = null;
 	public static final BinaryOperator LeftShift = null;
