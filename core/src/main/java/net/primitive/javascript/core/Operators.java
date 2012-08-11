@@ -18,13 +18,11 @@ package net.primitive.javascript.core;
 import static net.primitive.javascript.core.Convertions.*;
 import static net.primitive.javascript.core.Reference.*;
 
-
-
 /**
  * Set of static code which implements all operators available in ECMAScript.
- *
+ * 
  * @author jpalka@gmail.com
- *
+ * 
  */
 public final class Operators {
 
@@ -40,7 +38,8 @@ public final class Operators {
 					return true;
 				}
 				if (Types.Number.equals(type1)) {
-					return ((Number) op1).doubleValue() == ((Number) op2).doubleValue();
+					return ((Number) op1).doubleValue() == ((Number) op2)
+							.doubleValue();
 				}
 				if (Types.String.equals(type1)) {
 					return ((String) op1).equals(op2);
@@ -51,10 +50,10 @@ public final class Operators {
 	};
 
 	public static final BinaryOperator DoesNotEquals = new BinaryOperator() {
-		
+
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return !(Boolean)Equals.operator(op1, op2);
+			return !(Boolean) Equals.operator(op1, op2);
 		}
 	};
 
@@ -77,10 +76,10 @@ public final class Operators {
 	};
 
 	public static final BinaryOperator StrictDoesNotEquals = new BinaryOperator() {
-		
+
 		@Override
 		public Object operator(Object op1, Object op2) {
-			return !(Boolean)StrictEquals.operator(op1, op2);
+			return !(Boolean) StrictEquals.operator(op1, op2);
 		}
 	};
 
@@ -133,18 +132,19 @@ public final class Operators {
 	};
 
 	public static final BinaryOperator GreaterThanOrEual = null;
-	public static final BinaryOperator In = new BinaryOperator(){
+	public static final BinaryOperator In = new BinaryOperator() {
 		@Override
 		public Object operator(Object op1, Object op2) {
-			
+
 			Object op1Value = Reference.getValue(op1);
 			Object op2Value = Reference.getValue(op2);
-			
-			if(!Types.Object.equals(Operators.TypeOf.operator(op2Value))){
+
+			if (!Types.Object.equals(Operators.TypeOf.operator(op2Value))) {
 				throw new TypeErrorException();
 			}
-			
-			return Convertions.toObject(op2Value).hasProperty( Convertions.toString(op1Value) );
+
+			return Convertions.toObject(op2Value).hasProperty(
+					Convertions.toString(op1Value));
 		}
 	};
 	public static final BinaryOperator RightShift = null;
@@ -293,6 +293,14 @@ public final class Operators {
 			double newValue = oldValue + 1;
 			putValue(object, newValue);
 			return newValue;
+		}
+	};
+
+	public static final UnaryOperator MinusSigned = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			return -1 * toNumber(object);
 		}
 	};
 

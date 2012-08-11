@@ -443,10 +443,14 @@ List<CaseClauseStatement> clauses = new ArrayList<CaseClauseStatement>();
   '{' (LT!* cc1=caseClause 
                           {
                            clauses.add($cc1.result);
-                          })* (LT!* defaultClause {$dc=$defaultClause.result;} (LT!* cc2=caseClause 
-                                                                      {
-                                                                       clauses.add($cc2.result);
-                                                                      })*)? LT!* '}'
+                          })* (LT!* defaultClause 
+                                                 {
+                                                  $dc = $defaultClause.result;
+                                                 }
+    (LT!* cc2=caseClause 
+                        {
+                         clauses.add($cc2.result);
+                        })*)? LT!* '}'
   ;
 
 caseClause returns [CaseClauseStatement result]
@@ -1134,7 +1138,10 @@ UnaryOperator operator = null;
            operator = Operators.PrefixDecrement;
           }
     | '+'
-    | '-'
+    | '-' 
+         {
+          operator = Operators.MinusSigned;
+         }
     | '~'
     | '!' 
          {
@@ -1251,9 +1258,10 @@ propertyName
 
 literal returns [Expression result]
   :
-  'null' { 
-            $result = new Literal(null);
-          }
+  'null' 
+        {
+         $result = new Literal(null);
+        }
   | 'true' 
           {
            $result = new Literal(Boolean.TRUE);
