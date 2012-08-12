@@ -10,6 +10,12 @@ options {
   memoize   = true;
 }
 
+tokens {
+  IF       = 'if';
+  FUNCTION = 'function';
+  VAR      = 'var';
+}
+
 @header {
 package net.primitive.javascript.core.parser;
 
@@ -62,11 +68,11 @@ sourceElement returns [AstNode result]
 
 functionDeclaration returns [AstNode result]
   :
-  'function' LT!* Identifier LT!* formalParameterList LT!* functionBody 
-                                                                       {
-                                                                        $result = new FunctionDeclaration($Identifier.text,
-                                                                        		$formalParameterList.result, $functionBody.result);
-                                                                       }
+  FUNCTION LT!* Identifier LT!* formalParameterList LT!* functionBody 
+                                                                     {
+                                                                      $result = new FunctionDeclaration($Identifier.text,
+                                                                      		$formalParameterList.result, $functionBody.result);
+                                                                     }
   ;
 
 formalParameterList returns [List result]
@@ -179,10 +185,10 @@ statementList returns [AstNodeList result]
 
 variableStatement returns [AstNode result]
   :
-  'var' LT!* variableDeclarationList 
-                                    {
-                                     $result = $variableDeclarationList.result;
-                                    }
+  VAR LT!* variableDeclarationList 
+                                  {
+                                   $result = $variableDeclarationList.result;
+                                  }
   (
     LT
     | ';'
@@ -280,11 +286,11 @@ expressionStatement returns [Statement result]
 
 ifStatement returns [Statement result]
   :
-  'if' LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
-                                                                                                               {
-                                                                                                                $result = new IfStatement($expression.result,
-                                                                                                                		(AstNodeList) $ifstatement.result, (AstNodeList) $elsestatement.result);
-                                                                                                               }
+  IF LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
+                                                                                                             {
+                                                                                                              $result = new IfStatement($expression.result,
+                                                                                                              		(AstNodeList) $ifstatement.result, (AstNodeList) $elsestatement.result);
+                                                                                                             }
   ;
 
 iterationStatement returns [AstNode result]
@@ -622,11 +628,11 @@ List<Expression> expresionSuffixes = new ArrayList<Expression>();
 
 functionExpression returns [Expression result]
   :
-  'function' LT!* Identifier? LT!* formalParameterList LT!* functionBody 
-                                                                        {
-                                                                         $result = new FunctionExpression($Identifier.text, $formalParameterList.result,
-                                                                         		$functionBody.result);
-                                                                        }
+  FUNCTION LT!* Identifier? LT!* formalParameterList LT!* functionBody 
+                                                                      {
+                                                                       $result = new FunctionExpression($Identifier.text, $formalParameterList.result,
+                                                                       		$functionBody.result);
+                                                                      }
   ;
 
 memberExpressionSuffix returns [Expression result]
@@ -1870,10 +1876,13 @@ LineComment
 
 LT
   :
-  '\n' // Line feed.
-  | '\r' // Carriage return.
-  | '\u2028' // Line separator.
-  | '\u2029' // Paragraph separator.
+  (
+    '\n' // Line feed.
+    | '\r' // Carriage return.
+    | '\u2028' // Line separator.
+    | '\u2029' // Paragraph separator.
+  )
+  
   ;
 
 WhiteSpace // Tab, vertical tab, form feed, space, non-breaking space and any other unicode "space separator".
