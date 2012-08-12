@@ -1,11 +1,11 @@
-package org.javascript.compiler;
+package net.primitive.javascript.compiler;
 
 import java.io.File;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.javascript.classgen.ClassGen;
 
+import net.primitive.javascript.classgen.ClassGen;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.ast.Program;
 import net.primitive.javascript.core.parser.JavaScriptLexer;

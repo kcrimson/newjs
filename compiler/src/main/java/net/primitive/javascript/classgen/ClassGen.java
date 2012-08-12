@@ -1,4 +1,4 @@
-package org.javascript.classgen;
+package net.primitive.javascript.classgen;
 
 import java.io.FileOutputStream;
 

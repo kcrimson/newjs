@@ -1,4 +1,4 @@
-package org.javascript.classgen;
+package net.primitive.javascript.classgen;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;

@@ -1,5 +1,11 @@
-package org.javascript.classgen;
+package net.primitive.javascript.classgen;
 
+/**
+ * Dummy classloader used to load class from bytes array.
+ * 
+ * @author jpalka@gmail.com
+ * 
+ */
 public class DefiningClassLoader extends ClassLoader {
 
 	private final ClassLoader parentClassLoader;

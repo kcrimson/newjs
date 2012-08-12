@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import net.primitive.javascript.compiler.Compiler;
 import net.primitive.javascript.core.Convertions;
 import net.primitive.javascript.core.Script;
 import net.primitive.javascript.core.Scriptable;

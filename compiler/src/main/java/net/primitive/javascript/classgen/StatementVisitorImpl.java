@@ -1,4 +1,4 @@
-package org.javascript.classgen;
+package net.primitive.javascript.classgen;
 
 import net.primitive.javascript.core.ast.BreakStatement;
 import net.primitive.javascript.core.ast.CatchClause;
