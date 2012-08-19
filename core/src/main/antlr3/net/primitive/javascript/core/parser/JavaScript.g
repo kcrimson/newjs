@@ -1143,7 +1143,10 @@ UnaryOperator operator = null;
           {
            operator = Operators.PrefixDecrement;
           }
-    | '+'
+    | '+' 
+         {
+          operator = Operators.PlusSigned;
+         }
     | '-' 
          {
           operator = Operators.MinusSigned;
@@ -1882,7 +1885,6 @@ LT
     | '\u2028' // Line separator.
     | '\u2029' // Paragraph separator.
   )
-  
   ;
 
 WhiteSpace // Tab, vertical tab, form feed, space, non-breaking space and any other unicode "space separator".

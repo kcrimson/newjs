@@ -304,6 +304,14 @@ public final class Operators {
 		}
 	};
 
+	public static final UnaryOperator PlusSigned = new UnaryOperator() {
+		
+		@Override
+		public Object operator(Object object) {
+			return object;
+		}
+	};
+	
 	private Operators() {
 	}
 }
