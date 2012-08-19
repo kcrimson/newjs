@@ -1130,7 +1130,10 @@ UnaryOperator operator = null;
             {
              operator = Operators.Delete;
             }
-    | 'void'
+    | 'void' 
+            {
+             operator = Operators.Void;
+            }
     | 'typeof' 
               {
                operator = Operators.TypeOf;

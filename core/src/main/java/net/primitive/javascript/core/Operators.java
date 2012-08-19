@@ -305,13 +305,24 @@ public final class Operators {
 	};
 
 	public static final UnaryOperator PlusSigned = new UnaryOperator() {
-		
+
 		@Override
 		public Object operator(Object object) {
 			return object;
 		}
 	};
-	
+
+	public static final UnaryOperator Void = new UnaryOperator() {
+
+		@Override
+		public Object operator(Object object) {
+			// GetValue must be called even though its value is not used because
+			// it may have observable side-effects.
+			getValue(object);
+			return Undefined.Value;
+		}
+	};
+
 	private Operators() {
 	}
 }
