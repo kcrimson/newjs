@@ -128,6 +128,7 @@ public class Main {
 
 				// wrap parsing, so we don't exit in a most unexpected moment
 				try {
+					System.out.println(line);
 					final JavaScriptLexer lexer = new JavaScriptLexer(new ANTLRStringStream(line));
 					final CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 					final JavaScriptParser javaScriptParser = new JavaScriptParser(commonTokenStream);
@@ -138,7 +139,7 @@ public class Main {
 					e.printStackTrace();
 					String msg = e.getMessage();
 					if (msg == null) {
-						msg = "something unexpected happend";
+						msg = "something unexpected happened";
 					}
 					consoleReader.println(msg);
 				}
