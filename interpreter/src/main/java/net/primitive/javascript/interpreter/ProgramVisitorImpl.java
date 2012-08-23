@@ -42,7 +42,7 @@ public class ProgramVisitorImpl implements ProgramVisitor {
 		List<AstNode> nodes = program.getAstNodes();
 		Iterator<AstNode> iterator = nodes.iterator();
 		StatementVisitorImpl visitor = context.getStatementVisitor();
-
+		
 		while (true) {
 			StatementExecutionContext executionContext = context
 					.currentExecutionContext();

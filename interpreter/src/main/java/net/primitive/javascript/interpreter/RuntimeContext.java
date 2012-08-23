@@ -20,6 +20,7 @@ import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
+import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.ForStatement;
@@ -49,7 +50,7 @@ public final class RuntimeContext {
 
 	private static final ThreadLocal<RuntimeContext> CONTEXT_LOCAL = new ThreadLocal<RuntimeContext>();
 
-	private final FastStack<StatementExecutionContext> callStack = new FastStack<StatementExecutionContext>();
+	private final FastStack<StatementExecutionContext> callStack;
 
 	private final ExpressionVisitorImpl expressionVisitor = new ExpressionVisitorImpl(this);
 
@@ -71,7 +72,28 @@ public final class RuntimeContext {
 		this.globalEnvironment = newObjectEnvironment(standardObjects, globalObject);
 		this.lexicalEnvironment = globalEnvironment;
 		this.variableEnvironment = lexicalEnvironment;
+		callStack = new FastStack<StatementExecutionContext>();
 	}
+	
+	/**
+	 * TEST only
+	 * @param globalObject
+	 * @param globalEnvironment
+	 * @param variableEnvironment
+	 * @param lexicalEnvironment
+	 * @param standardObjects
+	 */
+	RuntimeContext(FastStack<StatementExecutionContext> callStack) {
+	    super();
+		this.callStack = callStack;
+		globalObject = null;
+		globalEnvironment = null;
+		variableEnvironment = null;
+		lexicalEnvironment = null;
+		standardObjects = null;
+    }
+
+
 
 	/**
 	 * @return the expressionVisitor
@@ -109,7 +131,7 @@ public final class RuntimeContext {
 			thisObj = currentContext.getThisBinding();
 		}
 
-		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, varEnv, thisObj, statement);
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, varEnv, thisObj, statement, new Completion(CompletionType.Normal, Undefined.Value, null));
 		callStack.push(newContext);
 		return newContext;
 	}
@@ -124,7 +146,7 @@ public final class RuntimeContext {
 	 * @return
 	 */
 	public StatementExecutionContext enter(Statement statement, Scope lexEnv, Scriptable thisObj) {
-		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, lexEnv, thisObj, statement);
+		final StatementExecutionContext newContext = new StatementExecutionContext(lexEnv, lexEnv, thisObj, statement, new Completion(CompletionType.Normal, Undefined.Value, null));
 		callStack.push(newContext);
 		return newContext;
 	}

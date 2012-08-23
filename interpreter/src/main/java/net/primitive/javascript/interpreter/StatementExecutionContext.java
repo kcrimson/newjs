@@ -17,7 +17,6 @@ package net.primitive.javascript.interpreter;
 
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.Scriptable;
-import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.Statement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -41,16 +40,15 @@ public class StatementExecutionContext {
 
 	private Scope lexicalEnvironment;
 
-	protected StatementExecutionContext(Scope lexicalEnvironment,
+	public StatementExecutionContext(Scope lexicalEnvironment,
 			Scope variableEnvironment, Scriptable thisBinding,
-			Statement statement) {
+			Statement statement, Completion completion) {
 		super();
 		this.lexicalEnvironment = lexicalEnvironment;
 		this.variableEnvironment = variableEnvironment;
 		this.thisBinding = thisBinding;
 		this.statement = statement;
-		completion = new Completion(CompletionType.Normal, Undefined.Value,
-				null);
+		this.completion = completion;
 	}
 
 	/**
