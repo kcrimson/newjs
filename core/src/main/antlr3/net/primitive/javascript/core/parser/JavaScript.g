@@ -444,6 +444,7 @@ switchStatement returns [Statement result]
 caseBlock returns [List<CaseClauseStatement> clauses,AstNodeList dc]
 @init {
 List<CaseClauseStatement> clauses = new ArrayList<CaseClauseStatement>();
+$clauses = clauses;
 }
   :
   '{' (LT!* cc1=caseClause 

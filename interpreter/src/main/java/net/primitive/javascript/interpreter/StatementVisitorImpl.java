@@ -319,22 +319,47 @@ public class StatementVisitorImpl implements StatementVisitor {
 	@Override
 	public void visitSwitchStatement(SwitchStatement switchStatement) {
 
+		switchStatement.getExpression().accept(expressionVisitor);
+
+		Object switchExpr = expressionVisitor.getResult();
+		Object value = Reference.getValue(switchExpr);
+
+		boolean executeDefaultCase = true;
+		boolean entryCondition = false;
+		
 		List<CaseClauseStatement> clauses = switchStatement.getClauses();
-
-		for (CaseClauseStatement clause : clauses) {
-			clause.getExpression();
+		if( clauses != null ){
+			for (CaseClauseStatement clause : clauses) {
+				if(!entryCondition){
+					clause.getExpression().accept(expressionVisitor);
+					Object caseExpr = expressionVisitor.getResult();
+					entryCondition = Reference.getValue(caseExpr).equals(value);
+				}
+				
+				if(entryCondition && !executeStatements(clause.getStatements())){
+					executeDefaultCase = false;
+					break;
+				}
+			}
 		}
+		
+		if(executeDefaultCase){
+			AstNodeList nodeList = switchStatement.getDefaultClause();
+			executeStatements(nodeList);
+		}
+	}
 
-		AstNodeList nodeList = switchStatement.getDefaultClause();
-
+	private boolean executeStatements(AstNodeList nodeList) {
+		boolean continueIteration = true;
 		if (nodeList != null) {
 			List<AstNode> astNodes = nodeList.getAstNodes();
 			for (AstNode astNode : astNodes) {
 				if (!executeStatement((Statement) astNode)) {
-					return;
+					continueIteration = false;
+					break;
 				}
 			}
 		}
-
+		return continueIteration;
 	}
 }

@@ -24,6 +24,7 @@ import net.primitive.javascript.core.ast.CatchClause;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.Statement;
+import net.primitive.javascript.core.ast.SwitchStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.natives.StandardObjects;
@@ -224,7 +225,7 @@ public final class RuntimeContext {
 
 		if (CompletionType.Break.equals(completionType)) {
 			Statement currentStatement = current.getStatement();
-			if (isIterationStatement(currentStatement)) {
+			if (isIterationStatement(currentStatement) || isSwitchStatement(currentStatement)) {
 				callStack.pop();
 				return true;
 			} else {
@@ -238,6 +239,11 @@ public final class RuntimeContext {
 		return false;
 	}
 
+	private static boolean isSwitchStatement(Statement currentStatement) {
+		Class<? extends Statement> clazz = currentStatement.getClass();
+		return SwitchStatement.class.equals(clazz);
+	}
+	
 	private static boolean isIterationStatement(Statement currentStatement) {
 		Class<? extends Statement> clazz = currentStatement.getClass();
 		return WhileStatement.class.equals(clazz) || DoWhileStatement.class.equals(clazz) || ForStatement.class.equals(clazz);
