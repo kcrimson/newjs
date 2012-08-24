@@ -1,5 +1,2 @@
-var pathStr = "";
-
-var fileStr = "file:" + pathStr.replace(/\\/g, "/");
-
-var assertResult = "file:" == fileStr;
+var reg = /.*/g;
+var assertResult = false;
