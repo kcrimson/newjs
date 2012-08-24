@@ -289,7 +289,7 @@ ifStatement returns [Statement result]
   IF LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
                                                                                                              {
                                                                                                               $result = new IfStatement($expression.result,
-                                                                                                              		(AstNodeList) $ifstatement.result, (AstNodeList) $elsestatement.result);
+                                                                                                              		$ifstatement.result,  $elsestatement.result);
                                                                                                              }
   ;
 
@@ -1293,7 +1293,12 @@ literal returns [Expression result]
   ;
 
 // lexer rules.
-
+/*
+RegularExpressionLiteral
+  :
+  '/' ~(LT | '\'' | '"')* '/' UnicodeLetter*
+  ;
+*/  
 StringLiteral
   :
   '"' DoubleStringCharacter* '"'
