@@ -19,6 +19,7 @@ function test_simple_default_clause(a){
 	switch (a) {
 		case 1:
 			b = 1;
+			break;
 		default:
 			b = 5;
 	}

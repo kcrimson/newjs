@@ -94,23 +94,6 @@ public class Main {
 		RuntimeContext currentContext = enterContext(standardObjects,
 				globalObject);
 
-		// new UrlModuleSourceProvider(Arrays.asList(new File(".").toURL()));
-		//
-		// ModuleScriptProvider moduleScriptProvider = new
-		// SoftCachingModuleScriptProvider() {
-		//
-		// @Override
-		// protected ModuleScript loadModuleScript(ModuleSource moduleSource,
-		// Reader reader, URI sourceUri) {
-		// Interpreter interpreter = new Interpreter();
-		//
-		// return null;
-		// }
-		// };
-		// globalObject
-		// .put("require", new Require(standardObjects, globalObject,
-		// moduleScriptProvider, null, null, false));
-
 		CommandParser parser = new CommandParser();
 		REPLRuntime runtime = new DefaultREPLRuntime(terminal, consoleReader,
 				parser);
