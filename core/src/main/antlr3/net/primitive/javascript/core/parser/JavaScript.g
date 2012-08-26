@@ -436,12 +436,11 @@ switchStatement returns [Statement result]
   :
   'switch' LT!* '(' LT!* expression LT!* ')' LT!* caseBlock 
                                                            {
-                                                            $result = new SwitchStatement($expression.result, $caseBlock.clauses,
-                                                            		$caseBlock.dc);
+                                                            $result = new SwitchStatement($expression.result, $caseBlock.clauses);
                                                            }
   ;
 
-caseBlock returns [List<CaseClauseStatement> clauses,AstNodeList dc]
+caseBlock returns [List<CaseClauseStatement> clauses]
 @init {
 List<CaseClauseStatement> clauses = new ArrayList<CaseClauseStatement>();
 $clauses = clauses;
@@ -452,7 +451,7 @@ $clauses = clauses;
                            clauses.add($cc1.result);
                           })* (LT!* defaultClause 
                                                  {
-                                                  $dc = $defaultClause.result;
+                                                  clauses.add($defaultClause.result);
                                                  }
     (LT!* cc2=caseClause 
                         {
@@ -468,11 +467,11 @@ caseClause returns [CaseClauseStatement result]
                                                      }
   ;
 
-defaultClause returns [AstNodeList result]
+defaultClause returns [CaseClauseStatement result]
   :
   'default' LT!* ':' LT!* statementList? 
                                         {
-                                         $result = $statementList.result;
+                                         $result = new DefaultCaseClauseStatement($statementList.result);
                                         }
   ;
 
