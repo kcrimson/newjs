@@ -1,2 +1,3 @@
-var reg = /.*/g;
+var pathStr = "";
+var url = "file:" + pathStr.replace(/\\/g, "/");
 var assertResult = false;
