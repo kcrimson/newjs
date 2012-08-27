@@ -36,6 +36,7 @@ import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
 import net.primitive.javascript.core.ast.CaseClauseStatement;
 import net.primitive.javascript.core.ast.CatchClause;
+import net.primitive.javascript.core.ast.DefaultCaseClauseStatement;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
@@ -324,29 +325,29 @@ public class StatementVisitorImpl implements StatementVisitor {
 		Object switchExpr = expressionVisitor.getResult();
 		Object value = Reference.getValue(switchExpr);
 
-		boolean executeDefaultCase = true;
 		boolean entryCondition = false;
 		
 		List<CaseClauseStatement> clauses = switchStatement.getClauses();
 		if( clauses != null ){
 			for (CaseClauseStatement clause : clauses) {
 				if(!entryCondition){
-					clause.getExpression().accept(expressionVisitor);
-					Object caseExpr = expressionVisitor.getResult();
-					entryCondition = Reference.getValue(caseExpr).equals(value);
+					entryCondition = checkCaseClauseEntryCondition(value, clause);
 				}
 				
 				if(entryCondition && !executeStatements(clause.getStatements())){
-					executeDefaultCase = false;
 					break;
 				}
 			}
 		}
-		
-		if(executeDefaultCase){
-			AstNodeList nodeList = switchStatement.getDefaultClause();
-			executeStatements(nodeList);
+	}
+
+	private boolean checkCaseClauseEntryCondition(Object value, CaseClauseStatement clause) {
+		if(!(clause instanceof DefaultCaseClauseStatement)){
+			clause.getExpression().accept(expressionVisitor);
+			Object caseExpr = expressionVisitor.getResult();
+			return Reference.getValue(caseExpr).equals(value);
 		}
+		return true;
 	}
 
 	private boolean executeStatements(AstNodeList nodeList) {
