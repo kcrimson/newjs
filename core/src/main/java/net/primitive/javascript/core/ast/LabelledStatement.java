@@ -22,15 +22,16 @@ public class LabelledStatement extends Statement {
 	@Getter private final String identifier;
 	@Getter private final AstNode statement;
 
-	public LabelledStatement(String identifier, AstNode astNode) {
+	public LabelledStatement(String identifier, AstNode statement) {
 		this.identifier = identifier;
-		this.statement = astNode;
-		astNode.setParentNode(this);
+		this.statement = statement;
+		statement.setParentNode(this);
+		addLabel(identifier);
 	}
 
 	@Override
 	public void accept(StatementVisitor visitor) {
-		throw new UnsupportedOperationException("acceptLabelledStatement");
+		visitor.visitLabelledStatement(this);
 	}
 
 }

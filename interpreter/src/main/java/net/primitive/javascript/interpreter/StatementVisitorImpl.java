@@ -21,6 +21,7 @@ import static net.primitive.javascript.core.Convertions.toObject;
 import static net.primitive.javascript.core.Reference.getValue;
 import static net.primitive.javascript.core.Reference.putValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -44,6 +45,7 @@ import net.primitive.javascript.core.ast.ForInStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
+import net.primitive.javascript.core.ast.LabelledStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.StatementVisitor;
@@ -52,6 +54,7 @@ import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
+import net.primitive.javascript.interpreter.utils.StatementUtil;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
@@ -362,5 +365,25 @@ public class StatementVisitorImpl implements StatementVisitor {
 			}
 		}
 		return continueIteration;
+	}
+
+	@Override
+	public void visitLabelledStatement(LabelledStatement labelledStatement) {
+		Statement statement = (Statement)labelledStatement.getStatement();
+		
+		if( !StatementUtil.isLabelledStatement(statement) ){
+			statement.setLabels(new ArrayList<String>());
+		}
+		
+		if( StatementUtil.isSwitchStatement(statement) || StatementUtil.isIterationStatement(statement)){
+			statement.addLabel("");
+		}
+		if( !labelledStatement.getLabels().isEmpty() ){
+			statement.addLabels(labelledStatement.getLabels());
+		}
+		
+		if (!executeStatement(statement)) {
+			return;
+		}
 	}
 }

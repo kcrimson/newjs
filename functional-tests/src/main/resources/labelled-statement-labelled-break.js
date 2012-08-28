@@ -17,11 +17,12 @@
 var result = true;
 
 label:
+label2:
+label3:
 	for(var a=0;a<3;a++){
 		for(var i=0;i<3;i++){
 			break label;
 		}
 		result = false;
 	}
-console.log(result);
 var assertResult = result;

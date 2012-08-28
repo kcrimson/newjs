@@ -16,18 +16,19 @@
 package net.primitive.javascript.interpreter;
 
 import static net.primitive.javascript.interpreter.LexicalEnvironment.newObjectEnvironment;
+import static net.primitive.javascript.interpreter.utils.StatementUtil.isIterationStatement;
+import static net.primitive.javascript.interpreter.utils.StatementUtil.isSwitchStatement;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.primitive.javascript.core.Reference;
 import net.primitive.javascript.core.Scope;
 import net.primitive.javascript.core.ScopeBindings;
 import net.primitive.javascript.core.Scriptable;
 import net.primitive.javascript.core.Undefined;
 import net.primitive.javascript.core.ast.CatchClause;
-import net.primitive.javascript.core.ast.DoWhileStatement;
-import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.Statement;
-import net.primitive.javascript.core.ast.SwitchStatement;
 import net.primitive.javascript.core.ast.TryStatement;
-import net.primitive.javascript.core.ast.WhileStatement;
 import net.primitive.javascript.core.natives.StandardObjects;
 import net.primitive.javascript.interpreter.utils.FastStack;
 
@@ -247,28 +248,22 @@ public final class RuntimeContext {
 
 		if (CompletionType.Break.equals(completionType)) {
 			Statement currentStatement = current.getStatement();
-			if (isIterationStatement(currentStatement) || isSwitchStatement(currentStatement)) {
+			String identifier = (String)completion.getValue(); 
+			if ((isIterationStatement(currentStatement) || isSwitchStatement(currentStatement)) && isLabelled(identifier, currentStatement) ) {
 				callStack.pop();
 				return true;
 			} else {
 				callStack.pop();
 				final StatementExecutionContext previous = callStack.peek();
-				previous.breakStatement("");
-				return false;
+				previous.breakStatement(identifier);
 			}
 		}
 
 		return false;
 	}
 
-	private static boolean isSwitchStatement(Statement currentStatement) {
-		Class<? extends Statement> clazz = currentStatement.getClass();
-		return SwitchStatement.class.equals(clazz);
-	}
-	
-	private static boolean isIterationStatement(Statement currentStatement) {
-		Class<? extends Statement> clazz = currentStatement.getClass();
-		return WhileStatement.class.equals(clazz) || DoWhileStatement.class.equals(clazz) || ForStatement.class.equals(clazz);
+	private static boolean isLabelled(String labelledBreak, Statement statement){
+		return StringUtils.isBlank(labelledBreak) || statement.getLabels().contains(labelledBreak);
 	}
 
 	public ScopeBindings getVariables() {

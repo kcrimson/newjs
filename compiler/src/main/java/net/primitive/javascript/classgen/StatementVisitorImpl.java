@@ -8,6 +8,7 @@ import net.primitive.javascript.core.ast.ForInStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
+import net.primitive.javascript.core.ast.LabelledStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.StatementVisitor;
 import net.primitive.javascript.core.ast.SwitchStatement;
@@ -86,6 +87,11 @@ public class StatementVisitorImpl implements StatementVisitor {
 	@Override
 	public void visitSwitchStatement(SwitchStatement switchStatement) {
 		throw new UnsupportedOperationException("visitSwitchStatement");
+	}
+
+	@Override
+	public void visitLabelledStatement(LabelledStatement labelledStatement) {
+		throw new UnsupportedOperationException("visitLabelledStatement");
 	}
 
 }

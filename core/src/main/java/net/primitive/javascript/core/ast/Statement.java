@@ -15,12 +15,20 @@
  */
 package net.primitive.javascript.core.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Setter;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 
 public abstract class Statement extends AstNode {
-
+	
+	@Setter
+	private List<String> labels;
+	
 	public abstract void accept(StatementVisitor visitor);
 
 	/*
@@ -33,6 +41,22 @@ public abstract class Statement extends AstNode {
 		ToStringBuilder stringBuilder = new ToStringBuilder(this,
 				ToStringStyle.SHORT_PREFIX_STYLE);
 		return stringBuilder.toString();
+	}
+	
+	public void addLabels( List<String> labels ){
+		getLabels().addAll(labels);
+	}
+	
+	public List<String> getLabels(){
+		if( labels == null ){
+			labels = new ArrayList<String>();
+		}
+		return labels;
+	}
+	
+	public void addLabel( String label ){
+		List<String> labels = getLabels();
+		labels.add(label);
 	}
 
 }
