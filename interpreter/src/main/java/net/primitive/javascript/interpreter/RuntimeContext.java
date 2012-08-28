@@ -256,6 +256,7 @@ public final class RuntimeContext {
 				callStack.pop();
 				final StatementExecutionContext previous = callStack.peek();
 				previous.breakStatement(identifier);
+				return false;
 			}
 		}
 
