@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2012 Primitive Team <jpalka@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.primitive.javascript.core.ast;
-
-import java.util.List;
-
-import lombok.Getter;
-
-public class SwitchStatement extends Statement {
-
-	@Getter private final Expression expression;
-	@Getter private final List<CaseClauseStatement> clauses;
-
-	public SwitchStatement(Expression expression,
-			List<CaseClauseStatement> clauses) {
-		this.expression = expression;
-		this.clauses = clauses;
-		if(clauses != null){
-			for (Statement statement : clauses) {
-				statement.setParentNode(this);
-			}
-		}
+var print = console.log;
+function test_simple_default_clause(a){
+	var b = 0;
+	switch (a) {
+		case 1:
+			b = 1;
+			break;
+		default:
+			b = 5;
 	}
-
-	@Override
-	public void accept(StatementVisitor visitor) {
-		visitor.visitSwitchStatement(this);
-	}
-
+	return b;
 }
+
+var arg = 1;
+var result = test_simple_default_clause(arg);
+print(result);
+var assertResult = (result == 1);

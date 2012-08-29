@@ -288,8 +288,8 @@ ifStatement returns [Statement result]
   :
   IF LT!* '(' LT!* expression LT!* ')' LT!* ifstatement=statement (LT!* 'else' LT!* elsestatement=statement)? 
                                                                                                              {
-                                                                                                              $result = new IfStatement($expression.result,
-                                                                                                              		(AstNodeList) $ifstatement.result, (AstNodeList) $elsestatement.result);
+                                                                                                              $result = new IfStatement($expression.result, $ifstatement.result,
+                                                                                                              		$elsestatement.result);
                                                                                                              }
   ;
 
@@ -436,14 +436,14 @@ switchStatement returns [Statement result]
   :
   'switch' LT!* '(' LT!* expression LT!* ')' LT!* caseBlock 
                                                            {
-                                                            $result = new SwitchStatement($expression.result, $caseBlock.clauses,
-                                                            		$caseBlock.dc);
+                                                            $result = new SwitchStatement($expression.result, $caseBlock.clauses);
                                                            }
   ;
 
-caseBlock returns [List<CaseClauseStatement> clauses,AstNodeList dc]
+caseBlock returns [List<CaseClauseStatement> clauses]
 @init {
 List<CaseClauseStatement> clauses = new ArrayList<CaseClauseStatement>();
+$clauses = clauses;
 }
   :
   '{' (LT!* cc1=caseClause 
@@ -451,7 +451,7 @@ List<CaseClauseStatement> clauses = new ArrayList<CaseClauseStatement>();
                            clauses.add($cc1.result);
                           })* (LT!* defaultClause 
                                                  {
-                                                  $dc = $defaultClause.result;
+                                                  clauses.add($defaultClause.result);
                                                  }
     (LT!* cc2=caseClause 
                         {
@@ -467,11 +467,11 @@ caseClause returns [CaseClauseStatement result]
                                                      }
   ;
 
-defaultClause returns [AstNodeList result]
+defaultClause returns [CaseClauseStatement result]
   :
   'default' LT!* ':' LT!* statementList? 
                                         {
-                                         $result = $statementList.result;
+                                         $result = new DefaultCaseClauseStatement($statementList.result);
                                         }
   ;
 
@@ -1130,7 +1130,10 @@ UnaryOperator operator = null;
             {
              operator = Operators.Delete;
             }
-    | 'void'
+    | 'void' 
+            {
+             operator = Operators.Void;
+            }
     | 'typeof' 
               {
                operator = Operators.TypeOf;
@@ -1287,16 +1290,26 @@ literal returns [Expression result]
                   {
                    $result = new Literal(Double.parseDouble($NumericLiteral.text));
                   }
-  | RegexpExpressionLiteral
+ | RegularExpressionLiteral 
+                            {
+                             $result = new Literal(Literal.unwrapRegexp($RegularExpressionLiteral.text));
+                            }
   ;
 
 // lexer rules.
 
-RegexpExpressionLiteral
+RegularExpressionLiteral
   :
-  '/' ('a' | 'b' )*  '/'
+  '/'
+  ~(
+    LT
+    | '\''
+    | '"'
+    | '/'
+   )+
+  '/' UnicodeLetter*
   ;
-
+  
 StringLiteral
   :
   '"' DoubleStringCharacter* '"'

@@ -74,6 +74,6 @@ public class InterpreterTest {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/src/main/resources/new-function.js");
+		new InterpreterTest().drive_javascript_test("/home/palkaj01/projects/newjs/functional-tests/src/main/resources/simple-regexp.js");
 	}
 }

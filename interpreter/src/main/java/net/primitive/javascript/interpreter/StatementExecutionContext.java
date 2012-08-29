@@ -116,7 +116,7 @@ public class StatementExecutionContext {
 
 	public void breakStatement(String identifier) {
 		completion.setType(CompletionType.Break);
-		completion.setValue(null);
+		completion.setValue(identifier);
 		completion.setTarget(null);
 	}
 

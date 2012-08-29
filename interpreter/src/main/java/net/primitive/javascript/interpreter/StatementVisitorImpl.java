@@ -21,6 +21,7 @@ import static net.primitive.javascript.core.Convertions.toObject;
 import static net.primitive.javascript.core.Reference.getValue;
 import static net.primitive.javascript.core.Reference.putValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -36,6 +37,7 @@ import net.primitive.javascript.core.ast.AstNodeList;
 import net.primitive.javascript.core.ast.BreakStatement;
 import net.primitive.javascript.core.ast.CaseClauseStatement;
 import net.primitive.javascript.core.ast.CatchClause;
+import net.primitive.javascript.core.ast.DefaultCaseClauseStatement;
 import net.primitive.javascript.core.ast.DoWhileStatement;
 import net.primitive.javascript.core.ast.Expression;
 import net.primitive.javascript.core.ast.ExpressionStatement;
@@ -43,6 +45,7 @@ import net.primitive.javascript.core.ast.ForInStatement;
 import net.primitive.javascript.core.ast.ForStatement;
 import net.primitive.javascript.core.ast.FunctionDeclaration;
 import net.primitive.javascript.core.ast.IfStatement;
+import net.primitive.javascript.core.ast.LabelledStatement;
 import net.primitive.javascript.core.ast.ReturnStatement;
 import net.primitive.javascript.core.ast.Statement;
 import net.primitive.javascript.core.ast.StatementVisitor;
@@ -51,6 +54,7 @@ import net.primitive.javascript.core.ast.ThrowStatement;
 import net.primitive.javascript.core.ast.TryStatement;
 import net.primitive.javascript.core.ast.VariableDeclaration;
 import net.primitive.javascript.core.ast.WhileStatement;
+import net.primitive.javascript.interpreter.utils.StatementUtil;
 
 public class StatementVisitorImpl implements StatementVisitor {
 
@@ -319,22 +323,67 @@ public class StatementVisitorImpl implements StatementVisitor {
 	@Override
 	public void visitSwitchStatement(SwitchStatement switchStatement) {
 
+		switchStatement.getExpression().accept(expressionVisitor);
+
+		Object switchExpr = expressionVisitor.getResult();
+		Object value = Reference.getValue(switchExpr);
+
+		boolean entryCondition = false;
+		
 		List<CaseClauseStatement> clauses = switchStatement.getClauses();
-
-		for (CaseClauseStatement clause : clauses) {
-			clause.getExpression();
+		if( clauses != null ){
+			for (CaseClauseStatement clause : clauses) {
+				if(!entryCondition){
+					entryCondition = checkCaseClauseEntryCondition(value, clause);
+				}
+				
+				if(entryCondition && !executeStatements(clause.getStatements())){
+					break;
+				}
+			}
 		}
+	}
 
-		AstNodeList nodeList = switchStatement.getDefaultClause();
+	private boolean checkCaseClauseEntryCondition(Object value, CaseClauseStatement clause) {
+		if(!(clause instanceof DefaultCaseClauseStatement)){
+			clause.getExpression().accept(expressionVisitor);
+			Object caseExpr = expressionVisitor.getResult();
+			return Reference.getValue(caseExpr).equals(value);
+		}
+		return true;
+	}
 
+	private boolean executeStatements(AstNodeList nodeList) {
+		boolean continueIteration = true;
 		if (nodeList != null) {
 			List<AstNode> astNodes = nodeList.getAstNodes();
 			for (AstNode astNode : astNodes) {
 				if (!executeStatement((Statement) astNode)) {
-					return;
+					continueIteration = false;
+					break;
 				}
 			}
 		}
+		return continueIteration;
+	}
 
+	@Override
+	public void visitLabelledStatement(LabelledStatement labelledStatement) {
+		Statement statement = (Statement)labelledStatement.getStatement();
+		
+		if( !StatementUtil.isLabelledStatement(statement) ){
+			statement.setLabels(new ArrayList<String>());
+		}
+		
+		if( StatementUtil.isSwitchStatement(statement) || StatementUtil.isIterationStatement(statement)){
+			statement.addLabel("");
+		}
+		if( !labelledStatement.getLabels().isEmpty() ){
+			statement.addLabels(labelledStatement.getLabels());
+		}
+		
+		if (!executeStatement(statement)) {
+			return;
+		}
 	}
 }

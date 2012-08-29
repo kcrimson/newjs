@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 var print = console.log;
-function test_simple_default_clause(a){
+function test_default_case_first(a){
 	var b = 0;
 	switch (a) {
-		case 1:
-			b = 1;
 		default:
-			b = 5;
+			break;
+		case 1:
+			b = b+1;
+		case 2:
+			b = b+2;
+			break;
 	}
 	return b;
 }
 
 var arg = 1;
-var result = test_simple_default_clause(arg);
+var result = test_default_case_first(arg);
 print(result);
-var assertResult = (result == 1);
+var assertResult = (result == 0);

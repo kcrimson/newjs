@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2012 Primitive Team <jpalka@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,31 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.primitive.javascript.core.ast;
-
-import java.util.List;
-
-import lombok.Getter;
-
-public class SwitchStatement extends Statement {
-
-	@Getter private final Expression expression;
-	@Getter private final List<CaseClauseStatement> clauses;
-
-	public SwitchStatement(Expression expression,
-			List<CaseClauseStatement> clauses) {
-		this.expression = expression;
-		this.clauses = clauses;
-		if(clauses != null){
-			for (Statement statement : clauses) {
-				statement.setParentNode(this);
+var print = console.log;
+function test_nested(a){
+	var b = 0;
+	switch (a) {
+		case 1:
+			b = b+1;
+		case 2:
+			b = b+2;
+			
+			switch( a*b ){
+				case 1:
+					b = 0;
+				case 3:
+					b = 100;
+					break;
 			}
-		}
+			
+			b = b+1;
+			
+			break;
+		default:
+			b = 5;
 	}
-
-	@Override
-	public void accept(StatementVisitor visitor) {
-		visitor.visitSwitchStatement(this);
-	}
-
+	return b;
 }
+
+var arg = 1;
+var result = test_nested(arg);
+print(result);
+var assertResult = (result == 101);

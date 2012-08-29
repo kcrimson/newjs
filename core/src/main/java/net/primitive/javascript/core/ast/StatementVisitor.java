@@ -46,4 +46,6 @@ public interface StatementVisitor {
 
 	void visitSwitchStatement(SwitchStatement switchStatement);
 
+	void visitLabelledStatement(LabelledStatement labelledStatement);
+
 }

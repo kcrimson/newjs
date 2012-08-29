@@ -19,18 +19,33 @@ import lombok.Getter;
 
 public class IfStatement extends Statement {
 
-	@Getter private final Expression expression;
-	@Getter private final AstNodeList ifStatement;
-	@Getter private final AstNodeList elseStatement;
+	@Getter
+	private final Expression expression;
+	@Getter
+	private AstNodeList ifStatement;
+	@Getter
+	private AstNodeList elseStatement;
 
-	public IfStatement(Expression expression, AstNodeList ifStatement,
-			AstNodeList elseStatement) {
+	public IfStatement(Expression expression, AstNode ifstmnt, AstNode elsestmnt) {
 		this.expression = expression;
-		this.ifStatement = ifStatement;
-		ifStatement.setParentNode(this);
-		this.elseStatement = elseStatement;
-		if (elseStatement != null) {
-			elseStatement.setParentNode(this);
+
+		if (ifstmnt instanceof AstNodeList) {
+			this.ifStatement = (AstNodeList) ifstmnt;
+		} else if (ifstmnt != null) {
+			this.ifStatement = new AstNodeList();
+			this.ifStatement.addAstNode(ifstmnt);
+		}
+		this.ifStatement.setParentNode(this);
+
+		if (elsestmnt instanceof AstNodeList) {
+			this.elseStatement = (AstNodeList) elsestmnt;
+		} else if (elsestmnt != null) {
+			this.elseStatement = new AstNodeList();
+			this.elseStatement.addAstNode(elsestmnt);
+		}
+
+		if (this.elseStatement != null) {
+			this.elseStatement.setParentNode(this);
 		}
 	}
 
